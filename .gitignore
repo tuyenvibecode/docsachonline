@@ -1,0 +1,11 @@
+# inbox/ là thư mục nháp, không lên GitHub. PDF muốn đưa lên thì để ở pdf/
+inbox/*
+!inbox/README.md
+
+__pycache__/
+*.pyc
+.DS_Store
+node_modules/
+
+# Khóa bí mật, không bao giờ commit
+.env

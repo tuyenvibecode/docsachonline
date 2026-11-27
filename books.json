@@ -1,0 +1,18 @@
+{
+  "books": [
+    {
+      "id": 1,
+      "title": "Đắc Nhân Tâm",
+      "author": "Dale Carnegie",
+      "language": "vi",
+      "source": "local",
+      "source_id": "Dac Nhan Tam.pdf",
+      "source_url": "",
+      "license": "own",
+      "cover": "covers/book-1.webp",
+      "chapters": 30,
+      "chars": 337358,
+      "added": "2026-11-27"
+    }
+  ]
+}
