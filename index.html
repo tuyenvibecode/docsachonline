@@ -1150,6 +1150,21 @@
     font-family: var(--font-sans); font-size: 9px; opacity: 0.82;
     max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
+
+  /* Thẻ góp ý & phản hồi */
+  .fb-card {
+    border: 1px solid var(--line); border-left: 4px solid #d68910;
+    border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; background: var(--bg);
+  }
+  .fb-card.replied { border-left-color: #27ae60; }
+  .fb-card-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+  .fb-card-meta { font-size: 12px; color: var(--fg-muted); margin: 4px 0 8px; }
+  .fb-card-body { font-size: 14px; line-height: 1.6; white-space: pre-wrap; }
+  .fb-reply-box {
+    margin-top: 10px; padding: 10px 12px; border-radius: 10px;
+    background: var(--accent-soft); font-size: 13.5px; line-height: 1.55; white-space: pre-wrap;
+  }
+  .fb-reply-label { font-weight: 700; font-size: 12px; color: var(--accent); margin-bottom: 4px; }
 </style>
 </head>
 <body>
@@ -1168,6 +1183,7 @@
     <div class="nav-tabs" id="mainNavTabs" role="navigation" aria-label="Điều hướng chính">
       <button type="button" class="nav-tab-btn active" id="navBtnShelf">📚 Kệ sách</button>
       <button type="button" class="nav-tab-btn" id="navBtnMyBooks">+ Sách của bạn</button>
+      <button type="button" class="nav-tab-btn" id="navBtnFeedback">💬 Góp ý <span class="badge-count" id="userFeedbackBadge" style="display:none">0</span></button>
       <button type="button" class="nav-tab-btn" id="navBtnAdmin" style="display:none">⚙ Dashboard <span class="badge-count" id="adminPendingBadge" style="display:none">0</span></button>
     </div>
 
@@ -1182,6 +1198,7 @@
       <button type="button" class="pill-btn" data-set-ui-theme="dark">🌙 Giao diện Tối</button>
     </div>
 
+    <button type="button" class="icon-btn" id="btnOpenChangePass" style="display:none" title="Đổi mật khẩu tài khoản">🔑 Đổi MK</button>
     <button type="button" class="icon-btn" id="btnAuthAction">Đăng nhập</button>
   </div>
 </header>
@@ -1196,13 +1213,10 @@
         <h2 class="auth-hero-title">Không gian đọc sách tĩnh lặng dành cho bạn bè</h2>
         <p class="auth-hero-desc">Trải nghiệm kệ sách gáy đứng 3D, lật từng trang giấy như sách thật và cùng nhau đóng góp những cuốn sách PDF hay lên kệ chung.</p>
         <ul class="auth-feature-list">
-          <li><span class="auth-feature-dot">1</span><span><strong>Đăng ký tài khoản:</strong> Nhập email & mật khẩu để tạo tài khoản thành viên.</span></li>
+          <li><span class="auth-feature-dot">1</span><span><strong>Đăng ký nhanh bằng Tên tài khoản:</strong> Chỉ cần nhập Tên tài khoản và Mật khẩu (không cần dùng Email).</span></li>
           <li><span class="auth-feature-dot">2</span><span><strong>Chờ Admin phê duyệt:</strong> Chủ dự án duyệt tài khoản trong Dashboard để bảo vệ không gian riêng.</span></li>
-          <li><span class="auth-feature-dot">3</span><span><strong>Đọc & Đóng góp sách:</strong> Lưu dấu trang đám mây và tải sách PDF lên kệ chung.</span></li>
+          <li><span class="auth-feature-dot">3</span><span><strong>Đọc, Góp ý & Đóng góp sách:</strong> Lưu dấu trang đám mây, gửi góp ý trực tiếp và tải sách PDF lên kệ chung.</span></li>
         </ul>
-      </div>
-      <div style="font-size:12px;opacity:0.75;border-top:1px solid rgba(255,255,255,0.15);padding-top:14px">
-        Bảo mật bởi Supabase Row-Level Security (RLS) · Dữ liệu sách PDF được xử lý trực tiếp trên trình duyệt.
       </div>
     </div>
 
@@ -1213,32 +1227,32 @@
       </div>
 
       <h3 class="card-title" id="authPortalHeading" style="font-size:21px;margin-bottom:4px">Chào mừng bạn quay lại</h3>
-      <p class="card-sub" id="authPortalSub" style="margin-bottom:18px">Đăng nhập bằng tài khoản đã được duyệt để mở kệ sách.</p>
+      <p class="card-sub" id="authPortalSub" style="margin-bottom:18px">Đăng nhập bằng Tên tài khoản đã được duyệt để mở kệ sách.</p>
 
       <div class="auth-alert-box" id="authAlertBox"></div>
 
       <form id="authPortalForm">
+        <div style="margin-bottom:14px">
+          <label class="field-label" for="authUsernameInput">Tên tài khoản <span style="color:#c0392b">*</span></label>
+          <input type="text" id="authUsernameInput" class="text-input" required placeholder="Ví dụ: admin hoặc minhtuan" autocomplete="username">
+        </div>
+
         <div id="signupNameField" style="margin-bottom:14px;display:none">
-          <label class="field-label" for="authNameInput">Tên hiển thị (Người đóng góp)</label>
-          <input type="text" id="authNameInput" class="text-input" placeholder="Ví dụ: Minh Tuấn">
+          <label class="field-label" for="authNameInput">Họ tên <span style="font-weight:400;opacity:0.8">(không bắt buộc — nếu bỏ trống sẽ lấy tên tài khoản)</span></label>
+          <input type="text" id="authNameInput" class="text-input" placeholder="Ví dụ: Nguyễn Minh Tuấn">
         </div>
 
         <div style="margin-bottom:14px">
-          <label class="field-label" for="authEmailInput">Địa chỉ Email</label>
-          <input type="email" id="authEmailInput" class="text-input" required placeholder="ban@example.com" autocomplete="email">
-        </div>
-
-        <div style="margin-bottom:14px">
-          <label class="field-label" for="authPassInput">Mật khẩu</label>
+          <label class="field-label" for="authPassInput">Mật khẩu <span style="color:#c0392b">*</span></label>
           <div class="pass-input-wrap">
-            <input type="password" id="authPassInput" class="text-input" required minlength="6" placeholder="Tối thiểu 6 ký tự" autocomplete="current-password" style="padding-right:64px">
+            <input type="password" id="authPassInput" class="text-input" required placeholder="Nhập mật khẩu" autocomplete="current-password" style="padding-right:64px">
             <button type="button" class="pass-toggle-btn" id="btnTogglePassVis">Hiện</button>
           </div>
         </div>
 
         <div id="signupConfirmField" style="margin-bottom:16px;display:none">
-          <label class="field-label" for="authPassConfirmInput">Nhập lại mật khẩu</label>
-          <input type="password" id="authPassConfirmInput" class="text-input" minlength="6" placeholder="Nhập lại đúng mật khẩu trên">
+          <label class="field-label" for="authPassConfirmInput">Nhập lại mật khẩu <span style="color:#c0392b">*</span></label>
+          <input type="password" id="authPassConfirmInput" class="text-input" placeholder="Nhập lại đúng mật khẩu trên">
         </div>
 
         <button type="submit" class="btn-primary" id="btnSubmitAuth" style="width:100%;padding:11px;font-size:15px;margin-top:4px">Đăng nhập vào thư viện →</button>
@@ -1254,7 +1268,7 @@
 
     <div class="gate-steps-box" id="gatePendingGuide">
       <div style="font-weight:700;margin-bottom:6px;color:var(--fg)">Quy trình kích hoạt tài khoản:</div>
-      <div>1. Chủ dự án (Admin) mở mục <strong>Dashboard → Tài khoản thành viên</strong> và bấm <strong>Duyệt (Unlock)</strong> cho email của bạn.</div>
+      <div>1. Chủ dự án (Admin) mở mục <strong>Dashboard → Tài khoản thành viên</strong> và bấm <strong>Duyệt (Unlock)</strong> cho tài khoản của bạn.</div>
       <div style="margin-top:4px">2. Sau khi được duyệt, bạn chỉ cần bấm nút <strong>"Kiểm tra lại trạng thái"</strong> bên dưới là vào thẳng kệ sách.</div>
     </div>
 
@@ -1317,6 +1331,39 @@
   </div>
 </section>
 
+<!-- ================= MÀN HÌNH 3B: HỘP THƯ GÓP Ý & PHẢN HỒI CỦA THÀNH VIÊN ================= -->
+<section class="panel-view" id="feedbackView" aria-label="Hộp thư góp ý">
+  <div class="card-box">
+    <h2 class="card-title">💬 Gửi góp ý cho Quản trị viên</h2>
+    <p class="card-sub">Đề xuất thêm sách mới, báo lỗi hiển thị hoặc góp ý cải thiện trải nghiệm đọc sách. Admin sẽ đọc và phản hồi trực tiếp tại đây.</p>
+
+    <form id="userFeedbackForm">
+      <div style="margin-bottom:14px">
+        <label class="field-label" for="fbSubjectInput">Tiêu đề góp ý <span style="color:#c0392b">*</span></label>
+        <input type="text" id="fbSubjectInput" class="text-input" required placeholder="Ví dụ: Đề xuất thêm sách / Góp ý giao diện đọc sách">
+      </div>
+      <div style="margin-bottom:14px">
+        <label class="field-label" for="fbMessageInput">Nội dung chi tiết <span style="color:#c0392b">*</span></label>
+        <textarea id="fbMessageInput" class="text-input" rows="4" required placeholder="Nhập nội dung góp ý của bạn…" style="resize:vertical;font-family:inherit"></textarea>
+      </div>
+      <div style="display:flex;justify-content:flex-end">
+        <button type="submit" class="btn-primary" id="btnSubmitFeedback">Gửi góp ý →</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="card-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap">
+      <div>
+        <h2 class="card-title" style="margin-bottom:2px">Lịch sử góp ý & Phản hồi từ Admin</h2>
+        <p class="card-sub" style="margin:0">Các góp ý bạn đã gửi và câu trả lời từ Quản trị viên.</p>
+      </div>
+      <button type="button" class="icon-btn" id="btnRefreshUserFeedback">↻ Làm mới</button>
+    </div>
+    <div id="userFeedbackListWrap"></div>
+  </div>
+</section>
+
 <!-- ================= MÀN HÌNH 4: DASHBOARD ADMIN CHUYÊN NGHIỆP CÓ SIDEBAR (/admin) ================= -->
 <section class="panel-view" id="adminView" aria-label="Dashboard quản trị">
   <div class="admin-shell">
@@ -1342,6 +1389,10 @@
         <button type="button" class="admin-side-btn" data-admin-sec="users">
           <span class="admin-side-btn-left">👥 Tài khoản thành viên</span>
           <span class="admin-side-pill" id="sideBadgeUsers">1</span>
+        </button>
+        <button type="button" class="admin-side-btn" data-admin-sec="feedbacks">
+          <span class="admin-side-btn-left">💬 Hộp thư góp ý</span>
+          <span class="admin-side-pill" id="sideBadgeFeedbacks">0</span>
         </button>
         <button type="button" class="admin-side-btn" data-admin-sec="library">
           <span class="admin-side-btn-left">🏛 Kho sách gốc (Repo)</span>
@@ -1439,7 +1490,7 @@
         </div>
       </div>
 
-      <!-- PANE 3: QUẢN LÝ TÀI KHOẢN THÀNH VIÊN (USERS: DUYỆT, LOCK / UNLOCK, PHÂN QUYỀN) -->
+      <!-- PANE 3: QUẢN LÝ TÀI KHOẢN THÀNH VIÊN (USERS: DUYỆT, LOCK / UNLOCK, RESET MK, PHÂN QUYỀN) -->
       <div class="admin-section-pane" id="adminPaneUsers">
         <div class="card-box" style="margin-bottom:0">
           <div class="filter-pills-bar">
@@ -1449,9 +1500,24 @@
               <button type="button" class="pill-btn" data-user-filter="approved">✓ Đang hoạt động</button>
               <button type="button" class="pill-btn" data-user-filter="blocked">🔒 Đã khóa (Locked)</button>
             </div>
-            <input type="search" id="adminUserSearch" class="text-input" style="max-width:240px" placeholder="Tìm email thành viên…">
+            <input type="search" id="adminUserSearch" class="text-input" style="max-width:240px" placeholder="Tìm tên TK, họ tên…">
           </div>
           <div id="adminUsersTableWrap"></div>
+        </div>
+      </div>
+
+      <!-- PANE 3B: MODULE QUẢN LÝ & PHẢN HỒI GÓP Ý TỪ NGƯỜI DÙNG (FEEDBACKS) -->
+      <div class="admin-section-pane" id="adminPaneFeedbacks">
+        <div class="card-box" style="margin-bottom:0">
+          <div class="filter-pills-bar">
+            <div class="pill-group" id="adminFeedbackFilterGroup">
+              <button type="button" class="pill-btn active" data-fb-filter="all">Tất cả góp ý</button>
+              <button type="button" class="pill-btn" data-fb-filter="pending">⏳ Chưa phản hồi</button>
+              <button type="button" class="pill-btn" data-fb-filter="replied">✓ Đã phản hồi</button>
+            </div>
+            <input type="search" id="adminFeedbackSearch" class="text-input" style="max-width:240px" placeholder="Tìm người gửi, tiêu đề…">
+          </div>
+          <div id="adminFeedbacksTableWrap"></div>
         </div>
       </div>
 
@@ -1471,6 +1537,32 @@
     </div>
   </div>
 </section>
+
+<!-- ================= MODAL ĐỔI MẬT KHẨU TÀI KHOẢN CỦA USER ================= -->
+<div class="modal-backdrop" id="changePassModalBackdrop">
+  <div class="modal-box" style="width:min(440px,95vw)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <strong style="font-family:var(--font-spine);font-size:19px">🔑 Đổi mật khẩu tài khoản</strong>
+      <button type="button" class="icon-btn" id="btnCloseChangePassModal">Đóng ✕</button>
+    </div>
+    <p class="card-sub" id="changePassUserSub" style="margin-bottom:14px">Nhập mật khẩu mới cho tài khoản của bạn (đặc biệt sau khi được Admin reset mật khẩu mặc định).</p>
+    <div class="auth-alert-box" id="changePassAlertBox"></div>
+    <form id="changePassForm">
+      <div style="margin-bottom:14px">
+        <label class="field-label" for="newPassInput">Mật khẩu mới <span style="color:#c0392b">*</span></label>
+        <input type="password" id="newPassInput" class="text-input" required placeholder="Nhập mật khẩu mới">
+      </div>
+      <div style="margin-bottom:16px">
+        <label class="field-label" for="newPassConfirmInput">Nhập lại mật khẩu mới <span style="color:#c0392b">*</span></label>
+        <input type="password" id="newPassConfirmInput" class="text-input" required placeholder="Nhập lại mật khẩu mới">
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:10px">
+        <button type="button" class="icon-btn" id="btnCancelChangePass">Hủy</button>
+        <button type="submit" class="btn-primary" id="btnSubmitChangePass">Lưu mật khẩu mới →</button>
+      </div>
+    </form>
+  </div>
+</div>
 
 <!-- ================= MODAL XEM TRƯỚC SÁCH ================= -->
 <div class="modal-backdrop" id="previewModalBackdrop">
@@ -1625,19 +1717,54 @@ const $ = (id) => document.getElementById(id);
 // Bộ nhớ cá nhân an toàn trong localStorage
 const STORE_KEY = "book_reader_kit_v2_prefs";
 const LOCAL_USER_BOOKS_KEY = "book_reader_kit_v2_local_user_books";
+const LOCAL_FEEDBACKS_KEY = "book_reader_kit_v2_local_feedbacks";
 let prefs = { uiTheme: "light", paperTheme: "warm", fontSize: 18, forceSingle: false, scrollMode: false, lastBookId: null, progress: {}, bookmarks: {} };
 let books = [];
 let sharedUserBooks = []; // sách bạn bè đóng góp đã đưa lên kệ chung
 let myUserBooks = [];     // sách do người dùng hiện tại tải lên
+let myFeedbacks = [];     // danh sách góp ý của người dùng hiện tại
 let bookCache = {};
 
 // Trạng thái Supabase & Tài khoản (Bước 4)
 let sb = null;
 let currentUser = null;
-let currentProfile = null; // { id, email, role, status }
+let currentProfile = null; // { id, username, email, display_name, role, status }
 let authMode = "login";    // 'login' | 'signup'
-let currentTab = "shelf";  // 'shelf' | 'mybooks' | 'admin'
+let currentTab = "shelf";  // 'shelf' | 'mybooks' | 'feedback' | 'admin'
 let pendingUploadData = null; // { title, author, chapters, chars, jsonStr, sizeBytes }
+
+// Chuyển Tên tài khoản (username) sang email nội bộ chuẩn cho Supabase Auth
+function usernameToInternalEmail(rawUsername) {
+  const clean = (rawUsername || "").trim().toLowerCase();
+  if (!clean) return "";
+  if (clean.includes("@")) return clean;
+  // Giữ chữ cái không dấu, số, dấu chấm, gạch ngang, gạch dưới
+  const slug = clean
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d")
+    .replace(/[^a-z0-9._-]/g, "");
+  return (slug || "user") + "@tusach.local";
+}
+
+// Khép mật khẩu vào định dạng tối thiểu 6 ký tự của GoTrue (nhưng người dùng chỉ cần gõ 'admin' hoặc bất kỳ)
+function normalizeInternalPassword(rawPass) {
+  const p = String(rawPass || "");
+  if (p.length >= 6) return p;
+  return p + "#TS3D!";
+}
+
+function getProfileUsername(p) {
+  if (!p) return "Tài khoản";
+  if (p.username) return p.username;
+  if (p.email) return p.email.replace(/@tusach\.local$/i, "");
+  return "Tài khoản";
+}
+
+function getProfileFullName(p) {
+  if (!p) return "Tài khoản";
+  return p.display_name || getProfileUsername(p);
+}
 
 let toastTimer = null;
 function showSpineToast(msg) {
@@ -2850,6 +2977,9 @@ async function refreshAuthSession() {
 
   if (!currentUser) {
     currentProfile = null;
+    myFeedbacks = [];
+    updateUserFeedbackBadge();
+    $("btnOpenChangePass").style.display = "none";
     btnAuth.textContent = "Đăng nhập / Đăng ký";
     btnAdmin.style.display = "none";
     const cfg = window.__WEB_CONFIG__ || {};
@@ -2862,9 +2992,17 @@ async function refreshAuthSession() {
   }
 
   const { data: prof } = await sb.from("profiles").select("*").eq("id", currentUser.id).maybeSingle();
-  currentProfile = prof || { id: currentUser.id, email: currentUser.email, role: "reader", status: "pending" };
-  btnAuth.textContent = (currentProfile.email || "Tài khoản") + " · Đăng xuất";
+  currentProfile = prof || {
+    id: currentUser.id,
+    username: (currentUser.user_metadata && currentUser.user_metadata.username) || "",
+    email: currentUser.email,
+    role: "reader",
+    status: "pending"
+  };
+  const uName = getProfileFullName(currentProfile);
+  btnAuth.textContent = uName + " · Đăng xuất";
   btnAdmin.style.display = isAdminUser() ? "inline-flex" : "none";
+  $("btnOpenChangePass").style.display = "inline-flex";
 
   if (currentProfile.status === "pending") {
     if (navTabs) navTabs.style.display = "none";
@@ -2872,7 +3010,7 @@ async function refreshAuthSession() {
     showAuthStatusGate(
       "pending",
       "Tài khoản đang chờ Admin phê duyệt",
-      "Xin chào " + (currentProfile.email || "bạn") + "! Tài khoản của bạn đã đăng ký thành công và đang ở trạng thái Chờ duyệt (pending)."
+      "Xin chào " + uName + "! Tài khoản \"" + getProfileUsername(currentProfile) + "\" đã đăng ký thành công và đang ở trạng thái Chờ duyệt."
     );
     return;
   }
@@ -2881,8 +3019,8 @@ async function refreshAuthSession() {
     $("shelfSearchWrap").style.display = "none";
     showAuthStatusGate(
       "blocked",
-      "Tài khoản đã bị khóa (Locked)",
-      "Tài khoản " + (currentProfile.email || "") + " hiện đang bị khóa tạm thời bởi Quản trị viên. Vui lòng liên hệ chủ dự án để mở khóa (Unlock)."
+      "Tài khoản đã bị khóa",
+      "Tài khoản \"" + getProfileUsername(currentProfile) + "\" hiện đang bị khóa bởi Quản trị viên. Vui lòng liên hệ chủ dự án để mở khóa."
     );
     return;
   }
@@ -2893,13 +3031,16 @@ async function refreshAuthSession() {
   $("authGateView").classList.remove("open");
   $("shelfView").style.display = currentTab === "shelf" ? "block" : "none";
   await loadSupabaseBooksAndProgress();
+  await loadMyFeedbacks();
 }
 
 function showAuthLoginForm(mode = "login") {
   switchAuthPortalMode(mode);
   $("shelfView").style.display = "none";
   $("myBooksView").classList.remove("open");
+  $("feedbackView").classList.remove("open");
   $("adminView").classList.remove("open");
+  $("btnOpenChangePass").style.display = "none";
   $("authFormPortal").style.display = "grid";
   $("authStatusCard").style.display = "none";
   $("authGateView").classList.add("open");
@@ -2908,6 +3049,7 @@ function showAuthLoginForm(mode = "login") {
 function showAuthStatusGate(kind, title, msg) {
   $("shelfView").style.display = "none";
   $("myBooksView").classList.remove("open");
+  $("feedbackView").classList.remove("open");
   $("adminView").classList.remove("open");
   $("authFormPortal").style.display = "none";
   $("authStatusCard").style.display = "block";
@@ -2929,8 +3071,8 @@ function switchAuthPortalMode(mode) {
     ? "Chào mừng bạn quay lại"
     : "Tạo tài khoản thành viên mới";
   $("authPortalSub").textContent = authMode === "login"
-    ? "Đăng nhập bằng tài khoản đã được duyệt để mở kệ sách."
-    : "Sau khi đăng ký, tài khoản sẽ ở trạng thái Chờ duyệt cho đến khi Admin kích hoạt.";
+    ? "Đăng nhập bằng Tên tài khoản đã được duyệt để mở kệ sách."
+    : "Chỉ cần Tên tài khoản và Mật khẩu. Sau khi đăng ký, tài khoản sẽ chờ Admin duyệt.";
   $("btnSubmitAuth").textContent = authMode === "login"
     ? "Đăng nhập vào thư viện →"
     : "Đăng ký tài khoản →";
@@ -3029,16 +3171,22 @@ function switchMainTab(tab) {
   currentTab = tab;
   $("navBtnShelf").classList.toggle("active", tab === "shelf");
   $("navBtnMyBooks").classList.toggle("active", tab === "mybooks");
+  $("navBtnFeedback").classList.toggle("active", tab === "feedback");
   $("navBtnAdmin").classList.toggle("active", tab === "admin");
 
   $("authGateView").classList.remove("open");
   $("shelfView").style.display = tab === "shelf" ? "block" : "none";
   $("shelfSearchWrap").style.display = tab === "shelf" ? "block" : "none";
   $("myBooksView").classList.toggle("open", tab === "mybooks");
+  $("feedbackView").classList.toggle("open", tab === "feedback");
   $("adminView").classList.toggle("open", tab === "admin");
 
   if (tab === "shelf") renderBookshelf();
   if (tab === "mybooks") renderMyBooksList();
+  if (tab === "feedback") {
+    markFeedbackRepliesSeen();
+    renderMyFeedbacks();
+  }
   if (tab === "admin") renderAdminDashboard();
 }
 
@@ -3416,7 +3564,11 @@ const ADMIN_SEC_META = {
   },
   users: {
     title: "Quản lý tài khoản thành viên",
-    desc: "Kiểm soát quyền truy cập kệ sách, duyệt thành viên mới và phân quyền Quản trị viên (Admin)."
+    desc: "Duyệt thành viên mới, khóa / mở khóa, reset mật khẩu về mặc định 123456aA@ và phân quyền Admin."
+  },
+  feedbacks: {
+    title: "Hộp thư góp ý của thành viên",
+    desc: "Đọc góp ý người dùng gửi lên và phản hồi trực tiếp cho từng người."
   },
   library: {
     title: "Kho sách gốc tĩnh (GitHub & Vercel)",
@@ -3437,29 +3589,33 @@ function switchAdminSection(sec) {
   $("adminPaneOverview").classList.toggle("active", activeAdminSection === "overview");
   $("adminPaneModeration").classList.toggle("active", activeAdminSection === "moderation");
   $("adminPaneUsers").classList.toggle("active", activeAdminSection === "users");
+  $("adminPaneFeedbacks").classList.toggle("active", activeAdminSection === "feedbacks");
   $("adminPaneLibrary").classList.toggle("active", activeAdminSection === "library");
 }
 
 async function renderAdminDashboard() {
   let allBooks = myUserBooks;
   let allProfiles = [
-    { id: "local-admin", email: "admin@local (Quản trị viên trên máy)", role: "admin", status: "approved", created_at: "2026-11-27" }
+    { id: "local-admin", username: "admin", display_name: "Quản trị viên (trên máy)", role: "admin", status: "approved", created_at: "2026-11-27" }
   ];
   let allProgress = [];
+  let allFeedbacks = sb ? [] : loadLocalFeedbacks();
 
   if (sb && isAdminUser()) {
-    const [bRes, pRes, prRes] = await Promise.all([
+    const [bRes, pRes, prRes, fbRes] = await Promise.all([
       sb.from("user_books").select("*").order("created_at", { ascending: false }),
       sb.from("profiles").select("*").order("created_at", { ascending: false }),
-      sb.from("reading_progress").select("book_key")
+      sb.from("reading_progress").select("book_key"),
+      sb.from("user_feedbacks").select("*").order("created_at", { ascending: false })
     ]);
     if (Array.isArray(bRes.data)) allBooks = bRes.data;
     if (Array.isArray(pRes.data)) allProfiles = pRes.data;
     if (Array.isArray(prRes.data)) allProgress = prRes.data;
+    if (Array.isArray(fbRes.data)) allFeedbacks = fbRes.data;
   }
 
   // Cập nhật thông tin Sidebar
-  const adminEmail = (currentProfile && currentProfile.email) || "Quản trị viên";
+  const adminEmail = currentProfile ? getProfileFullName(currentProfile) : "Quản trị viên";
   $("adminSidebarEmail").textContent = adminEmail;
   $("adminSidebarAvatar").textContent = (adminEmail[0] || "A").toUpperCase();
   $("adminSidebarMode").textContent = sb ? "Admin · Supabase Cloud" : "Admin · Local Mode";
@@ -3484,6 +3640,9 @@ async function renderAdminDashboard() {
   $("sideBadgeModeration").textContent = pendingBooks > 0 ? (pendingBooks + " chờ") : String(allBooks.length);
   $("sideBadgeUsers").textContent = pendingUsers > 0 ? (pendingUsers + " mới") : String(allProfiles.length);
   $("sideBadgeLibrary").textContent = String(books.length);
+  const pendingFb = allFeedbacks.filter((f) => f.status !== "replied").length;
+  $("sideBadgeFeedbacks").textContent = pendingFb > 0 ? (pendingFb + " mới") : String(allFeedbacks.length);
+  renderAdminFeedbacks(allFeedbacks);
 
   const usedMb = totalUserBytes / (1024 * 1024);
   const quotaPct = Math.min(100, Math.max(2, (usedMb / 1024) * 100));
@@ -3915,7 +4074,7 @@ async function renderAdminDashboard() {
   const filteredUsers = allProfiles.filter((u) => {
     if (adminUserFilter !== "all" && u.status !== adminUserFilter) return false;
     if (userQuery) {
-      const hay = ((u.email || "") + " " + (u.display_name || "") + " " + (u.role || "")).toLowerCase();
+      const hay = ((u.username || "") + " " + (u.email || "") + " " + (u.display_name || "") + " " + (u.role || "")).toLowerCase();
       if (!hay.includes(userQuery)) return false;
     }
     return true;
@@ -3932,7 +4091,7 @@ async function renderAdminDashboard() {
   uTbl.className = "table-list";
   const uHead = document.createElement("thead");
   const uHr = document.createElement("tr");
-  ["Email / Thành viên", "Vai trò", "Trạng thái", "Sách đã gửi", "Ngày tham gia", "Thao tác Quản trị (Lock / Unlock)"].forEach((h) => {
+  ["Tên tài khoản / Họ tên", "Vai trò", "Trạng thái", "Sách đã gửi", "Ngày tham gia", "Thao tác Quản trị"].forEach((h) => {
     const th = document.createElement("th");
     th.textContent = h;
     uHr.append(th);
@@ -3945,9 +4104,9 @@ async function renderAdminDashboard() {
     const tr = document.createElement("tr");
     const tdEm = document.createElement("td");
     const stEm = document.createElement("strong");
-    stEm.textContent = u.email || u.id;
+    stEm.textContent = getProfileUsername(u);
     tdEm.append(stEm);
-    if (u.display_name) {
+    if (u.display_name && u.display_name !== getProfileUsername(u)) {
       const subName = document.createElement("div");
       subName.style.fontSize = "12px";
       subName.style.color = "var(--fg-muted)";
@@ -4008,7 +4167,7 @@ async function renderAdminDashboard() {
             showSpineToast("Không thể khóa tài khoản Admin duy nhất của hệ thống!");
             return;
           }
-          if (window.confirm("Khóa tài khoản '" + (u.email || u.id) + "'? Người dùng này sẽ bị chặn truy cập kệ sách ngay lập tức.")) {
+          if (window.confirm("Khóa tài khoản '" + getProfileUsername(u) + "'? Người dùng này sẽ bị chặn truy cập kệ sách ngay lập tức.")) {
             adminUpdateProfile(u.id, { status: "blocked" });
           }
         };
@@ -4035,6 +4194,14 @@ async function renderAdminDashboard() {
         adminUpdateProfile(u.id, { role: u.role === "admin" ? "reader" : "admin" });
       };
       wrap.append(bRole);
+
+      const bReset = document.createElement("button");
+      bReset.type = "button";
+      bReset.className = "icon-btn";
+      bReset.textContent = "🔑 Reset MK";
+      bReset.title = "Đặt lại mật khẩu về mặc định " + DEFAULT_RESET_PASSWORD;
+      bReset.onclick = () => adminResetPassword(u);
+      wrap.append(bReset);
     } else {
       const note = document.createElement("span");
       note.style.fontSize = "12px";
@@ -4121,6 +4288,346 @@ async function adminUpdateProfile(uid, patch) {
   renderAdminDashboard();
 }
 
+// ================= RESET & ĐỔI MẬT KHẨU =================
+const DEFAULT_RESET_PASSWORD = "123456aA@";
+
+async function adminResetPassword(u) {
+  if (!sb) return;
+  const name = getProfileUsername(u);
+  if (!window.confirm("Reset mật khẩu của tài khoản '" + name + "' về mặc định " + DEFAULT_RESET_PASSWORD + "?")) return;
+  const { error } = await sb.rpc("admin_reset_user_password", {
+    target_user_id: u.id,
+    new_pass: DEFAULT_RESET_PASSWORD
+  });
+  if (error) {
+    showSpineToast("Lỗi reset mật khẩu: " + error.message);
+    return;
+  }
+  showSpineToast("Đã reset mật khẩu '" + name + "' về " + DEFAULT_RESET_PASSWORD + ". Hãy báo người dùng đăng nhập rồi đổi mật khẩu mới.");
+}
+
+function setChangePassAlert(type, msg) {
+  const box = $("changePassAlertBox");
+  if (!msg) {
+    box.className = "auth-alert-box";
+    box.textContent = "";
+    return;
+  }
+  box.className = "auth-alert-box " + (type === "success" ? "success" : "error");
+  box.textContent = msg;
+}
+
+function openChangePassModal() {
+  $("newPassInput").value = "";
+  $("newPassConfirmInput").value = "";
+  setChangePassAlert("", "");
+  $("changePassUserSub").textContent =
+    "Tài khoản: " + getProfileUsername(currentProfile) +
+    ". Nhập mật khẩu mới (nên đổi ngay sau khi được Admin reset về mật khẩu mặc định).";
+  $("changePassModalBackdrop").classList.add("open");
+}
+
+function closeChangePassModal() {
+  $("changePassModalBackdrop").classList.remove("open");
+}
+
+async function submitChangePassword(e) {
+  e.preventDefault();
+  if (!sb || !currentUser) return;
+  const p1 = $("newPassInput").value || "";
+  const p2 = $("newPassConfirmInput").value || "";
+  if (!p1) {
+    setChangePassAlert("error", "Vui lòng nhập mật khẩu mới.");
+    return;
+  }
+  if (p1 !== p2) {
+    setChangePassAlert("error", "Mật khẩu nhập lại chưa khớp.");
+    return;
+  }
+  if (p1 === DEFAULT_RESET_PASSWORD) {
+    setChangePassAlert("error", "Hãy chọn mật khẩu khác mật khẩu mặc định " + DEFAULT_RESET_PASSWORD + ".");
+    return;
+  }
+  const btn = $("btnSubmitChangePass");
+  btn.disabled = true;
+  btn.textContent = "Đang lưu…";
+  try {
+    const { error } = await sb.auth.updateUser({ password: normalizeInternalPassword(p1) });
+    if (error) {
+      setChangePassAlert("error", "Không đổi được mật khẩu: " + error.message);
+      return;
+    }
+    setChangePassAlert("success", "Đã đổi mật khẩu thành công! Lần sau hãy đăng nhập bằng mật khẩu mới.");
+    setTimeout(closeChangePassModal, 1400);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Lưu mật khẩu mới →";
+  }
+}
+
+// ================= GÓP Ý CỦA NGƯỜI DÙNG & PHẢN HỒI CỦA ADMIN =================
+const FEEDBACK_SEEN_KEY = "book_reader_kit_v2_feedback_seen";
+
+function loadLocalFeedbacks() {
+  try {
+    const list = JSON.parse(localStorage.getItem(LOCAL_FEEDBACKS_KEY) || "[]");
+    return Array.isArray(list) ? list : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function saveLocalFeedbacks(list) {
+  try { localStorage.setItem(LOCAL_FEEDBACKS_KEY, JSON.stringify(list)); } catch (e) {}
+}
+
+function getSeenReplyIds() {
+  try {
+    const arr = JSON.parse(localStorage.getItem(FEEDBACK_SEEN_KEY) || "[]");
+    return Array.isArray(arr) ? arr : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function updateUserFeedbackBadge() {
+  const seen = getSeenReplyIds();
+  const unseen = myFeedbacks.filter((f) => f.status === "replied" && !seen.includes(f.id)).length;
+  const badge = $("userFeedbackBadge");
+  badge.textContent = String(unseen);
+  badge.style.display = unseen > 0 ? "inline-block" : "none";
+}
+
+function markFeedbackRepliesSeen() {
+  const ids = myFeedbacks.filter((f) => f.status === "replied").map((f) => f.id);
+  try { localStorage.setItem(FEEDBACK_SEEN_KEY, JSON.stringify(ids)); } catch (e) {}
+  updateUserFeedbackBadge();
+}
+
+async function loadMyFeedbacks() {
+  if (sb && currentUser && isApprovedUser()) {
+    const { data } = await sb.from("user_feedbacks").select("*")
+      .eq("user_id", currentUser.id).order("created_at", { ascending: false });
+    myFeedbacks = Array.isArray(data) ? data : [];
+  } else if (!sb) {
+    myFeedbacks = loadLocalFeedbacks();
+  }
+  updateUserFeedbackBadge();
+  if (currentTab === "feedback") renderMyFeedbacks();
+}
+
+async function submitUserFeedback(e) {
+  e.preventDefault();
+  const subject = ($("fbSubjectInput").value || "").trim();
+  const message = ($("fbMessageInput").value || "").trim();
+  if (!subject || !message) {
+    showSpineToast("Vui lòng nhập đủ Tiêu đề và Nội dung góp ý.");
+    return;
+  }
+  if (subject.length > 200 || message.length > 4000) {
+    showSpineToast("Góp ý quá dài (tiêu đề tối đa 200, nội dung tối đa 4000 ký tự).");
+    return;
+  }
+  const btn = $("btnSubmitFeedback");
+  btn.disabled = true;
+  btn.textContent = "Đang gửi…";
+  try {
+    if (sb && currentUser) {
+      const { error } = await sb.from("user_feedbacks").insert({
+        user_id: currentUser.id,
+        username: getProfileUsername(currentProfile),
+        display_name: getProfileFullName(currentProfile),
+        subject,
+        message
+      });
+      if (error) {
+        showSpineToast("Không gửi được góp ý: " + error.message);
+        return;
+      }
+    } else {
+      const list = loadLocalFeedbacks();
+      list.unshift({
+        id: "local-" + Date.now(),
+        user_id: "local",
+        username: "admin",
+        display_name: "Bạn (trên máy)",
+        subject,
+        message,
+        status: "pending",
+        admin_reply: null,
+        created_at: new Date().toISOString()
+      });
+      saveLocalFeedbacks(list);
+    }
+    $("fbSubjectInput").value = "";
+    $("fbMessageInput").value = "";
+    showSpineToast("Đã gửi góp ý! Admin sẽ phản hồi sớm.");
+    await loadMyFeedbacks();
+    renderMyFeedbacks();
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Gửi góp ý →";
+  }
+}
+
+function formatDateTime(iso) {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return String(iso).slice(0, 16);
+  return d.toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit", year: "numeric" });
+}
+
+function buildFeedbackCard(f, opts) {
+  const card = document.createElement("div");
+  card.className = "fb-card" + (f.status === "replied" ? " replied" : "");
+
+  const head = document.createElement("div");
+  head.className = "fb-card-head";
+  const title = document.createElement("strong");
+  title.textContent = f.subject;
+  const pill = document.createElement("span");
+  pill.className = "status-pill " + (f.status === "replied" ? "status-approved" : "status-pending");
+  pill.textContent = f.status === "replied" ? "✓ Đã phản hồi" : "⏳ Chờ phản hồi";
+  head.append(title, pill);
+
+  const meta = document.createElement("div");
+  meta.className = "fb-card-meta";
+  meta.textContent = (opts.showSender
+    ? ("Từ: " + (f.display_name || f.username) + " (@" + f.username + ") · ")
+    : "Đã gửi lúc ") + formatDateTime(f.created_at);
+
+  const body = document.createElement("div");
+  body.className = "fb-card-body";
+  body.textContent = f.message;
+
+  card.append(head, meta, body);
+
+  if (f.admin_reply) {
+    const reply = document.createElement("div");
+    reply.className = "fb-reply-box";
+    const rl = document.createElement("div");
+    rl.className = "fb-reply-label";
+    rl.textContent = "💬 Phản hồi từ Admin" + (f.replied_at ? " · " + formatDateTime(f.replied_at) : "");
+    const rt = document.createElement("div");
+    rt.textContent = f.admin_reply;
+    reply.append(rl, rt);
+    card.append(reply);
+  }
+  return card;
+}
+
+function renderMyFeedbacks() {
+  const box = $("userFeedbackListWrap");
+  box.textContent = "";
+  if (!myFeedbacks.length) {
+    const p = document.createElement("p");
+    p.style.color = "var(--fg-muted)";
+    p.textContent = "Bạn chưa gửi góp ý nào.";
+    box.append(p);
+    return;
+  }
+  myFeedbacks.forEach((f) => box.append(buildFeedbackCard(f, { showSender: false })));
+}
+
+let adminFeedbackFilter = "all";
+
+function renderAdminFeedbacks(list) {
+  const wrap = $("adminFeedbacksTableWrap");
+  if (!wrap) return;
+  wrap.textContent = "";
+  const q = ($("adminFeedbackSearch").value || "").trim().toLowerCase();
+  const filtered = list.filter((f) => {
+    if (adminFeedbackFilter === "pending" && f.status === "replied") return false;
+    if (adminFeedbackFilter === "replied" && f.status !== "replied") return false;
+    if (q) {
+      const hay = ((f.username || "") + " " + (f.display_name || "") + " " + (f.subject || "") + " " + (f.message || "")).toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  if (!filtered.length) {
+    const p = document.createElement("p");
+    p.style.color = "var(--fg-muted)";
+    p.style.padding = "12px 0";
+    p.textContent = list.length ? "Không có góp ý nào khớp bộ lọc." : "Chưa có góp ý nào từ thành viên.";
+    wrap.append(p);
+    return;
+  }
+
+  filtered.forEach((f) => {
+    const card = buildFeedbackCard(f, { showSender: true });
+
+    const replyArea = document.createElement("textarea");
+    replyArea.className = "text-input";
+    replyArea.rows = 3;
+    replyArea.style.marginTop = "10px";
+    replyArea.style.fontFamily = "inherit";
+    replyArea.placeholder = "Nhập nội dung phản hồi cho " + (f.display_name || f.username) + "…";
+    replyArea.value = f.admin_reply || "";
+
+    const actions = document.createElement("div");
+    actions.style.display = "flex";
+    actions.style.justifyContent = "flex-end";
+    actions.style.gap = "8px";
+    actions.style.marginTop = "8px";
+
+    const btnDel = document.createElement("button");
+    btnDel.type = "button";
+    btnDel.className = "icon-btn";
+    btnDel.textContent = "Xóa";
+    btnDel.onclick = () => adminDeleteFeedback(f);
+
+    const btnReply = document.createElement("button");
+    btnReply.type = "button";
+    btnReply.className = "btn-primary";
+    btnReply.style.padding = "6px 14px";
+    btnReply.style.fontSize = "12.5px";
+    btnReply.textContent = f.status === "replied" ? "Cập nhật phản hồi" : "Gửi phản hồi →";
+    btnReply.onclick = () => adminReplyFeedback(f, replyArea.value);
+
+    actions.append(btnDel, btnReply);
+    card.append(replyArea, actions);
+    wrap.append(card);
+  });
+}
+
+async function adminReplyFeedback(f, text) {
+  const reply = (text || "").trim();
+  if (!reply) {
+    showSpineToast("Vui lòng nhập nội dung phản hồi.");
+    return;
+  }
+  const patch = { admin_reply: reply, status: "replied", replied_at: new Date().toISOString() };
+  if (sb) {
+    const { error } = await sb.from("user_feedbacks").update(patch).eq("id", f.id);
+    if (error) {
+      showSpineToast("Lỗi gửi phản hồi: " + error.message);
+      return;
+    }
+  } else {
+    const list = loadLocalFeedbacks().map((x) => (x.id === f.id ? Object.assign(x, patch) : x));
+    saveLocalFeedbacks(list);
+  }
+  showSpineToast("Đã gửi phản hồi cho " + (f.display_name || f.username) + "!");
+  renderAdminDashboard();
+}
+
+async function adminDeleteFeedback(f) {
+  if (!window.confirm("Xóa góp ý '" + f.subject + "'?")) return;
+  if (sb) {
+    const { error } = await sb.from("user_feedbacks").delete().eq("id", f.id);
+    if (error) {
+      showSpineToast("Lỗi xóa góp ý: " + error.message);
+      return;
+    }
+  } else {
+    saveLocalFeedbacks(loadLocalFeedbacks().filter((x) => x.id !== f.id));
+  }
+  showSpineToast("Đã xóa góp ý.");
+  renderAdminDashboard();
+}
+
 async function previewUserBookContent(b) {
   $("previewModalTitle").textContent = "Xem trước: " + b.title;
   $("previewModalMeta").textContent = "Tác giả: " + (b.author || "Không rõ") + " · " + (b.chapters || 1) + " chương";
@@ -4146,7 +4653,29 @@ async function previewUserBookContent(b) {
 function bindStep4Events() {
   $("navBtnShelf").onclick = () => switchMainTab("shelf");
   $("navBtnMyBooks").onclick = () => switchMainTab("mybooks");
+  $("navBtnFeedback").onclick = () => switchMainTab("feedback");
   $("navBtnAdmin").onclick = () => switchMainTab("admin");
+
+  // Góp ý
+  $("userFeedbackForm").onsubmit = submitUserFeedback;
+  $("btnRefreshUserFeedback").onclick = async () => {
+    await loadMyFeedbacks();
+    renderMyFeedbacks();
+  };
+  document.querySelectorAll("[data-fb-filter]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      adminFeedbackFilter = btn.getAttribute("data-fb-filter") || "all";
+      document.querySelectorAll("[data-fb-filter]").forEach((b) => b.classList.toggle("active", b === btn));
+      renderAdminDashboard();
+    });
+  });
+  $("adminFeedbackSearch").addEventListener("input", () => renderAdminDashboard());
+
+  // Đổi mật khẩu
+  $("btnOpenChangePass").onclick = openChangePassModal;
+  $("btnCloseChangePassModal").onclick = closeChangePassModal;
+  $("btnCancelChangePass").onclick = closeChangePassModal;
+  $("changePassForm").onsubmit = submitChangePassword;
 
   // Điều hướng các mục trên Sidebar của Dashboard
   document.querySelectorAll("[data-admin-sec]").forEach((btn) => {
@@ -4269,18 +4798,31 @@ function bindStep4Events() {
       return;
     }
 
-    const email = ($("authEmailInput").value || "").trim();
-    const password = $("authPassInput").value || "";
+    const username = ($("authUsernameInput").value || "").trim();
+    const rawPassword = $("authPassInput").value || "";
     const confirmPass = $("authPassConfirmInput").value || "";
-    const displayName = ($("authNameInput").value || "").trim();
+    const displayName = ($("authNameInput").value || "").trim() || username;
     const btn = $("btnSubmitAuth");
 
     setAuthAlert("", "");
 
-    if (authMode === "signup" && password !== confirmPass) {
-      setAuthAlert("error", "Mật khẩu nhập lại chưa khớp. Vui lòng kiểm tra lại.");
+    if (!username || !rawPassword) {
+      setAuthAlert("error", "Vui lòng nhập Tên tài khoản và Mật khẩu.");
       return;
     }
+    if (authMode === "signup") {
+      if (!/^[a-zA-Z0-9._-]{3,32}$/.test(username)) {
+        setAuthAlert("error", "Tên tài khoản dài 3–32 ký tự, chỉ gồm chữ không dấu, số và dấu . _ -");
+        return;
+      }
+      if (rawPassword !== confirmPass) {
+        setAuthAlert("error", "Mật khẩu nhập lại chưa khớp. Vui lòng kiểm tra lại.");
+        return;
+      }
+    }
+
+    const email = usernameToInternalEmail(username);
+    const password = normalizeInternalPassword(rawPassword);
 
     btn.disabled = true;
     btn.textContent = authMode === "login" ? "Đang đăng nhập…" : "Đang tạo tài khoản…";
@@ -4289,22 +4831,25 @@ function bindStep4Events() {
       if (authMode === "login") {
         const { error } = await sb.auth.signInWithPassword({ email, password });
         if (error) {
-          setAuthAlert("error", "Email hoặc mật khẩu chưa chính xác (hoặc email chưa xác thực).");
+          setAuthAlert("error", "Tên tài khoản hoặc mật khẩu chưa chính xác.");
           return;
         }
         await refreshAuthSession();
         if (isApprovedUser()) {
           renderBookshelf();
-          showSpineToast("Đăng nhập thành công!");
+          showSpineToast("Đăng nhập thành công! Chào " + getProfileFullName(currentProfile) + ".");
         }
       } else {
         const { data, error } = await sb.auth.signUp({
           email,
           password,
-          options: { data: { display_name: displayName } }
+          options: { data: { username: username.toLowerCase(), display_name: displayName } }
         });
         if (error) {
-          setAuthAlert("error", "Không thể đăng ký: " + error.message);
+          const msg = /registered|already/i.test(error.message)
+            ? "Tên tài khoản này đã có người dùng, hãy chọn tên khác."
+            : ("Không thể đăng ký: " + error.message);
+          setAuthAlert("error", msg);
           return;
         }
         if (data && data.session) {
@@ -4312,7 +4857,7 @@ function bindStep4Events() {
         } else {
           setAuthAlert(
             "success",
-            "Đăng ký thành công! Nếu hệ thống yêu cầu xác nhận email, hãy kiểm tra hộp thư của bạn, sau đó đăng nhập để chờ Admin duyệt."
+            "Đăng ký thành công! Hãy chuyển sang tab Đăng nhập và chờ Admin duyệt tài khoản."
           );
         }
       }
