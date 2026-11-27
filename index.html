@@ -861,12 +861,150 @@
   }
   .table-list th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--fg-muted); }
 
-  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 20px; }
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(215px, 1fr)); gap: 16px; margin-bottom: 22px; }
   .stat-card {
-    background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px;
+    box-shadow: 0 4px 14px rgba(43, 33, 24, 0.04); display: flex; flex-direction: column; justify-content: space-between; gap: 10px;
+    position: relative; overflow: hidden;
   }
-  .stat-val { font-family: var(--font-spine); font-size: 24px; font-weight: 700; color: var(--accent); }
-  .stat-lbl { font-size: 12.5px; color: var(--fg-muted); }
+  .stat-card::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+    background: var(--stat-accent, var(--accent));
+  }
+  .stat-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .stat-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: var(--accent-soft); color: var(--accent);
+    display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 700;
+  }
+  .stat-val { font-family: var(--font-spine); font-size: 26px; font-weight: 700; color: var(--fg); line-height: 1.15; }
+  .stat-lbl { font-size: 12.5px; font-weight: 600; color: var(--fg-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+  .stat-sub { font-size: 12px; color: var(--fg-muted); display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+  .stat-bar-track { height: 6px; background: var(--surface-2); border-radius: 99px; overflow: hidden; margin-top: 4px; }
+  .stat-bar-fill { height: 100%; background: var(--stat-accent, var(--accent)); border-radius: 99px; transition: width 0.35s; }
+
+  /* ================= BỐ CỤC DASHBOARD CHUYÊN NGHIỆP CÓ SIDEBAR ================= */
+  #adminView.panel-view {
+    max-width: 1360px;
+    padding: 20px 24px 64px;
+  }
+  .admin-shell {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 24px;
+    align-items: start;
+    min-height: calc(100vh - 130px);
+  }
+  .admin-sidebar {
+    position: sticky;
+    top: 84px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 18px 14px;
+    box-shadow: 0 10px 28px rgba(43, 33, 24, 0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .admin-profile-card {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 12px; border-radius: 12px;
+    background: var(--surface-2); border: 1px solid var(--line);
+  }
+  .admin-avatar {
+    width: 38px; height: 38px; border-radius: 10px;
+    background: var(--accent); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-spine); font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .admin-profile-meta { min-width: 0; flex: 1; }
+  .admin-profile-name { font-weight: 700; font-size: 13.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .admin-profile-role { font-size: 11.5px; color: var(--accent); font-weight: 600; display: flex; align-items: center; gap: 5px; }
+  .online-dot { width: 7px; height: 7px; border-radius: 50%; background: #27ae60; display: inline-block; }
+
+  .admin-nav-group-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.07em; color: var(--fg-muted); padding: 0 10px; margin-bottom: -6px;
+  }
+  .admin-side-nav { display: flex; flex-direction: column; gap: 4px; }
+  .admin-side-btn {
+    width: 100%; border: none; background: transparent;
+    padding: 10px 12px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    font-size: 13.5px; font-weight: 600; color: var(--fg-muted);
+    transition: all 0.16s; text-align: left;
+  }
+  .admin-side-btn:hover { background: var(--surface-2); color: var(--fg); }
+  .admin-side-btn.active {
+    background: var(--accent); color: #fff;
+    box-shadow: 0 4px 12px rgba(156, 86, 40, 0.25);
+  }
+  .admin-side-btn-left { display: flex; align-items: center; gap: 10px; }
+  .admin-side-pill {
+    font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 99px;
+    background: var(--surface-2); color: var(--fg);
+  }
+  .admin-side-btn.active .admin-side-pill {
+    background: rgba(255, 255, 255, 0.22); color: #fff;
+  }
+
+  .admin-sidebar-footer {
+    border-top: 1px solid var(--line); padding-top: 12px;
+    font-size: 12px; color: var(--fg-muted); display: flex; flex-direction: column; gap: 8px;
+  }
+  .admin-quota-mini {
+    background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px;
+  }
+
+  .admin-main { min-width: 0; display: flex; flex-direction: column; gap: 20px; }
+  .admin-topbar {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
+    padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+    box-shadow: 0 6px 20px rgba(43, 33, 24, 0.04);
+  }
+  .admin-page-title { font-family: var(--font-spine); font-size: 22px; font-weight: 700; margin: 0 0 3px; }
+  .admin-page-desc { font-size: 13px; color: var(--fg-muted); margin: 0; }
+  .admin-topbar-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  .admin-section-pane { display: none; }
+  .admin-section-pane.active { display: block; }
+
+  /* Biểu đồ phân tích trực quan (Analytics Grid) */
+  .analytics-grid {
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    gap: 20px;
+    margin-bottom: 22px;
+  }
+  .chart-bars-list { display: flex; flex-direction: column; gap: 14px; }
+  .chart-bar-item { display: flex; flex-direction: column; gap: 5px; }
+  .chart-bar-header { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; gap: 12px; }
+  .chart-bar-track { height: 9px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
+  .chart-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent) 0%, #c87d4b 100%); border-radius: 99px; }
+
+  .dist-stack-bar {
+    height: 16px; border-radius: 99px; overflow: hidden;
+    display: flex; background: var(--surface-2); margin: 14px 0 18px;
+    border: 1px solid var(--line);
+  }
+  .dist-segment { height: 100%; transition: width 0.35s; }
+  .dist-legend { display: flex; flex-direction: column; gap: 10px; }
+  .dist-legend-row {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 13px; padding: 7px 10px; border-radius: 8px; background: var(--bg);
+  }
+  .dist-dot { width: 10px; height: 10px; border-radius: 3px; display: inline-block; margin-right: 8px; }
+
+  .filter-pills-bar {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px;
+  }
+
+  @media (max-width: 960px) {
+    .admin-shell { grid-template-columns: 1fr; }
+    .admin-sidebar { position: static; }
+    .analytics-grid { grid-template-columns: 1fr; }
+  }
 
   /* Modal đăng nhập / đăng ký / xem trước */
   .modal-backdrop {
@@ -987,40 +1125,161 @@
   </div>
 </section>
 
-<!-- ================= MÀN HÌNH 4: DASHBOARD ADMIN (/admin) ================= -->
+<!-- ================= MÀN HÌNH 4: DASHBOARD ADMIN CHUYÊN NGHIỆP CÓ SIDEBAR (/admin) ================= -->
 <section class="panel-view" id="adminView" aria-label="Dashboard quản trị">
-  <div class="card-box">
-    <h2 class="card-title">Thống kê hệ thống</h2>
-    <div class="stats-grid" id="adminStatsGrid"></div>
-    <div id="adminTopReadBox" style="font-size:13.5px;color:var(--fg-muted)"></div>
-  </div>
-
-  <div class="card-box">
-    <h2 class="card-title">Hàng chờ duyệt sách & Quản lý kệ chung</h2>
-    <p class="card-sub">Xem trước nội dung sách bạn bè gửi lên, bấm Duyệt, Từ chối (kèm lý do), hoặc Đưa lên kệ chung để mọi người cùng đọc.</p>
-    <div id="adminBooksTableWrap"></div>
-  </div>
-
-  <div class="card-box">
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px">
-      <div>
-        <h2 class="card-title" style="margin-bottom:2px">Quản lý tài khoản</h2>
-        <p class="card-sub" style="margin:0">Duyệt tài khoản mới đăng ký, chặn/bỏ chặn hoặc phân quyền Admin.</p>
+  <div class="admin-shell">
+    <!-- SIDEBAR QUẢN TRỊ -->
+    <aside class="admin-sidebar" aria-label="Menu quản trị">
+      <div class="admin-profile-card">
+        <div class="admin-avatar" id="adminSidebarAvatar">A</div>
+        <div class="admin-profile-meta">
+          <div class="admin-profile-name" id="adminSidebarEmail">Quản trị viên</div>
+          <div class="admin-profile-role"><span class="online-dot"></span> <span id="adminSidebarMode">Admin · Local</span></div>
+        </div>
       </div>
-      <select id="adminUserFilter" class="icon-btn">
-        <option value="all">Tất cả trạng thái</option>
-        <option value="pending">Chờ duyệt (pending)</option>
-        <option value="approved">Đã duyệt (approved)</option>
-        <option value="blocked">Bị chặn (blocked)</option>
-      </select>
-    </div>
-    <div id="adminUsersTableWrap"></div>
-  </div>
 
-  <div class="card-box">
-    <h2 class="card-title">Sách gốc của thư viện (`books.json`)</h2>
-    <p class="card-sub">Quản lý bằng công cụ `python tools/import_book.py` trên máy chủ dự án.</p>
-    <div id="adminStaticBooksWrap"></div>
+      <div class="admin-nav-group-label">Bảng điều khiển</div>
+      <nav class="admin-side-nav">
+        <button type="button" class="admin-side-btn active" data-admin-sec="overview">
+          <span class="admin-side-btn-left">📊 Tổng quan & Phân tích</span>
+        </button>
+        <button type="button" class="admin-side-btn" data-admin-sec="moderation">
+          <span class="admin-side-btn-left">📥 Duyệt sách & Kệ chung</span>
+          <span class="admin-side-pill" id="sideBadgeModeration">0</span>
+        </button>
+        <button type="button" class="admin-side-btn" data-admin-sec="users">
+          <span class="admin-side-btn-left">👥 Tài khoản thành viên</span>
+          <span class="admin-side-pill" id="sideBadgeUsers">1</span>
+        </button>
+        <button type="button" class="admin-side-btn" data-admin-sec="library">
+          <span class="admin-side-btn-left">🏛 Kho sách gốc (Repo)</span>
+          <span class="admin-side-pill" id="sideBadgeLibrary">1</span>
+        </button>
+      </nav>
+
+      <div class="admin-nav-group-label">Lối tắt nhanh</div>
+      <div class="admin-side-nav">
+        <button type="button" class="admin-side-btn" id="btnSideQuickUpload">
+          <span class="admin-side-btn-left">＋ Tải thêm sách PDF/TXT</span>
+        </button>
+        <button type="button" class="admin-side-btn" id="btnSideBackShelf">
+          <span class="admin-side-btn-left">← Về kệ sách 3D</span>
+        </button>
+      </div>
+
+      <div class="admin-sidebar-footer">
+        <div class="admin-quota-mini">
+          <div style="display:flex;justify-content:space-between;font-weight:600;margin-bottom:4px">
+            <span>Bộ nhớ Storage</span>
+            <span id="sideStorageText">0.00 / 1024 MB</span>
+          </div>
+          <div class="stat-bar-track">
+            <div class="stat-bar-fill" id="sideStorageBar" style="width:2%"></div>
+          </div>
+        </div>
+        <div id="sideSyncStatus">Trạng thái: Đã đồng bộ dữ liệu</div>
+      </div>
+    </aside>
+
+    <!-- NỘI DUNG CHÍNH DASHBOARD -->
+    <div class="admin-main">
+      <!-- Thanh tiêu đề động theo mục đang chọn -->
+      <div class="admin-topbar">
+        <div>
+          <h2 class="admin-page-title" id="adminPageTitle">Tổng quan & Phân tích dữ liệu</h2>
+          <p class="admin-page-desc" id="adminPageDesc">Theo dõi dung lượng thư viện, mật độ chương, tỷ lệ duyệt sách và xu hướng đọc theo thời gian thực.</p>
+        </div>
+        <div class="admin-topbar-actions">
+          <button type="button" class="icon-btn" id="btnAdminRefresh" title="Làm mới dữ liệu">↻ Làm mới</button>
+          <button type="button" class="btn-primary" id="btnAdminAddBook">＋ Thêm sách PDF/TXT</button>
+        </div>
+      </div>
+
+      <!-- PANE 1: TỔNG QUAN & BIỂU ĐỒ THỐNG KÊ (OVERVIEW) -->
+      <div class="admin-section-pane active" id="adminPaneOverview">
+        <!-- 4 Thẻ KPI chuyên nghiệp -->
+        <div class="stats-grid" id="adminStatsGrid"></div>
+
+        <!-- 2 Biểu đồ phân tích trực quan -->
+        <div class="analytics-grid">
+          <div class="card-box" style="margin-bottom:0">
+            <h3 class="card-title">Phân bổ khối lượng chữ & số chương theo sách</h3>
+            <p class="card-sub">So sánh quy mô ký tự, số chương và ước tính thời gian đọc của từng tác phẩm trong thư viện.</p>
+            <div class="chart-bars-list" id="adminBookVolumeChart"></div>
+          </div>
+
+          <div class="card-box" style="margin-bottom:0">
+            <h3 class="card-title">Cơ cấu nguồn sách & Trạng thái duyệt</h3>
+            <p class="card-sub">Tỷ trọng giữa sách gốc tĩnh (`books.json`), sách kệ chung và hàng chờ duyệt.</p>
+            <div class="dist-stack-bar" id="adminSourceStackBar"></div>
+            <div class="dist-legend" id="adminSourceLegend"></div>
+            <div id="adminTopReadBox" style="margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:13px;color:var(--fg-muted)"></div>
+          </div>
+        </div>
+
+        <!-- Bảng xem nhanh các sách chờ xử lý gần nhất -->
+        <div class="card-box" style="margin-bottom:0">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap">
+            <div>
+              <h3 class="card-title" style="margin-bottom:2px">Hoạt động & Sách gửi gần đây</h3>
+              <p class="card-sub" style="margin:0">Các sách người dùng mới tải lên hoặc sách vừa cập nhật trong thư viện.</p>
+            </div>
+            <button type="button" class="icon-btn" id="btnGoToModeration">Xem toàn bộ hàng chờ →</button>
+          </div>
+          <div id="adminRecentActivityWrap"></div>
+        </div>
+      </div>
+
+      <!-- PANE 2: DUYỆT SÁCH & QUẢN LÝ KỆ CHUNG (MODERATION) -->
+      <div class="admin-section-pane" id="adminPaneModeration">
+        <div class="card-box" style="margin-bottom:0">
+          <div class="filter-pills-bar">
+            <div class="pill-group" id="adminBookFilterGroup">
+              <button type="button" class="pill-btn active" data-book-filter="all">Tất cả</button>
+              <button type="button" class="pill-btn" data-book-filter="pending">Chờ duyệt</button>
+              <button type="button" class="pill-btn" data-book-filter="approved">Đã duyệt</button>
+              <button type="button" class="pill-btn" data-book-filter="shared">Trên kệ chung</button>
+              <button type="button" class="pill-btn" data-book-filter="rejected">Đã từ chối</button>
+            </div>
+            <input type="search" id="adminBookSearch" class="text-input" style="max-width:240px" placeholder="Tìm tên sách, người gửi…">
+          </div>
+          <div id="adminBooksTableWrap"></div>
+        </div>
+      </div>
+
+      <!-- PANE 3: QUẢN LÝ TÀI KHOẢN THÀNH VIÊN (USERS) -->
+      <div class="admin-section-pane" id="adminPaneUsers">
+        <div class="card-box" style="margin-bottom:0">
+          <div class="filter-pills-bar">
+            <div>
+              <h3 class="card-title" style="margin-bottom:2px">Danh sách tài khoản thành viên</h3>
+              <p class="card-sub" style="margin:0">Phê duyệt bạn đọc mới đăng ký, chặn truy cập hoặc cấp quyền Quản trị viên (Admin).</p>
+            </div>
+            <select id="adminUserFilter" class="icon-btn">
+              <option value="all">Tất cả trạng thái</option>
+              <option value="pending">Chờ duyệt (pending)</option>
+              <option value="approved">Đã duyệt (approved)</option>
+              <option value="blocked">Bị chặn (blocked)</option>
+            </select>
+          </div>
+          <div id="adminUsersTableWrap"></div>
+        </div>
+      </div>
+
+      <!-- PANE 4: KHO SÁCH GỐC CỦA THƯ VIỆN (STATIC LIBRARY) -->
+      <div class="admin-section-pane" id="adminPaneLibrary">
+        <div class="card-box" style="margin-bottom:0">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px">
+            <div>
+              <h3 class="card-title" style="margin-bottom:2px">Kho sách gốc tĩnh (`books.json` & `chapters/book-N.js`)</h3>
+              <p class="card-sub" style="margin:0">Dữ liệu sách tĩnh được lưu trực tiếp trên GitHub và triển khai qua Vercel.</p>
+            </div>
+            <span class="status-pill status-approved" id="staticBooksSummaryPill">Đạt chuẩn verify.py</span>
+          </div>
+          <div id="adminStaticBooksWrap"></div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -2898,11 +3157,49 @@ function updateAdminBadgeCount() {
   badge.style.display = pendingCount > 0 ? "inline-block" : "none";
 }
 
-// ================= DASHBOARD ADMIN (/admin) =================
+// ================= DASHBOARD ADMIN CHUYÊN NGHIỆP CÓ SIDEBAR (/admin) =================
+let activeAdminSection = "overview"; // 'overview' | 'moderation' | 'users' | 'library'
+let adminBookFilter = "all";
+
+const ADMIN_SEC_META = {
+  overview: {
+    title: "Tổng quan & Phân tích dữ liệu",
+    desc: "Theo dõi dung lượng thư viện, mật độ chương, tỷ lệ duyệt sách và xu hướng đọc theo thời gian thực."
+  },
+  moderation: {
+    title: "Hàng chờ duyệt sách & Quản lý kệ chung",
+    desc: "Xem trước nội dung sách bạn bè gửi lên, phê duyệt, từ chối kèm lý do hoặc đưa lên kệ chung."
+  },
+  users: {
+    title: "Quản lý tài khoản thành viên",
+    desc: "Kiểm soát quyền truy cập kệ sách, duyệt thành viên mới và phân quyền Quản trị viên (Admin)."
+  },
+  library: {
+    title: "Kho sách gốc tĩnh (GitHub & Vercel)",
+    desc: "Danh sách sách gốc trong books.json và chapters/book-N.js được quản lý qua công cụ Python."
+  }
+};
+
+function switchAdminSection(sec) {
+  activeAdminSection = sec || "overview";
+  const meta = ADMIN_SEC_META[activeAdminSection] || ADMIN_SEC_META.overview;
+  $("adminPageTitle").textContent = meta.title;
+  $("adminPageDesc").textContent = meta.desc;
+
+  document.querySelectorAll("[data-admin-sec]").forEach((btn) => {
+    btn.classList.toggle("active", btn.getAttribute("data-admin-sec") === activeAdminSection);
+  });
+
+  $("adminPaneOverview").classList.toggle("active", activeAdminSection === "overview");
+  $("adminPaneModeration").classList.toggle("active", activeAdminSection === "moderation");
+  $("adminPaneUsers").classList.toggle("active", activeAdminSection === "users");
+  $("adminPaneLibrary").classList.toggle("active", activeAdminSection === "library");
+}
+
 async function renderAdminDashboard() {
   let allBooks = myUserBooks;
   let allProfiles = [
-    { id: "local-admin", email: "admin@local (Chế độ thử nghiệm trên máy)", role: "admin", status: "approved" }
+    { id: "local-admin", email: "admin@local (Quản trị viên trên máy)", role: "admin", status: "approved", created_at: "2026-11-27" }
   ];
   let allProgress = [];
 
@@ -2917,50 +3214,314 @@ async function renderAdminDashboard() {
     if (Array.isArray(prRes.data)) allProgress = prRes.data;
   }
 
-  // 1. Thống kê
-  const statsGrid = $("adminStatsGrid");
-  statsGrid.textContent = "";
+  // Cập nhật thông tin Sidebar
+  const adminEmail = (currentProfile && currentProfile.email) || "Quản trị viên";
+  $("adminSidebarEmail").textContent = adminEmail;
+  $("adminSidebarAvatar").textContent = (adminEmail[0] || "A").toUpperCase();
+  $("adminSidebarMode").textContent = sb ? "Admin · Supabase Cloud" : "Admin · Local Mode";
+
   const pendingBooks = allBooks.filter((x) => x.status === "pending").length;
   const approvedBooks = allBooks.filter((x) => x.status === "approved").length;
-  const sharedCount = allBooks.filter((x) => x.shared).length;
-  const totalBytes = allBooks.reduce((acc, x) => acc + (x.size_bytes || 0), 0);
+  const rejectedBooks = allBooks.filter((x) => x.status === "rejected").length;
+  const sharedCount = allBooks.filter((x) => x.shared && x.status === "approved").length;
+  const totalUserBytes = allBooks.reduce((acc, x) => acc + (x.size_bytes || 0), 0);
+
+  const staticChars = books.reduce((acc, b) => acc + (b.chars || 0), 0);
+  const userChars = allBooks.reduce((acc, b) => acc + (b.chars || 0), 0);
+  const totalCharsAll = staticChars + userChars;
+  const staticChapters = books.reduce((acc, b) => acc + (b.chapters || 0), 0);
+  const userChapters = allBooks.reduce((acc, b) => acc + (b.chapters || 0), 0);
+  const totalChaptersAll = staticChapters + userChapters;
+
   const approvedUsers = allProfiles.filter((x) => x.status === "approved").length;
   const pendingUsers = allProfiles.filter((x) => x.status === "pending").length;
 
-  const statItems = [
-    { val: books.length + " gốc + " + sharedCount + " góp", lbl: "Sách trên kệ chung" },
-    { val: pendingBooks + " chờ / " + approvedBooks + " duyệt", lbl: "Sách bạn đọc gửi lên" },
-    { val: approvedUsers + " duyệt / " + pendingUsers + " chờ", lbl: "Tài khoản thành viên" },
-    { val: (totalBytes / (1024 * 1024)).toFixed(2) + " MB / 1024 MB", lbl: "Dung lượng Supabase Free" }
+  // Huy hiệu số lượng trên Sidebar
+  $("sideBadgeModeration").textContent = pendingBooks > 0 ? (pendingBooks + " chờ") : String(allBooks.length);
+  $("sideBadgeUsers").textContent = pendingUsers > 0 ? (pendingUsers + " mới") : String(allProfiles.length);
+  $("sideBadgeLibrary").textContent = String(books.length);
+
+  const usedMb = totalUserBytes / (1024 * 1024);
+  const quotaPct = Math.min(100, Math.max(2, (usedMb / 1024) * 100));
+  $("sideStorageText").textContent = usedMb.toFixed(2) + " / 1024 MB";
+  $("sideStorageBar").style.width = quotaPct.toFixed(1) + "%";
+
+  // 1. Vẽ 4 thẻ KPI chuyên nghiệp (có icon, thanh tiến độ và chỉ số phụ)
+  const statsGrid = $("adminStatsGrid");
+  statsGrid.textContent = "";
+  const totalShelfCount = books.length + sharedCount;
+  const approvalRate = allBooks.length ? Math.round((approvedBooks / allBooks.length) * 100) : 100;
+  const estHours = Math.max(1, Math.round(totalCharsAll / 45000)); // ~750 chữ/phút
+
+  const kpiCards = [
+    {
+      lbl: "Tổng sách trên kệ chung",
+      val: totalShelfCount + " tác phẩm",
+      icon: "📚",
+      accent: "#9c5628",
+      pct: Math.min(100, totalShelfCount * 15),
+      subL: books.length + " sách gốc · " + sharedCount + " đóng góp",
+      subR: totalChaptersAll + " chương"
+    },
+    {
+      lbl: "Tổng quy mô văn bản",
+      val: (totalCharsAll / 1000).toFixed(1) + "K ký tự",
+      icon: "✍️",
+      accent: "#2e7d32",
+      pct: Math.min(100, Math.round((totalCharsAll / 1000000) * 100)),
+      subL: "Ước tính ~" + estHours + " giờ đọc",
+      subR: totalCharsAll.toLocaleString("vi-VN") + " chữ"
+    },
+    {
+      lbl: "Hàng chờ duyệt sách",
+      val: pendingBooks + " sách chờ",
+      icon: "📥",
+      accent: pendingBooks > 0 ? "#d68910" : "#1f618d",
+      pct: approvalRate,
+      subL: "Đã duyệt: " + approvedBooks + " · Từ chối: " + rejectedBooks,
+      subR: "Tỷ lệ duyệt " + approvalRate + "%"
+    },
+    {
+      lbl: "Thành viên & Dung lượng",
+      val: approvedUsers + " thành viên",
+      icon: "👥",
+      accent: "#6d3d6e",
+      pct: Math.min(100, Math.max(8, approvedUsers * 20)),
+      subL: pendingUsers + " tài khoản chờ duyệt",
+      subR: usedMb.toFixed(2) + " MB Cloud"
+    }
   ];
-  statItems.forEach((st) => {
+
+  kpiCards.forEach((k) => {
     const card = document.createElement("div");
     card.className = "stat-card";
-    const v = document.createElement("div");
-    v.className = "stat-val";
-    v.textContent = st.val;
-    const l = document.createElement("div");
-    l.className = "stat-lbl";
-    l.textContent = st.lbl;
-    card.append(v, l);
+    card.style.setProperty("--stat-accent", k.accent);
+
+    const head = document.createElement("div");
+    head.className = "stat-head";
+    const lbl = document.createElement("div");
+    lbl.className = "stat-lbl";
+    lbl.textContent = k.lbl;
+    const ic = document.createElement("div");
+    ic.className = "stat-icon";
+    ic.textContent = k.icon;
+    head.append(lbl, ic);
+
+    const val = document.createElement("div");
+    val.className = "stat-val";
+    val.textContent = k.val;
+
+    const track = document.createElement("div");
+    track.className = "stat-bar-track";
+    const fill = document.createElement("div");
+    fill.className = "stat-bar-fill";
+    fill.style.width = k.pct + "%";
+    track.append(fill);
+
+    const sub = document.createElement("div");
+    sub.className = "stat-sub";
+    const sL = document.createElement("span");
+    sL.textContent = k.subL;
+    const sR = document.createElement("strong");
+    sR.textContent = k.subR;
+    sub.append(sL, sR);
+
+    card.append(head, val, track, sub);
     statsGrid.append(card);
   });
 
-  // Đếm sách đọc nhiều
+  // 2. Biểu đồ ngang: Phân bổ khối lượng chữ & số chương theo từng cuốn sách
+  const volChart = $("adminBookVolumeChart");
+  volChart.textContent = "";
+  const combinedForChart = books.map((b) => ({
+    title: b.title,
+    author: b.author,
+    chapters: b.chapters || 1,
+    chars: b.chars || 0,
+    kind: "Sách gốc"
+  })).concat(allBooks.map((u) => ({
+    title: u.title,
+    author: u.author || "Không rõ",
+    chapters: u.chapters || 1,
+    chars: u.chars || 0,
+    kind: u.shared ? "Kệ chung" : ("Sách gửi (" + u.status + ")")
+  })));
+
+  const maxChars = Math.max(10000, ...combinedForChart.map((x) => x.chars));
+  combinedForChart.slice(0, 6).forEach((item) => {
+    const row = document.createElement("div");
+    row.className = "chart-bar-item";
+
+    const header = document.createElement("div");
+    header.className = "chart-bar-header";
+    const left = document.createElement("span");
+    left.textContent = item.title + " (" + item.author + ") · " + item.kind;
+    const right = document.createElement("span");
+    right.style.color = "var(--accent)";
+    right.textContent = item.chapters + " chương · " + item.chars.toLocaleString("vi-VN") + " ký tự";
+    header.append(left, right);
+
+    const track = document.createElement("div");
+    track.className = "chart-bar-track";
+    const fill = document.createElement("div");
+    fill.className = "chart-bar-fill";
+    fill.style.width = Math.max(4, Math.round((item.chars / maxChars) * 100)) + "%";
+    track.append(fill);
+
+    row.append(header, track);
+    volChart.append(row);
+  });
+
+  // 3. Biểu đồ thanh chồng: Cơ cấu nguồn sách & Trạng thái duyệt
+  const stackBar = $("adminSourceStackBar");
+  const legendBox = $("adminSourceLegend");
+  stackBar.textContent = "";
+  legendBox.textContent = "";
+
+  const totalCatalog = Math.max(1, books.length + allBooks.length);
+  const segments = [
+    { label: "Sách gốc thư viện (books.json)", count: books.length, color: "#9c5628" },
+    { label: "Đã đưa lên kệ chung (shared)", count: sharedCount, color: "#1f618d" },
+    { label: "Đã duyệt cá nhân (approved)", count: Math.max(0, approvedBooks - sharedCount), color: "#27ae60" },
+    { label: "Đang chờ duyệt (pending)", count: pendingBooks, color: "#d68910" },
+    { label: "Đã từ chối (rejected)", count: rejectedBooks, color: "#c0392b" }
+  ];
+
+  segments.forEach((seg) => {
+    const pct = Math.round((seg.count / totalCatalog) * 100);
+    if (seg.count > 0) {
+      const barSeg = document.createElement("div");
+      barSeg.className = "dist-segment";
+      barSeg.style.width = Math.max(6, pct) + "%";
+      barSeg.style.background = seg.color;
+      barSeg.title = seg.label + ": " + seg.count;
+      stackBar.append(barSeg);
+    }
+
+    const legRow = document.createElement("div");
+    legRow.className = "dist-legend-row";
+    const legLeft = document.createElement("span");
+    const dot = document.createElement("span");
+    dot.className = "dist-dot";
+    dot.style.background = seg.color;
+    const txt = document.createElement("span");
+    txt.textContent = seg.label;
+    legLeft.append(dot, txt);
+
+    const legRight = document.createElement("strong");
+    legRight.textContent = seg.count + " sách (" + pct + "%)";
+    legRow.append(legLeft, legRight);
+    legendBox.append(legRow);
+  });
+
+  // Đếm sách đọc nhiều + tiến độ đọc trên máy
   const readCounts = {};
   allProgress.forEach((r) => { readCounts[r.book_key] = (readCounts[r.book_key] || 0) + 1; });
+  Object.keys(prefs.progress || {}).forEach((k) => {
+    const key = String(k).startsWith("u:") ? k : ("lib:" + k);
+    readCounts[key] = (readCounts[key] || 0) + 1;
+  });
   const topKeys = Object.entries(readCounts).sort((a, b) => b[1] - a[1]).slice(0, 3);
   $("adminTopReadBox").textContent = topKeys.length
-    ? ("Sách đọc nhiều nhất: " + topKeys.map(([k, c]) => k + " (" + c + " người đọc)").join(", "))
-    : ("Thư viện gốc hiện có " + books.length + " cuốn (" + books.map((b) => b.title).join(", ") + ").");
+    ? ("🔥 Sách đang được đọc nhiều nhất: " + topKeys.map(([k, c]) => {
+        const bMatch = books.find((x) => "lib:" + x.id === k);
+        return (bMatch ? bMatch.title : k) + " (" + c + " phiên đọc)";
+      }).join(" · "))
+    : "Chưa có lượt đọc nào được ghi nhận.";
 
-  // 2. Bảng duyệt sách & quản lý kệ chung
+  // 4. Bảng hoạt động gần đây trong tab Tổng quan
+  const recentWrap = $("adminRecentActivityWrap");
+  recentWrap.textContent = "";
+  const recentTbl = document.createElement("table");
+  recentTbl.className = "table-list";
+  const rHead = document.createElement("thead");
+  const rHr = document.createElement("tr");
+  ["Tác phẩm", "Tác giả / Nguồn", "Quy mô", "Trạng thái", "Thao tác nhanh"].forEach((h) => {
+    const th = document.createElement("th");
+    th.textContent = h;
+    rHr.append(th);
+  });
+  rHead.append(rHr);
+  recentTbl.append(rHead);
+
+  const rBody = document.createElement("tbody");
+  books.forEach((b) => {
+    const tr = document.createElement("tr");
+    const td1 = document.createElement("td");
+    const st = document.createElement("strong");
+    st.textContent = b.title;
+    td1.append(st);
+    const td2 = document.createElement("td");
+    td2.textContent = b.author + " · Sách gốc repo";
+    const td3 = document.createElement("td");
+    td3.textContent = b.chapters + " chương · " + (b.chars || 0).toLocaleString("vi-VN") + " ký tự";
+    const td4 = document.createElement("td");
+    const sp = document.createElement("span");
+    sp.className = "status-pill status-shared";
+    sp.textContent = "Trên kệ chính";
+    td4.append(sp);
+    const td5 = document.createElement("td");
+    const btnOpen = document.createElement("button");
+    btnOpen.type = "button";
+    btnOpen.className = "icon-btn";
+    btnOpen.textContent = "Mở đọc 3D →";
+    btnOpen.onclick = () => openBook(b);
+    td5.append(btnOpen);
+    tr.append(td1, td2, td3, td4, td5);
+    rBody.append(tr);
+  });
+
+  allBooks.slice(0, 5).forEach((u) => {
+    const tr = document.createElement("tr");
+    const td1 = document.createElement("td");
+    const st = document.createElement("strong");
+    st.textContent = u.title;
+    td1.append(st);
+    const td2 = document.createElement("td");
+    td2.textContent = (u.author || "Không rõ") + " · Đóng góp";
+    const td3 = document.createElement("td");
+    td3.textContent = (u.chapters || 1) + " chương · " + (u.chars || 0).toLocaleString("vi-VN") + " ký tự";
+    const td4 = document.createElement("td");
+    const sp = document.createElement("span");
+    sp.className = "status-pill " + (u.shared ? "status-shared" : ("status-" + u.status));
+    sp.textContent = u.shared ? "Trên kệ chung" : u.status;
+    td4.append(sp);
+    const td5 = document.createElement("td");
+    const btnMod = document.createElement("button");
+    btnMod.type = "button";
+    btnMod.className = "icon-btn";
+    btnMod.textContent = "Xử lý duyệt →";
+    btnMod.onclick = () => switchAdminSection("moderation");
+    td5.append(btnMod);
+    tr.append(td1, td2, td3, td4, td5);
+    rBody.append(tr);
+  });
+  recentTbl.append(rBody);
+  recentWrap.append(recentTbl);
+
+  // 5. Bảng duyệt sách & quản lý kệ chung (có lọc theo trạng thái + tìm kiếm)
   const bWrap = $("adminBooksTableWrap");
   bWrap.textContent = "";
-  if (!allBooks.length) {
+  const bookQuery = ($("adminBookSearch") ? $("adminBookSearch").value : "").trim().toLowerCase();
+  const filteredModBooks = allBooks.filter((b) => {
+    if (adminBookFilter === "pending" && b.status !== "pending") return false;
+    if (adminBookFilter === "approved" && b.status !== "approved") return false;
+    if (adminBookFilter === "shared" && !b.shared) return false;
+    if (adminBookFilter === "rejected" && b.status !== "rejected") return false;
+    if (bookQuery) {
+      const hay = ((b.title || "") + " " + (b.author || "") + " " + (b.contributor || "")).toLowerCase();
+      if (!hay.includes(bookQuery)) return false;
+    }
+    return true;
+  });
+
+  if (!filteredModBooks.length) {
     const empty = document.createElement("p");
     empty.style.color = "var(--fg-muted)";
-    empty.textContent = "Chưa có sách người dùng nào gửi lên.";
+    empty.style.padding = "12px 0";
+    empty.textContent = allBooks.length
+      ? "Không có sách nào khớp bộ lọc hiện tại."
+      : "Chưa có sách người dùng nào gửi lên. Bạn có thể bấm '+ Thêm sách PDF/TXT' ở góc phải trên để tải thử.";
     bWrap.append(empty);
   } else {
     const tbl = document.createElement("table");
@@ -2976,10 +3537,9 @@ async function renderAdminDashboard() {
     tbl.append(thead);
 
     const tbody = document.createElement("tbody");
-    allBooks.forEach((b) => {
+    filteredModBooks.forEach((b) => {
       const tr = document.createElement("tr");
 
-      // Ô sửa nhanh Tên sách & Tác giả
       const tdInfo = document.createElement("td");
       const inTitle = document.createElement("input");
       inTitle.type = "text";
@@ -2992,7 +3552,6 @@ async function renderAdminDashboard() {
       inAuthor.value = b.author || "Không rõ";
       tdInfo.append(inTitle, inAuthor);
 
-      // Ô người đóng góp
       const tdContrib = document.createElement("td");
       const inContrib = document.createElement("input");
       inContrib.type = "text";
@@ -3105,7 +3664,7 @@ async function renderAdminDashboard() {
     bWrap.append(tbl);
   }
 
-  // 3. Bảng quản lý tài khoản
+  // 6. Bảng quản lý tài khoản
   const uWrap = $("adminUsersTableWrap");
   uWrap.textContent = "";
   const filterVal = $("adminUserFilter").value;
@@ -3116,7 +3675,7 @@ async function renderAdminDashboard() {
   uTbl.className = "table-list";
   const uHead = document.createElement("thead");
   const uHr = document.createElement("tr");
-  ["Email", "Vai trò", "Trạng thái", "Thao tác"].forEach((h) => {
+  ["Email / Tài khoản", "Vai trò", "Trạng thái", "Ngày tạo", "Thao tác"].forEach((h) => {
     const th = document.createElement("th");
     th.textContent = h;
     uHr.append(th);
@@ -3128,14 +3687,18 @@ async function renderAdminDashboard() {
   filteredUsers.forEach((u) => {
     const tr = document.createElement("tr");
     const tdEm = document.createElement("td");
-    tdEm.textContent = u.email || u.id;
+    const stEm = document.createElement("strong");
+    stEm.textContent = u.email || u.id;
+    tdEm.append(stEm);
     const tdRole = document.createElement("td");
-    tdRole.textContent = u.role;
+    tdRole.textContent = u.role.toUpperCase();
     const tdSt = document.createElement("td");
     const sp = document.createElement("span");
     sp.className = "status-pill status-" + u.status;
     sp.textContent = u.status;
     tdSt.append(sp);
+    const tdDate = document.createElement("td");
+    tdDate.textContent = (u.created_at || "2026-11-27").slice(0, 10);
 
     const tdAct = document.createElement("td");
     const wrap = document.createElement("div");
@@ -3174,22 +3737,33 @@ async function renderAdminDashboard() {
       const note = document.createElement("span");
       note.style.fontSize = "12px";
       note.style.color = "var(--fg-muted)";
-      note.textContent = "Điền SUPABASE_URL trong web-config.js để quản lý user thật";
+      note.textContent = "Điền SUPABASE_URL trong web-config.js để quản lý thành viên đám mây";
       wrap.append(note);
     }
 
     tdAct.append(wrap);
-    tr.append(tdEm, tdRole, tdSt, tdAct);
+    tr.append(tdEm, tdRole, tdSt, tdDate, tdAct);
     uBody.append(tr);
   });
   uTbl.append(uBody);
   uWrap.append(uTbl);
 
-  // 4. Danh sách sách gốc tĩnh (books.json)
+  // 7. Danh sách sách gốc tĩnh (books.json)
   const sWrap = $("adminStaticBooksWrap");
   sWrap.textContent = "";
   const sTbl = document.createElement("table");
   sTbl.className = "table-list";
+  const sHead = document.createElement("thead");
+  const sHr = document.createElement("tr");
+  ["ID & Tên sách", "Tác giả", "Số chương", "Tổng ký tự", "Giấy phép / Nguồn", "Đọc thử"].forEach((h) => {
+    const th = document.createElement("th");
+    th.textContent = h;
+    sHr.append(th);
+  });
+  sHead.append(sHr);
+  sTbl.append(sHead);
+
+  const sBody = document.createElement("tbody");
   books.forEach((b) => {
     const tr = document.createElement("tr");
     const td1 = document.createElement("td");
@@ -3199,10 +3773,22 @@ async function renderAdminDashboard() {
     const td2 = document.createElement("td");
     td2.textContent = b.author;
     const td3 = document.createElement("td");
-    td3.textContent = b.chapters + " chương · " + (b.chars || 0).toLocaleString("vi-VN") + " ký tự";
-    tr.append(td1, td2, td3);
-    sTbl.append(tr);
+    td3.textContent = b.chapters + " chương";
+    const td4 = document.createElement("td");
+    td4.textContent = (b.chars || 0).toLocaleString("vi-VN") + " ký tự";
+    const td5 = document.createElement("td");
+    td5.textContent = (b.source || "local") + " · " + (b.license || "own");
+    const td6 = document.createElement("td");
+    const btnOpen = document.createElement("button");
+    btnOpen.type = "button";
+    btnOpen.className = "icon-btn";
+    btnOpen.textContent = "Mở đọc 3D";
+    btnOpen.onclick = () => openBook(b);
+    td6.append(btnOpen);
+    tr.append(td1, td2, td3, td4, td5, td6);
+    sBody.append(tr);
   });
+  sTbl.append(sBody);
   sWrap.append(sTbl);
 }
 
@@ -3260,6 +3846,39 @@ function bindStep4Events() {
   $("navBtnMyBooks").onclick = () => switchMainTab("mybooks");
   $("navBtnAdmin").onclick = () => switchMainTab("admin");
   $("adminUserFilter").onchange = () => renderAdminDashboard();
+
+  // Điều hướng các mục trên Sidebar của Dashboard
+  document.querySelectorAll("[data-admin-sec]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      switchAdminSection(btn.getAttribute("data-admin-sec"));
+    });
+  });
+
+  if ($("btnSideQuickUpload")) $("btnSideQuickUpload").onclick = () => switchMainTab("mybooks");
+  if ($("btnSideBackShelf")) $("btnSideBackShelf").onclick = () => switchMainTab("shelf");
+  if ($("btnAdminAddBook")) $("btnAdminAddBook").onclick = () => switchMainTab("mybooks");
+  if ($("btnGoToModeration")) $("btnGoToModeration").onclick = () => switchAdminSection("moderation");
+  if ($("btnAdminRefresh")) {
+    $("btnAdminRefresh").onclick = async () => {
+      await refreshAuthSession();
+      renderAdminDashboard();
+      showSpineToast("Đã làm mới dữ liệu thống kê Dashboard!");
+    };
+  }
+
+  // Bộ lọc trạng thái sách và tìm kiếm trong tab Duyệt sách
+  document.querySelectorAll("[data-book-filter]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      adminBookFilter = btn.getAttribute("data-book-filter") || "all";
+      document.querySelectorAll("[data-book-filter]").forEach((b) => {
+        b.classList.toggle("active", b === btn);
+      });
+      renderAdminDashboard();
+    });
+  });
+  if ($("adminBookSearch")) {
+    $("adminBookSearch").addEventListener("input", () => renderAdminDashboard());
+  }
 
   // Tải file PDF / TXT
   const dropzone = $("pdfDropzone");
