@@ -1,8 +1,7 @@
-// Mục đích: Cấu hình kết nối Supabase (URL dự án và anon key công khai) cho Bước 4.
-// Khi chưa điền SUPABASE_URL và SUPABASE_ANON_KEY, web vẫn cho đọc thư viện chung bình thường và cho dùng thử mục "Sách của bạn" ngay trên trình duyệt (lưu cục bộ).
+// Mục đích: Cấu hình kết nối Supabase (URL dự án và publishable anon key công khai) cho Bước 4.
 window.__WEB_CONFIG__ = {
-  SUPABASE_URL: "",
-  SUPABASE_ANON_KEY: "",
-  // Đặt REQUIRE_AUTH = true nếu muốn bắt buộc đăng nhập và được admin duyệt mới thấy kệ sách chung
-  REQUIRE_AUTH: false
+  SUPABASE_URL: "https://kckphpfjzbjatkimojjd.supabase.co",
+  SUPABASE_ANON_KEY: "sb_publishable_2WeBDE_d_VgWmI0JtV613w_L3I4Uxra",
+  // Bắt buộc đăng nhập và được Admin duyệt (status = 'approved') mới vào được kệ sách
+  REQUIRE_AUTH: true
 };

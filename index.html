@@ -11,8 +11,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;0,7..72,700;1,7..72,400&family=Noto+Serif:ital,wght@0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <style>
-  :root {
-    /* Chủ đề Sáng theo đúng KE-SACH-SPEC.md */
+  :root,
+  html[data-ui-theme="light"] {
+    /* Giao diện UI chung (Sáng ấm áp theo KE-SACH-SPEC.md) — TÁCH RIÊNG với màu giấy sách */
     --bg: #F3EBD9;
     --bg-grad: radial-gradient(circle at 50% 12%, #f8f2e4 0%, #F3EBD9 65%, #e8dec8 100%);
     --surface: #fbf7ee;
@@ -27,10 +28,7 @@
     --shelf-wood-dark: #8c6234;
     --shelf-highlight: #d8ad78;
     --shelf-shadow: rgba(43, 33, 24, 0.24);
-    --paper: #fdfaf3;
-    --paper-edge: #e4dac9;
-    --paper-text: #2B2118;
-    --spine-shadow: rgba(35, 25, 15, 0.18);
+    --reader-backdrop: radial-gradient(circle at 50% 45%, #3a2b1e 0%, #1d1610 100%);
     --font-spine: "Noto Serif", "Literata", "Times New Roman", serif;
     --font-serif: "Literata", "Noto Serif", "Times New Roman", serif;
     --font-sans: "Be Vietnam Pro", "Segoe UI", Roboto, system-ui, sans-serif;
@@ -38,27 +36,8 @@
     --reader-lh: 1.78;
   }
 
-  html[data-theme="sepia"] {
-    --bg: #e8decb;
-    --bg-grad: radial-gradient(circle at 50% 15%, #f1e8d7 0%, #ddd0b8 100%);
-    --surface: #f4ebd9;
-    --surface-2: #e5d8c1;
-    --fg: #3b2f24;
-    --fg-muted: #7a6855;
-    --line: #d2c2a8;
-    --accent: #8c481e;
-    --accent-hover: #6d3614;
-    --accent-soft: rgba(140, 72, 30, 0.14);
-    --shelf-top: #cdb18c;
-    --shelf-front: #b29269;
-    --shelf-under: #7d613e;
-    --paper: #f4ead5;
-    --paper-edge: #d8c8ab;
-    --paper-text: #362a1f;
-    --spine-shadow: rgba(50, 35, 15, 0.22);
-  }
-
-  html[data-theme="dark"] {
+  /* Giao diện UI chung (Chế độ Tối) */
+  html[data-ui-theme="dark"] {
     --bg: #151413;
     --bg-grad: radial-gradient(circle at 50% 10%, #211f1c 0%, #121110 100%);
     --surface: #201e1b;
@@ -69,14 +48,41 @@
     --accent: #d8955c;
     --accent-hover: #e5aa77;
     --accent-soft: rgba(216, 149, 92, 0.15);
-    --shelf-top: #332b22;
-    --shelf-front: #28211a;
-    --shelf-under: #17130f;
-    --shelf-shadow: rgba(0, 0, 0, 0.6);
+    --shelf-wood: #4a3520;
+    --shelf-wood-dark: #2c1e11;
+    --shelf-highlight: #694c2f;
+    --shelf-shadow: rgba(0, 0, 0, 0.65);
+    --reader-backdrop: radial-gradient(circle at 50% 45%, #1e1b18 0%, #0d0c0b 100%);
+  }
+
+  /* Màu Trang Giấy Sách (Độc lập hoàn toàn với màu nền UI bên ngoài) */
+  :root,
+  html[data-paper="warm"] {
+    --paper: #fdfaf3;
+    --paper-edge: #e4dac9;
+    --paper-text: #261e17;
+    --paper-muted: #78695a;
+    --paper-line: #e3d8c6;
+    --paper-accent: #9c5628;
+    --spine-shadow: rgba(35, 25, 15, 0.2);
+  }
+  html[data-paper="sepia"] {
+    --paper: #f3e6ce;
+    --paper-edge: #d5c2a1;
+    --paper-text: #382a1d;
+    --paper-muted: #7a644e;
+    --paper-line: #d6c3a3;
+    --paper-accent: #8c481e;
+    --spine-shadow: rgba(50, 35, 15, 0.25);
+  }
+  html[data-paper="night"] {
     --paper: #211f1c;
     --paper-edge: #35312c;
     --paper-text: #dfd8cd;
-    --spine-shadow: rgba(0, 0, 0, 0.55);
+    --paper-muted: #948b7f;
+    --paper-line: #36322d;
+    --paper-accent: #d8955c;
+    --spine-shadow: rgba(0, 0, 0, 0.58);
   }
 
   * { box-sizing: border-box; }
@@ -432,7 +438,8 @@
   /* ================= MÀN HÌNH ĐỌC SÁCH LẬT TRANG 3D ================= */
   #readerView {
     position: fixed; inset: 0; z-index: 50;
-    background: var(--bg); background-image: var(--bg-grad);
+    background: #1d1610;
+    background-image: var(--reader-backdrop);
     display: none; flex-direction: column;
     overflow: hidden;
   }
@@ -548,10 +555,10 @@
     filter: drop-shadow(0 5px 8px rgba(180, 30, 20, 0.38));
   }
 
-  /* Đầu trang & chân trang trên giấy */
+  /* Đầu trang & chân trang trên giấy (dùng màu riêng của giấy, không trộn với UI) */
   .page-running-head {
-    font-size: 11.5px; color: var(--fg-muted); letter-spacing: 0.04em; text-transform: uppercase;
-    border-bottom: 1px solid color-mix(in srgb, var(--line) 60%, transparent);
+    font-size: 11.5px; color: var(--paper-muted); letter-spacing: 0.04em; text-transform: uppercase;
+    border-bottom: 1px solid var(--paper-line);
     padding-bottom: 8px; margin-bottom: 14px;
     display: flex; justify-content: space-between; gap: 10px;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-shrink: 0;
@@ -565,7 +572,7 @@
   }
   .page-content h2.chapter-heading {
     font-size: 1.35em; line-height: 1.35; margin: 0.2em 0 0.85em;
-    color: var(--accent); text-align: left; font-weight: 700;
+    color: var(--paper-accent); text-align: left; font-weight: 700;
   }
   .page-content p {
     margin: 0 0 0.85em;
@@ -575,8 +582,8 @@
 
   .page-footer {
     padding-top: 10px; margin-top: 8px;
-    border-top: 1px solid color-mix(in srgb, var(--line) 50%, transparent);
-    font-size: 12px; color: var(--fg-muted);
+    border-top: 1px solid var(--paper-line);
+    font-size: 12px; color: var(--paper-muted);
     display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;
   }
 
@@ -1006,7 +1013,122 @@
     .analytics-grid { grid-template-columns: 1fr; }
   }
 
-  /* Modal đăng nhập / đăng ký / xem trước */
+  /* ================= TRANG ĐĂNG NHẬP & ĐĂNG KÝ CHỈN CHU (SPLIT-CARD AUTH) ================= */
+  .auth-portal-wrap {
+    max-width: 920px;
+    margin: 24px auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    box-shadow: 0 24px 60px rgba(43, 33, 24, 0.14);
+  }
+  .auth-hero-side {
+    background: linear-gradient(155deg, #5c3419 0%, #361c0b 100%);
+    color: #f8efe0;
+    padding: 38px 34px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+  .auth-hero-side::after {
+    content: ""; position: absolute; right: -40px; bottom: -40px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(216, 173, 120, 0.22) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .auth-hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255, 255, 255, 0.12); color: #f3d5a5;
+    padding: 5px 12px; border-radius: 99px; font-size: 12px; font-weight: 600;
+    width: fit-content; margin-bottom: 16px;
+  }
+  .auth-hero-title {
+    font-family: var(--font-spine); font-size: 26px; font-weight: 700;
+    line-height: 1.3; margin: 0 0 12px; color: #fff;
+  }
+  .auth-hero-desc {
+    font-size: 14px; line-height: 1.65; opacity: 0.88; margin: 0 0 24px;
+  }
+  .auth-feature-list {
+    list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px;
+    font-size: 13.5px; opacity: 0.92;
+  }
+  .auth-feature-list li { display: flex; align-items: flex-start; gap: 10px; }
+  .auth-feature-dot {
+    width: 20px; height: 20px; border-radius: 6px;
+    background: rgba(255, 255, 255, 0.16); color: #f3d5a5;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  .auth-form-side {
+    padding: 36px 34px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: var(--surface);
+  }
+  .auth-tabs-header {
+    display: grid; grid-template-columns: 1fr 1fr;
+    background: var(--surface-2); padding: 4px; border-radius: 12px;
+    border: 1px solid var(--line); margin-bottom: 22px;
+  }
+  .auth-tab-switch {
+    border: none; background: transparent; padding: 9px 12px;
+    border-radius: 9px; font-weight: 700; font-size: 13.5px; color: var(--fg-muted);
+    transition: all 0.18s;
+  }
+  .auth-tab-switch.active {
+    background: var(--surface); color: var(--accent);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+  .pass-input-wrap { position: relative; }
+  .pass-toggle-btn {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    border: none; background: transparent; color: var(--fg-muted);
+    font-size: 12px; font-weight: 600; padding: 4px 8px; border-radius: 6px;
+  }
+  .pass-toggle-btn:hover { background: var(--surface-2); color: var(--fg); }
+
+  .auth-alert-box {
+    padding: 11px 14px; border-radius: 10px; font-size: 13px; line-height: 1.5;
+    margin-bottom: 14px; display: none;
+  }
+  .auth-alert-box.error {
+    display: block; background: rgba(192, 57, 43, 0.12); color: #c0392b; border: 1px solid rgba(192, 57, 43, 0.28);
+  }
+  .auth-alert-box.success {
+    display: block; background: rgba(39, 174, 96, 0.12); color: #1e8449; border: 1px solid rgba(39, 174, 96, 0.28);
+  }
+
+  /* Màn hình trạng thái Chờ Duyệt (Pending) / Bị Khóa (Locked) */
+  .gate-status-card {
+    max-width: 560px; margin: 36px auto; text-align: center;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 20px;
+    padding: 36px 32px; box-shadow: 0 20px 50px rgba(43, 33, 24, 0.1);
+  }
+  .gate-icon-circle {
+    width: 64px; height: 64px; border-radius: 18px; margin: 0 auto 18px;
+    display: flex; align-items: center; justify-content: center; font-size: 28px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .gate-steps-box {
+    text-align: left; background: var(--bg); border: 1px solid var(--line);
+    border-radius: 12px; padding: 14px 18px; margin: 18px 0 22px; font-size: 13.5px;
+  }
+
+  @media (max-width: 780px) {
+    .auth-portal-wrap { grid-template-columns: 1fr; }
+    .auth-hero-side { padding: 26px 24px; }
+    .auth-form-side { padding: 26px 24px; }
+  }
+
+  /* Modal xem trước */
   .modal-backdrop {
     position: fixed; inset: 0; z-index: 80;
     background: rgba(20, 16, 12, 0.55); backdrop-filter: blur(3px);
@@ -1043,7 +1165,7 @@
   </div>
 
   <div class="header-controls">
-    <div class="nav-tabs" role="navigation" aria-label="Điều hướng chính">
+    <div class="nav-tabs" id="mainNavTabs" role="navigation" aria-label="Điều hướng chính">
       <button type="button" class="nav-tab-btn active" id="navBtnShelf">📚 Kệ sách</button>
       <button type="button" class="nav-tab-btn" id="navBtnMyBooks">+ Sách của bạn</button>
       <button type="button" class="nav-tab-btn" id="navBtnAdmin" style="display:none">⚙ Dashboard <span class="badge-count" id="adminPendingBadge" style="display:none">0</span></button>
@@ -1054,22 +1176,92 @@
       <input type="search" id="searchInput" class="search-input" placeholder="Tìm tên sách, tác giả…">
     </div>
 
-    <div class="pill-group" role="tablist" aria-label="Chế độ màu">
-      <button type="button" class="pill-btn active" data-set-theme="warm">Giấy ấm</button>
-      <button type="button" class="pill-btn" data-set-theme="sepia">Cổ điển</button>
-      <button type="button" class="pill-btn" data-set-theme="dark">Ban đêm</button>
+    <!-- Chế độ giao diện UI chung (Sáng / Tối) — tách biệt hoàn toàn với màu giấy trang sách -->
+    <div class="pill-group" role="tablist" aria-label="Giao diện chung">
+      <button type="button" class="pill-btn active" data-set-ui-theme="light">☀ Giao diện Sáng</button>
+      <button type="button" class="pill-btn" data-set-ui-theme="dark">🌙 Giao diện Tối</button>
     </div>
 
     <button type="button" class="icon-btn" id="btnAuthAction">Đăng nhập</button>
   </div>
 </header>
 
-<!-- ================= MÀN HÌNH CHẶN KHI TÀI KHOẢN CHỜ DUYỆT / BỊ CHẶN ================= -->
-<section class="panel-view" id="authGateView">
-  <div class="card-box" style="max-width:520px;margin:40px auto;text-align:center">
-    <h2 class="card-title" id="authGateTitle">Tài khoản đang chờ duyệt</h2>
-    <p class="card-sub" id="authGateMsg">Tài khoản của bạn đã đăng ký thành công và đang chờ chủ dự án (Admin) duyệt quyền truy cập kệ sách.</p>
-    <button type="button" class="btn-primary" id="btnGateAction">Đăng nhập tài khoản khác</button>
+<!-- ================= MÀN HÌNH ĐĂNG NHẬP & ĐĂNG KÝ CHỈN CHU (AUTH PORTAL) ================= -->
+<section class="panel-view" id="authGateView" aria-label="Cổng đăng nhập và trạng thái tài khoản">
+  <!-- 1. Khung Đăng nhập / Đăng ký (hiện khi chưa đăng nhập) -->
+  <div class="auth-portal-wrap" id="authFormPortal">
+    <div class="auth-hero-side">
+      <div>
+        <div class="auth-hero-badge">📚 Thư Viện Sách Cá Nhân 3D</div>
+        <h2 class="auth-hero-title">Không gian đọc sách tĩnh lặng dành cho bạn bè</h2>
+        <p class="auth-hero-desc">Trải nghiệm kệ sách gáy đứng 3D, lật từng trang giấy như sách thật và cùng nhau đóng góp những cuốn sách PDF hay lên kệ chung.</p>
+        <ul class="auth-feature-list">
+          <li><span class="auth-feature-dot">1</span><span><strong>Đăng ký tài khoản:</strong> Nhập email & mật khẩu để tạo tài khoản thành viên.</span></li>
+          <li><span class="auth-feature-dot">2</span><span><strong>Chờ Admin phê duyệt:</strong> Chủ dự án duyệt tài khoản trong Dashboard để bảo vệ không gian riêng.</span></li>
+          <li><span class="auth-feature-dot">3</span><span><strong>Đọc & Đóng góp sách:</strong> Lưu dấu trang đám mây và tải sách PDF lên kệ chung.</span></li>
+        </ul>
+      </div>
+      <div style="font-size:12px;opacity:0.75;border-top:1px solid rgba(255,255,255,0.15);padding-top:14px">
+        Bảo mật bởi Supabase Row-Level Security (RLS) · Dữ liệu sách PDF được xử lý trực tiếp trên trình duyệt.
+      </div>
+    </div>
+
+    <div class="auth-form-side">
+      <div class="auth-tabs-header" role="tablist">
+        <button type="button" class="auth-tab-switch active" id="tabSwitchLogin">Đăng nhập</button>
+        <button type="button" class="auth-tab-switch" id="tabSwitchSignup">Đăng ký mới</button>
+      </div>
+
+      <h3 class="card-title" id="authPortalHeading" style="font-size:21px;margin-bottom:4px">Chào mừng bạn quay lại</h3>
+      <p class="card-sub" id="authPortalSub" style="margin-bottom:18px">Đăng nhập bằng tài khoản đã được duyệt để mở kệ sách.</p>
+
+      <div class="auth-alert-box" id="authAlertBox"></div>
+
+      <form id="authPortalForm">
+        <div id="signupNameField" style="margin-bottom:14px;display:none">
+          <label class="field-label" for="authNameInput">Tên hiển thị (Người đóng góp)</label>
+          <input type="text" id="authNameInput" class="text-input" placeholder="Ví dụ: Minh Tuấn">
+        </div>
+
+        <div style="margin-bottom:14px">
+          <label class="field-label" for="authEmailInput">Địa chỉ Email</label>
+          <input type="email" id="authEmailInput" class="text-input" required placeholder="ban@example.com" autocomplete="email">
+        </div>
+
+        <div style="margin-bottom:14px">
+          <label class="field-label" for="authPassInput">Mật khẩu</label>
+          <div class="pass-input-wrap">
+            <input type="password" id="authPassInput" class="text-input" required minlength="6" placeholder="Tối thiểu 6 ký tự" autocomplete="current-password" style="padding-right:64px">
+            <button type="button" class="pass-toggle-btn" id="btnTogglePassVis">Hiện</button>
+          </div>
+        </div>
+
+        <div id="signupConfirmField" style="margin-bottom:16px;display:none">
+          <label class="field-label" for="authPassConfirmInput">Nhập lại mật khẩu</label>
+          <input type="password" id="authPassConfirmInput" class="text-input" minlength="6" placeholder="Nhập lại đúng mật khẩu trên">
+        </div>
+
+        <button type="submit" class="btn-primary" id="btnSubmitAuth" style="width:100%;padding:11px;font-size:15px;margin-top:4px">Đăng nhập vào thư viện →</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. Khung thông báo khi Tài khoản đang Chờ Duyệt (pending) hoặc Bị Khóa (blocked) -->
+  <div class="gate-status-card" id="authStatusCard" style="display:none">
+    <div class="gate-icon-circle" id="gateStatusIcon">⏳</div>
+    <h2 class="card-title" id="authGateTitle" style="font-size:22px">Tài khoản đang chờ Admin duyệt</h2>
+    <p class="card-sub" id="authGateMsg" style="margin-bottom:12px">Tài khoản của bạn đã được tạo thành công nhưng đang ở trạng thái chờ phê duyệt.</p>
+
+    <div class="gate-steps-box" id="gatePendingGuide">
+      <div style="font-weight:700;margin-bottom:6px;color:var(--fg)">Quy trình kích hoạt tài khoản:</div>
+      <div>1. Chủ dự án (Admin) mở mục <strong>Dashboard → Tài khoản thành viên</strong> và bấm <strong>Duyệt (Unlock)</strong> cho email của bạn.</div>
+      <div style="margin-top:4px">2. Sau khi được duyệt, bạn chỉ cần bấm nút <strong>"Kiểm tra lại trạng thái"</strong> bên dưới là vào thẳng kệ sách.</div>
+    </div>
+
+    <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap">
+      <button type="button" class="btn-primary" id="btnRecheckStatus">↻ Kiểm tra lại trạng thái</button>
+      <button type="button" class="icon-btn" id="btnGateSignOut">Đăng xuất tài khoản này</button>
+    </div>
   </div>
 </section>
 
@@ -1247,20 +1439,17 @@
         </div>
       </div>
 
-      <!-- PANE 3: QUẢN LÝ TÀI KHOẢN THÀNH VIÊN (USERS) -->
+      <!-- PANE 3: QUẢN LÝ TÀI KHOẢN THÀNH VIÊN (USERS: DUYỆT, LOCK / UNLOCK, PHÂN QUYỀN) -->
       <div class="admin-section-pane" id="adminPaneUsers">
         <div class="card-box" style="margin-bottom:0">
           <div class="filter-pills-bar">
-            <div>
-              <h3 class="card-title" style="margin-bottom:2px">Danh sách tài khoản thành viên</h3>
-              <p class="card-sub" style="margin:0">Phê duyệt bạn đọc mới đăng ký, chặn truy cập hoặc cấp quyền Quản trị viên (Admin).</p>
+            <div class="pill-group" id="adminUserFilterGroup">
+              <button type="button" class="pill-btn active" data-user-filter="all">Tất cả</button>
+              <button type="button" class="pill-btn" data-user-filter="pending">⏳ Chờ duyệt</button>
+              <button type="button" class="pill-btn" data-user-filter="approved">✓ Đang hoạt động</button>
+              <button type="button" class="pill-btn" data-user-filter="blocked">🔒 Đã khóa (Locked)</button>
             </div>
-            <select id="adminUserFilter" class="icon-btn">
-              <option value="all">Tất cả trạng thái</option>
-              <option value="pending">Chờ duyệt (pending)</option>
-              <option value="approved">Đã duyệt (approved)</option>
-              <option value="blocked">Bị chặn (blocked)</option>
-            </select>
+            <input type="search" id="adminUserSearch" class="text-input" style="max-width:240px" placeholder="Tìm email thành viên…">
           </div>
           <div id="adminUsersTableWrap"></div>
         </div>
@@ -1283,32 +1472,7 @@
   </div>
 </section>
 
-<!-- ================= MODAL ĐĂNG NHẬP / ĐĂNG KÝ & XEM TRƯỚC SÁCH ================= -->
-<div class="modal-backdrop" id="authModalBackdrop">
-  <div class="modal-box">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-      <strong style="font-family:var(--font-spine);font-size:18px" id="authModalTitle">Đăng nhập</strong>
-      <button type="button" class="icon-btn" id="btnCloseAuthModal">✕</button>
-    </div>
-    <div id="authNoticeBox" style="font-size:13px;color:var(--fg-muted);margin-bottom:14px"></div>
-    <form id="authForm">
-      <div style="margin-bottom:12px">
-        <label class="field-label" for="authEmailInput">Email</label>
-        <input type="email" id="authEmailInput" class="text-input" required placeholder="ban@example.com">
-      </div>
-      <div style="margin-bottom:16px">
-        <label class="field-label" for="authPassInput">Mật khẩu</label>
-        <input type="password" id="authPassInput" class="text-input" required minlength="6" placeholder="Tối thiểu 6 ký tự">
-      </div>
-      <div id="authErrorMsg" style="color:#c0392b;font-size:13px;margin-bottom:12px"></div>
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
-        <button type="button" class="icon-btn" id="btnSwitchAuthMode">Chưa có tài khoản? Đăng ký</button>
-        <button type="submit" class="btn-primary" id="btnSubmitAuth">Đăng nhập</button>
-      </div>
-    </form>
-  </div>
-</div>
-
+<!-- ================= MODAL XEM TRƯỚC SÁCH ================= -->
 <div class="modal-backdrop" id="previewModalBackdrop">
   <div class="modal-box" style="width:min(680px,95vw)">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
@@ -1338,7 +1502,11 @@
       <button type="button" class="icon-btn" id="btnFontInc" title="Tăng cỡ chữ">A+</button>
       <button type="button" class="icon-btn hide-mobile" id="btnToggleSpread" title="Đổi 1 trang / 2 trang">2 Trang</button>
       <button type="button" class="icon-btn" id="btnToggleMode" title="Đổi Lật 3D / Cuộn dọc">Lật 3D</button>
-      <button type="button" class="icon-btn" id="btnCycleTheme" title="Đổi màu giấy">◐ Màu</button>
+      <div class="pill-group" role="tablist" aria-label="Màu trang giấy sách">
+        <button type="button" class="pill-btn active" data-set-paper="warm" title="Giấy kem sáng">Giấy kem</button>
+        <button type="button" class="pill-btn" data-set-paper="sepia" title="Giấy vàng cổ điển">Sepia</button>
+        <button type="button" class="pill-btn" data-set-paper="night" title="Trang tối ban đêm">Trang tối</button>
+      </div>
     </div>
   </div>
 
@@ -1457,7 +1625,7 @@ const $ = (id) => document.getElementById(id);
 // Bộ nhớ cá nhân an toàn trong localStorage
 const STORE_KEY = "book_reader_kit_v2_prefs";
 const LOCAL_USER_BOOKS_KEY = "book_reader_kit_v2_local_user_books";
-let prefs = { theme: "warm", fontSize: 18, forceSingle: false, scrollMode: false, lastBookId: null, progress: {}, bookmarks: {} };
+let prefs = { uiTheme: "light", paperTheme: "warm", fontSize: 18, forceSingle: false, scrollMode: false, lastBookId: null, progress: {}, bookmarks: {} };
 let books = [];
 let sharedUserBooks = []; // sách bạn bè đóng góp đã đưa lên kệ chung
 let myUserBooks = [];     // sách do người dùng hiện tại tải lên
@@ -1497,7 +1665,8 @@ function loadPrefs() {
     const raw = localStorage.getItem(STORE_KEY);
     if (raw) prefs = Object.assign(prefs, JSON.parse(raw));
   } catch (e) {}
-  applyTheme(prefs.theme);
+  applyUiTheme(prefs.uiTheme || "light");
+  applyPaperTheme(prefs.paperTheme || "warm");
   applyFontSize(prefs.fontSize);
 }
 
@@ -1507,11 +1676,22 @@ function savePrefs() {
   } catch (e) {}
 }
 
-function applyTheme(theme) {
-  prefs.theme = theme || "warm";
-  document.documentElement.setAttribute("data-theme", prefs.theme);
-  document.querySelectorAll("[data-set-theme]").forEach((btn) => {
-    btn.classList.toggle("active", btn.getAttribute("data-set-theme") === prefs.theme);
+// 1a. Chế độ màu Giao diện UI chung (Sáng / Tối) — không làm đổi màu giấy sách
+function applyUiTheme(uiTheme) {
+  prefs.uiTheme = uiTheme === "dark" ? "dark" : "light";
+  document.documentElement.setAttribute("data-ui-theme", prefs.uiTheme);
+  document.querySelectorAll("[data-set-ui-theme]").forEach((btn) => {
+    btn.classList.toggle("active", btn.getAttribute("data-set-ui-theme") === prefs.uiTheme);
+  });
+  savePrefs();
+}
+
+// 1b. Chế độ màu Trang Giấy Sách (Giấy kem / Sepia / Trang tối) — chỉ áp dụng cho trang giấy
+function applyPaperTheme(paper) {
+  prefs.paperTheme = paper || "warm";
+  document.documentElement.setAttribute("data-paper", prefs.paperTheme);
+  document.querySelectorAll("[data-set-paper]").forEach((btn) => {
+    btn.classList.toggle("active", btn.getAttribute("data-set-paper") === prefs.paperTheme);
   });
   savePrefs();
 }
@@ -2488,8 +2668,11 @@ function updateModeButtons() {
 function bindEvents() {
   $("searchInput").addEventListener("input", renderBookshelf);
 
-  document.querySelectorAll("[data-set-theme]").forEach((btn) => {
-    btn.addEventListener("click", () => applyTheme(btn.getAttribute("data-set-theme")));
+  document.querySelectorAll("[data-set-ui-theme]").forEach((btn) => {
+    btn.addEventListener("click", () => applyUiTheme(btn.getAttribute("data-set-ui-theme")));
+  });
+  document.querySelectorAll("[data-set-paper]").forEach((btn) => {
+    btn.addEventListener("click", () => applyPaperTheme(btn.getAttribute("data-set-paper")));
   });
 
   $("btnBackShelf").onclick = closeReader;
@@ -2518,11 +2701,6 @@ function bindEvents() {
     savePrefs();
     $("readerView").classList.toggle("scroll-mode", prefs.scrollMode);
     updateModeButtons();
-  };
-  $("btnCycleTheme").onclick = () => {
-    const order = ["warm", "sepia", "dark"];
-    const next = order[(order.indexOf(prefs.theme) + 1) % order.length];
-    applyTheme(next);
   };
 
   $("bookmarkRibbon").addEventListener("pointerdown", (e) => e.stopPropagation());
@@ -2657,10 +2835,12 @@ function initSupabaseClient() {
 async function refreshAuthSession() {
   const btnAuth = $("btnAuthAction");
   const btnAdmin = $("navBtnAdmin");
+  const navTabs = $("mainNavTabs");
 
   if (!sb) {
     btnAuth.textContent = "Tài khoản (Local)";
     btnAdmin.style.display = "inline-flex";
+    if (navTabs) navTabs.style.display = "inline-flex";
     updateAdminBadgeCount();
     return;
   }
@@ -2670,40 +2850,103 @@ async function refreshAuthSession() {
 
   if (!currentUser) {
     currentProfile = null;
-    btnAuth.textContent = "Đăng nhập";
+    btnAuth.textContent = "Đăng nhập / Đăng ký";
     btnAdmin.style.display = "none";
     const cfg = window.__WEB_CONFIG__ || {};
     if (cfg.REQUIRE_AUTH) {
-      showAuthGate("Cần đăng nhập", "Vui lòng đăng nhập tài khoản đã được duyệt để vào kệ sách chung.");
+      if (navTabs) navTabs.style.display = "none";
+      $("shelfSearchWrap").style.display = "none";
+      showAuthLoginForm("login");
     }
     return;
   }
 
   const { data: prof } = await sb.from("profiles").select("*").eq("id", currentUser.id).maybeSingle();
   currentProfile = prof || { id: currentUser.id, email: currentUser.email, role: "reader", status: "pending" };
-  btnAuth.textContent = (currentProfile.email || "Tài khoản") + " (Đăng xuất)";
+  btnAuth.textContent = (currentProfile.email || "Tài khoản") + " · Đăng xuất";
   btnAdmin.style.display = isAdminUser() ? "inline-flex" : "none";
 
   if (currentProfile.status === "pending") {
-    showAuthGate("Tài khoản đang chờ duyệt", "Tài khoản " + currentProfile.email + " đang ở trạng thái chờ duyệt (pending). Khi Admin duyệt xong bạn sẽ đọc và gửi sách được.");
+    if (navTabs) navTabs.style.display = "none";
+    $("shelfSearchWrap").style.display = "none";
+    showAuthStatusGate(
+      "pending",
+      "Tài khoản đang chờ Admin phê duyệt",
+      "Xin chào " + (currentProfile.email || "bạn") + "! Tài khoản của bạn đã đăng ký thành công và đang ở trạng thái Chờ duyệt (pending)."
+    );
     return;
   }
   if (currentProfile.status === "blocked") {
-    showAuthGate("Tài khoản đã bị chặn", "Tài khoản của bạn hiện không có quyền truy cập kệ sách.");
+    if (navTabs) navTabs.style.display = "none";
+    $("shelfSearchWrap").style.display = "none";
+    showAuthStatusGate(
+      "blocked",
+      "Tài khoản đã bị khóa (Locked)",
+      "Tài khoản " + (currentProfile.email || "") + " hiện đang bị khóa tạm thời bởi Quản trị viên. Vui lòng liên hệ chủ dự án để mở khóa (Unlock)."
+    );
     return;
   }
 
+  // Tài khoản đã được duyệt (approved)
+  if (navTabs) navTabs.style.display = "inline-flex";
+  $("shelfSearchWrap").style.display = currentTab === "shelf" ? "block" : "none";
   $("authGateView").classList.remove("open");
+  $("shelfView").style.display = currentTab === "shelf" ? "block" : "none";
   await loadSupabaseBooksAndProgress();
 }
 
-function showAuthGate(title, msg) {
+function showAuthLoginForm(mode = "login") {
+  switchAuthPortalMode(mode);
   $("shelfView").style.display = "none";
   $("myBooksView").classList.remove("open");
   $("adminView").classList.remove("open");
+  $("authFormPortal").style.display = "grid";
+  $("authStatusCard").style.display = "none";
+  $("authGateView").classList.add("open");
+}
+
+function showAuthStatusGate(kind, title, msg) {
+  $("shelfView").style.display = "none";
+  $("myBooksView").classList.remove("open");
+  $("adminView").classList.remove("open");
+  $("authFormPortal").style.display = "none";
+  $("authStatusCard").style.display = "block";
+  $("gateStatusIcon").textContent = kind === "blocked" ? "🔒" : "⏳";
   $("authGateTitle").textContent = title;
   $("authGateMsg").textContent = msg;
+  $("gatePendingGuide").style.display = kind === "pending" ? "block" : "none";
   $("authGateView").classList.add("open");
+}
+
+function switchAuthPortalMode(mode) {
+  authMode = mode === "signup" ? "signup" : "login";
+  $("tabSwitchLogin").classList.toggle("active", authMode === "login");
+  $("tabSwitchSignup").classList.toggle("active", authMode === "signup");
+  $("signupNameField").style.display = authMode === "signup" ? "block" : "none";
+  $("signupConfirmField").style.display = authMode === "signup" ? "block" : "none";
+
+  $("authPortalHeading").textContent = authMode === "login"
+    ? "Chào mừng bạn quay lại"
+    : "Tạo tài khoản thành viên mới";
+  $("authPortalSub").textContent = authMode === "login"
+    ? "Đăng nhập bằng tài khoản đã được duyệt để mở kệ sách."
+    : "Sau khi đăng ký, tài khoản sẽ ở trạng thái Chờ duyệt cho đến khi Admin kích hoạt.";
+  $("btnSubmitAuth").textContent = authMode === "login"
+    ? "Đăng nhập vào thư viện →"
+    : "Đăng ký tài khoản →";
+  setAuthAlert("", "");
+}
+
+function setAuthAlert(type, msg) {
+  const box = $("authAlertBox");
+  if (!box) return;
+  if (!msg) {
+    box.className = "auth-alert-box";
+    box.textContent = "";
+    return;
+  }
+  box.className = "auth-alert-box " + (type === "success" ? "success" : "error");
+  box.textContent = msg;
 }
 
 async function loadSupabaseBooksAndProgress() {
@@ -3160,6 +3403,7 @@ function updateAdminBadgeCount() {
 // ================= DASHBOARD ADMIN CHUYÊN NGHIỆP CÓ SIDEBAR (/admin) =================
 let activeAdminSection = "overview"; // 'overview' | 'moderation' | 'users' | 'library'
 let adminBookFilter = "all";
+let adminUserFilter = "all";
 
 const ADMIN_SEC_META = {
   overview: {
@@ -3664,18 +3908,31 @@ async function renderAdminDashboard() {
     bWrap.append(tbl);
   }
 
-  // 6. Bảng quản lý tài khoản
+  // 6. Bảng quản lý tài khoản (Duyệt, Lock / Unlock tài khoản, Phân quyền Admin)
   const uWrap = $("adminUsersTableWrap");
   uWrap.textContent = "";
-  const filterVal = $("adminUserFilter").value;
-  const filteredUsers = allProfiles.filter((u) => filterVal === "all" || u.status === filterVal);
+  const userQuery = ($("adminUserSearch") ? $("adminUserSearch").value : "").trim().toLowerCase();
+  const filteredUsers = allProfiles.filter((u) => {
+    if (adminUserFilter !== "all" && u.status !== adminUserFilter) return false;
+    if (userQuery) {
+      const hay = ((u.email || "") + " " + (u.display_name || "") + " " + (u.role || "")).toLowerCase();
+      if (!hay.includes(userQuery)) return false;
+    }
+    return true;
+  });
   const adminCount = allProfiles.filter((u) => u.role === "admin" && u.status === "approved").length;
+
+  // Đếm số sách mỗi user đã đóng góp
+  const userBookCounts = {};
+  allBooks.forEach((b) => {
+    userBookCounts[b.owner_id] = (userBookCounts[b.owner_id] || 0) + 1;
+  });
 
   const uTbl = document.createElement("table");
   uTbl.className = "table-list";
   const uHead = document.createElement("thead");
   const uHr = document.createElement("tr");
-  ["Email / Tài khoản", "Vai trò", "Trạng thái", "Ngày tạo", "Thao tác"].forEach((h) => {
+  ["Email / Thành viên", "Vai trò", "Trạng thái", "Sách đã gửi", "Ngày tham gia", "Thao tác Quản trị (Lock / Unlock)"].forEach((h) => {
     const th = document.createElement("th");
     th.textContent = h;
     uHr.append(th);
@@ -3690,13 +3947,31 @@ async function renderAdminDashboard() {
     const stEm = document.createElement("strong");
     stEm.textContent = u.email || u.id;
     tdEm.append(stEm);
+    if (u.display_name) {
+      const subName = document.createElement("div");
+      subName.style.fontSize = "12px";
+      subName.style.color = "var(--fg-muted)";
+      subName.textContent = u.display_name;
+      tdEm.append(subName);
+    }
+
     const tdRole = document.createElement("td");
-    tdRole.textContent = u.role.toUpperCase();
+    const roleBadge = document.createElement("span");
+    roleBadge.className = "status-pill " + (u.role === "admin" ? "status-shared" : "status-approved");
+    roleBadge.textContent = u.role === "admin" ? "👑 ADMIN" : "READER";
+    tdRole.append(roleBadge);
+
     const tdSt = document.createElement("td");
     const sp = document.createElement("span");
     sp.className = "status-pill status-" + u.status;
-    sp.textContent = u.status;
+    if (u.status === "pending") sp.textContent = "⏳ Chờ duyệt";
+    else if (u.status === "approved") sp.textContent = "✓ Đang hoạt động";
+    else sp.textContent = "🔒 Đã khóa (Locked)";
     tdSt.append(sp);
+
+    const tdBooks = document.createElement("td");
+    tdBooks.textContent = (userBookCounts[u.id] || 0) + " cuốn";
+
     const tdDate = document.createElement("td");
     tdDate.textContent = (u.created_at || "2026-11-27").slice(0, 10);
 
@@ -3704,28 +3979,55 @@ async function renderAdminDashboard() {
     const wrap = document.createElement("div");
     wrap.style.display = "flex";
     wrap.style.gap = "6px";
+    wrap.style.flexWrap = "wrap";
 
     if (sb && u.id !== "local-admin") {
-      if (u.status !== "approved") {
-        const bApp = document.createElement("button");
-        bApp.type = "button";
-        bApp.className = "icon-btn";
-        bApp.textContent = "Duyệt";
-        bApp.onclick = () => adminUpdateProfile(u.id, { status: "approved" });
-        wrap.append(bApp);
+      if (u.status === "pending") {
+        const bApprove = document.createElement("button");
+        bApprove.type = "button";
+        bApprove.className = "btn-primary";
+        bApprove.style.padding = "5px 12px";
+        bApprove.style.fontSize = "12px";
+        bApprove.textContent = "✓ Duyệt cho vào";
+        bApprove.onclick = () => adminUpdateProfile(u.id, { status: "approved" });
+
+        const bLock = document.createElement("button");
+        bLock.type = "button";
+        bLock.className = "icon-btn";
+        bLock.textContent = "🔒 Từ chối / Khóa";
+        bLock.onclick = () => adminUpdateProfile(u.id, { status: "blocked" });
+        wrap.append(bApprove, bLock);
+      } else if (u.status === "approved") {
+        const bLock = document.createElement("button");
+        bLock.type = "button";
+        bLock.className = "icon-btn";
+        bLock.style.color = "#c0392b";
+        bLock.textContent = "🔒 Khóa TK (Lock)";
+        bLock.onclick = () => {
+          if (u.role === "admin" && adminCount <= 1) {
+            showSpineToast("Không thể khóa tài khoản Admin duy nhất của hệ thống!");
+            return;
+          }
+          if (window.confirm("Khóa tài khoản '" + (u.email || u.id) + "'? Người dùng này sẽ bị chặn truy cập kệ sách ngay lập tức.")) {
+            adminUpdateProfile(u.id, { status: "blocked" });
+          }
+        };
+        wrap.append(bLock);
+      } else if (u.status === "blocked") {
+        const bUnlock = document.createElement("button");
+        bUnlock.type = "button";
+        bUnlock.className = "btn-primary";
+        bUnlock.style.padding = "5px 12px";
+        bUnlock.style.fontSize = "12px";
+        bUnlock.textContent = "🔓 Mở khóa (Unlock)";
+        bUnlock.onclick = () => adminUpdateProfile(u.id, { status: "approved" });
+        wrap.append(bUnlock);
       }
-      if (u.status !== "blocked") {
-        const bBlk = document.createElement("button");
-        bBlk.type = "button";
-        bBlk.className = "icon-btn";
-        bBlk.textContent = "Chặn";
-        bBlk.onclick = () => adminUpdateProfile(u.id, { status: "blocked" });
-        wrap.append(bBlk);
-      }
+
       const bRole = document.createElement("button");
       bRole.type = "button";
       bRole.className = "icon-btn";
-      bRole.textContent = u.role === "admin" ? "Hạ xuống Reader" : "Nâng lên Admin";
+      bRole.textContent = u.role === "admin" ? "Hạ xuống Reader" : "👑 Cấp quyền Admin";
       bRole.onclick = () => {
         if (u.role === "admin" && adminCount <= 1) {
           if (!window.confirm("Cảnh báo: Đây là tài khoản Admin cuối cùng! Bạn có chắc chắn muốn hạ quyền không?")) return;
@@ -3737,12 +4039,12 @@ async function renderAdminDashboard() {
       const note = document.createElement("span");
       note.style.fontSize = "12px";
       note.style.color = "var(--fg-muted)";
-      note.textContent = "Điền SUPABASE_URL trong web-config.js để quản lý thành viên đám mây";
+      note.textContent = "Tài khoản quản trị mặc định";
       wrap.append(note);
     }
 
     tdAct.append(wrap);
-    tr.append(tdEm, tdRole, tdSt, tdDate, tdAct);
+    tr.append(tdEm, tdRole, tdSt, tdBooks, tdDate, tdAct);
     uBody.append(tr);
   });
   uTbl.append(uBody);
@@ -3845,7 +4147,6 @@ function bindStep4Events() {
   $("navBtnShelf").onclick = () => switchMainTab("shelf");
   $("navBtnMyBooks").onclick = () => switchMainTab("mybooks");
   $("navBtnAdmin").onclick = () => switchMainTab("admin");
-  $("adminUserFilter").onchange = () => renderAdminDashboard();
 
   // Điều hướng các mục trên Sidebar của Dashboard
   document.querySelectorAll("[data-admin-sec]").forEach((btn) => {
@@ -3880,6 +4181,20 @@ function bindStep4Events() {
     $("adminBookSearch").addEventListener("input", () => renderAdminDashboard());
   }
 
+  // Bộ lọc trạng thái tài khoản (Chờ duyệt / Đang hoạt động / Đã khóa) & tìm kiếm
+  document.querySelectorAll("[data-user-filter]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      adminUserFilter = btn.getAttribute("data-user-filter") || "all";
+      document.querySelectorAll("[data-user-filter]").forEach((b) => {
+        b.classList.toggle("active", b === btn);
+      });
+      renderAdminDashboard();
+    });
+  });
+  if ($("adminUserSearch")) {
+    $("adminUserSearch").addEventListener("input", () => renderAdminDashboard());
+  }
+
   // Tải file PDF / TXT
   const dropzone = $("pdfDropzone");
   const fileIn = $("bookFileInput");
@@ -3901,68 +4216,109 @@ function bindStep4Events() {
   };
   $("btnSubmitBook").onclick = submitPendingUserBook;
 
-  // Modal Đăng nhập / Đăng ký
+  // ================= SỰ KIỆN TRANG ĐĂNG NHẬP & ĐĂNG KÝ CHỈN CHU =================
+  $("tabSwitchLogin").onclick = () => switchAuthPortalMode("login");
+  $("tabSwitchSignup").onclick = () => switchAuthPortalMode("signup");
+
+  $("btnTogglePassVis").onclick = () => {
+    const inp = $("authPassInput");
+    const isPass = inp.type === "password";
+    inp.type = isPass ? "text" : "password";
+    $("btnTogglePassVis").textContent = isPass ? "Ẩn" : "Hiện";
+  };
+
   $("btnAuthAction").onclick = async () => {
     if (sb && currentUser) {
       await sb.auth.signOut();
       currentUser = null;
       currentProfile = null;
       await refreshAuthSession();
-      switchMainTab("shelf");
-      showSpineToast("Đã đăng xuất.");
+      showSpineToast("Đã đăng xuất khỏi hệ thống.");
       return;
     }
-    $("authNoticeBox").textContent = isSupabaseConfigured()
-      ? "Đăng nhập hoặc đăng ký tài khoản để đồng bộ tiến độ đọc và đóng góp sách PDF lên kệ chung."
-      : "Chế độ Local: Để bật đăng nhập nhiều người qua đám mây, chủ dự án chỉ cần điền SUPABASE_URL và SUPABASE_ANON_KEY vào file web-config.js.";
-    $("authErrorMsg").textContent = "";
-    $("authModalBackdrop").classList.add("open");
+    showAuthLoginForm("login");
   };
 
-  $("btnGateAction").onclick = () => $("btnAuthAction").click();
-  $("btnCloseAuthModal").onclick = () => $("authModalBackdrop").classList.remove("open");
-  $("btnClosePreviewModal").onclick = () => $("previewModalBackdrop").classList.remove("open");
-
-  $("btnSwitchAuthMode").onclick = () => {
-    authMode = authMode === "login" ? "signup" : "login";
-    $("authModalTitle").textContent = authMode === "login" ? "Đăng nhập" : "Đăng ký tài khoản mới";
-    $("btnSubmitAuth").textContent = authMode === "login" ? "Đăng nhập" : "Đăng ký";
-    $("btnSwitchAuthMode").textContent = authMode === "login"
-      ? "Chưa có tài khoản? Đăng ký"
-      : "Đã có tài khoản? Đăng nhập";
-    $("authErrorMsg").textContent = "";
+  $("btnRecheckStatus").onclick = async () => {
+    $("btnRecheckStatus").textContent = "Đang kiểm tra…";
+    await refreshAuthSession();
+    $("btnRecheckStatus").textContent = "↻ Kiểm tra lại trạng thái";
+    if (isApprovedUser()) {
+      renderBookshelf();
+      showSpineToast("Tài khoản đã được duyệt! Chào mừng bạn vào thư viện.");
+    } else {
+      showSpineToast("Trạng thái hiện tại: " + (currentProfile ? currentProfile.status : "chưa duyệt"));
+    }
   };
 
-  $("authForm").onsubmit = async (e) => {
+  $("btnGateSignOut").onclick = async () => {
+    if (sb) await sb.auth.signOut();
+    currentUser = null;
+    currentProfile = null;
+    await refreshAuthSession();
+  };
+
+  if ($("btnClosePreviewModal")) {
+    $("btnClosePreviewModal").onclick = () => $("previewModalBackdrop").classList.remove("open");
+  }
+
+  $("authPortalForm").onsubmit = async (e) => {
     e.preventDefault();
     if (!sb) {
-      $("authModalBackdrop").classList.remove("open");
-      showSpineToast("Đang chạy ở chế độ Local (chưa điền khóa Supabase trong web-config.js).");
+      showSpineToast("Chưa khởi tạo kết nối Supabase.");
       return;
     }
+
     const email = ($("authEmailInput").value || "").trim();
     const password = $("authPassInput").value || "";
-    $("authErrorMsg").textContent = "";
+    const confirmPass = $("authPassConfirmInput").value || "";
+    const displayName = ($("authNameInput").value || "").trim();
+    const btn = $("btnSubmitAuth");
 
-    if (authMode === "login") {
-      const { error } = await sb.auth.signInWithPassword({ email, password });
-      if (error) {
-        $("authErrorMsg").textContent = "Email hoặc mật khẩu chưa đúng.";
-        return;
+    setAuthAlert("", "");
+
+    if (authMode === "signup" && password !== confirmPass) {
+      setAuthAlert("error", "Mật khẩu nhập lại chưa khớp. Vui lòng kiểm tra lại.");
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = authMode === "login" ? "Đang đăng nhập…" : "Đang tạo tài khoản…";
+
+    try {
+      if (authMode === "login") {
+        const { error } = await sb.auth.signInWithPassword({ email, password });
+        if (error) {
+          setAuthAlert("error", "Email hoặc mật khẩu chưa chính xác (hoặc email chưa xác thực).");
+          return;
+        }
+        await refreshAuthSession();
+        if (isApprovedUser()) {
+          renderBookshelf();
+          showSpineToast("Đăng nhập thành công!");
+        }
+      } else {
+        const { data, error } = await sb.auth.signUp({
+          email,
+          password,
+          options: { data: { display_name: displayName } }
+        });
+        if (error) {
+          setAuthAlert("error", "Không thể đăng ký: " + error.message);
+          return;
+        }
+        if (data && data.session) {
+          await refreshAuthSession();
+        } else {
+          setAuthAlert(
+            "success",
+            "Đăng ký thành công! Nếu hệ thống yêu cầu xác nhận email, hãy kiểm tra hộp thư của bạn, sau đó đăng nhập để chờ Admin duyệt."
+          );
+        }
       }
-      $("authModalBackdrop").classList.remove("open");
-      await refreshAuthSession();
-      renderBookshelf();
-      showSpineToast("Đăng nhập thành công!");
-    } else {
-      const { error } = await sb.auth.signUp({ email, password });
-      if (error) {
-        $("authErrorMsg").textContent = "Không thể đăng ký: " + error.message;
-        return;
-      }
-      $("authModalBackdrop").classList.remove("open");
-      await refreshAuthSession();
-      showSpineToast("Đăng ký thành công! Tài khoản của bạn đang chờ Admin duyệt.");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = authMode === "login" ? "Đăng nhập vào thư viện →" : "Đăng ký tài khoản →";
     }
   };
 }

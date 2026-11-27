@@ -32,11 +32,12 @@ language sql security definer set search_path = public stable as $$
   select exists (select 1 from public.profiles where id = auth.uid() and role = 'admin' and status = 'approved');
 $$;
 
--- Đăng ký xong tự có hồ sơ
+-- Đăng ký xong tự có hồ sơ (lưu luôn display_name nếu có trong metadata)
 create or replace function public.handle_new_user() returns trigger
 language plpgsql security definer set search_path = public as $$
 begin
-  insert into public.profiles (id, email) values (new.id, new.email);
+  insert into public.profiles (id, email, display_name)
+  values (new.id, new.email, new.raw_user_meta_data->>'display_name');
   return new;
 end;
 $$;
