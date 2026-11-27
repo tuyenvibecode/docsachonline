@@ -1152,6 +1152,14 @@
   }
 
   /* Thẻ góp ý & phản hồi */
+  .spine-toast {
+    position: fixed; left: 50%; bottom: 28px; z-index: 120;
+    transform: translate(-50%, 20px); opacity: 0; pointer-events: none;
+    background: #2b2118; color: #f8efe0; padding: 10px 18px; border-radius: 99px;
+    font-size: 13.5px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    transition: opacity 0.25s, transform 0.25s; max-width: min(560px, 92vw); text-align: center;
+  }
+  .spine-toast.show { opacity: 1; transform: translate(-50%, 0); }
   .fb-card {
     border: 1px solid var(--line); border-left: 4px solid #d68910;
     border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; background: var(--bg);
@@ -2991,14 +2999,23 @@ async function refreshAuthSession() {
     return;
   }
 
-  const { data: prof } = await sb.from("profiles").select("*").eq("id", currentUser.id).maybeSingle();
-  currentProfile = prof || {
-    id: currentUser.id,
-    username: (currentUser.user_metadata && currentUser.user_metadata.username) || "",
-    email: currentUser.email,
-    role: "reader",
-    status: "pending"
-  };
+  const { data: prof, error: profErr } = await sb.from("profiles").select("*").eq("id", currentUser.id).maybeSingle();
+  if (!prof) {
+    // Không đọc được hồ sơ: thường do chưa chạy supabase/schema.sql (hoặc chạy bị lỗi)
+    currentProfile = { id: currentUser.id, username: (currentUser.user_metadata && currentUser.user_metadata.username) || "", email: currentUser.email, role: "reader", status: "pending" };
+    if (navTabs) navTabs.style.display = "none";
+    $("shelfSearchWrap").style.display = "none";
+    btnAuth.textContent = getProfileUsername(currentProfile) + " · Đăng xuất";
+    showAuthStatusGate(
+      "pending",
+      "Chưa tìm thấy hồ sơ tài khoản",
+      "Đăng nhập đúng nhưng cơ sở dữ liệu chưa có hồ sơ cho tài khoản này" +
+        (profErr ? " (" + profErr.message + ")" : "") +
+        ". Admin cần chạy file supabase/schema.sql trong Supabase SQL Editor."
+    );
+    return;
+  }
+  currentProfile = prof;
   const uName = getProfileFullName(currentProfile);
   btnAuth.textContent = uName + " · Đăng xuất";
   btnAdmin.style.display = isAdminUser() ? "inline-flex" : "none";

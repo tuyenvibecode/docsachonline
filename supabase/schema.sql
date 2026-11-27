@@ -1,4 +1,4 @@
-﻿-- Cấu trúc Supabase cho web đọc sách: tài khoản (theo tên đăng nhập username), sách do người dùng tự tải lên, tiến độ đọc, dấu trang, góp ý & phản hồi.
+-- Cấu trúc Supabase cho web đọc sách: tài khoản (theo tên đăng nhập username), sách do người dùng tự tải lên, tiến độ đọc, dấu trang, góp ý & phản hồi.
 -- CÁCH DÙNG: Supabase > SQL Editor > dán toàn bộ file này > Run. Chạy lại nhiều lần vẫn an toàn.
 --
 -- Mô hình: sách của chủ dự án (kệ chung gốc) vẫn là file tĩnh trong repo như cũ, không nằm ở đây.
