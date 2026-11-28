@@ -31,15 +31,20 @@ language sql security definer set search_path = public stable as $$
   select exists (select 1 from public.profiles where id = auth.uid() and role = 'admin' and status = 'approved');
 $$;
 
--- Đăng ký xong tự có hồ sơ (lưu username, họ tên display_name; nếu là 'admin' thì tự cấp full quyền admin + approved)
+-- Đăng ký xong tự có hồ sơ (lưu username, họ tên display_name; tự xác nhận tài khoản nội bộ không cần xác thực email)
 create or replace function public.handle_new_user() returns trigger
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, auth as $$
 declare
   v_uname text;
   v_dname text;
 begin
-  v_uname := coalesce(nullif(trim(new.raw_user_meta_data->>'username'), ''), split_part(new.email, '@', 1));
+  v_uname := lower(coalesce(nullif(trim(new.raw_user_meta_data->>'username'), ''), split_part(new.email, '@', 1)));
   v_dname := coalesce(nullif(trim(new.raw_user_meta_data->>'display_name'), ''), v_uname);
+
+  -- Tự động đánh dấu đã xác nhận để người dùng chỉ dùng Tên tài khoản, không bị chặn bởi "Email not confirmed"
+  if new.email_confirmed_at is null then
+    update auth.users set email_confirmed_at = now() where id = new.id and email_confirmed_at is null;
+  end if;
 
   insert into public.profiles (id, username, email, display_name, role, status)
   values (
@@ -47,8 +52,8 @@ begin
     v_uname,
     new.email,
     v_dname,
-    case when lower(v_uname) = 'admin' then 'admin' else 'reader' end,
-    case when lower(v_uname) = 'admin' then 'approved' else 'pending' end
+    case when v_uname = 'admin' then 'admin' else 'reader' end,
+    case when v_uname = 'admin' then 'approved' else 'pending' end
   )
   on conflict (id) do update set
     username     = excluded.username,
@@ -59,6 +64,74 @@ $$;
 drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created after insert on auth.users
   for each row execute function public.handle_new_user();
+
+-- Hàm RPC đăng ký thuần bằng Tên tài khoản + Mật khẩu (không gửi email xác thực, luôn tạo ở trạng thái reader + pending)
+create or replace function public.register_account(
+  p_username text,
+  p_password text,
+  p_display_name text default null
+) returns uuid
+language plpgsql security definer set search_path = public, auth, extensions as $$
+declare
+  v_uname   text := lower(trim(coalesce(p_username, '')));
+  v_dname   text := coalesce(nullif(trim(p_display_name), ''), v_uname);
+  v_email   text;
+  v_user_id uuid;
+begin
+  if v_uname !~ '^[a-z0-9._-]{3,32}$' then
+    raise exception 'Tên tài khoản phải dài 3–32 ký tự, chỉ gồm chữ không dấu, số và dấu . _ -';
+  end if;
+  if length(coalesce(p_password, '')) < 6 then
+    raise exception 'Mật khẩu quá ngắn.';
+  end if;
+
+  v_email := v_uname || '@tusach3d.vn';
+
+  if exists (
+    select 1 from public.profiles where lower(username) = v_uname
+  ) or exists (
+    select 1 from auth.users where lower(email) in (v_email, v_uname || '@tusach.local')
+  ) then
+    raise exception 'Tên tài khoản này đã có người đăng ký.';
+  end if;
+
+  v_user_id := gen_random_uuid();
+
+  insert into auth.users (
+    instance_id, id, aud, role, email, encrypted_password,
+    email_confirmed_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at,
+    confirmation_token, email_change, email_change_token_new, recovery_token
+  ) values (
+    '00000000-0000-0000-0000-000000000000',
+    v_user_id,
+    'authenticated',
+    'authenticated',
+    v_email,
+    extensions.crypt(p_password, extensions.gen_salt('bf')),
+    now(),
+    '{"provider":"email","providers":["email"]}'::jsonb,
+    jsonb_build_object('username', v_uname, 'display_name', v_dname),
+    now(),
+    now(),
+    '', '', '', ''
+  );
+
+  insert into auth.identities (
+    id, user_id, provider_id, identity_data, provider, last_sign_in_at, created_at, updated_at
+  ) values (
+    gen_random_uuid(),
+    v_user_id,
+    v_user_id::text,
+    jsonb_build_object('sub', v_user_id::text, 'email', v_email, 'email_verified', true),
+    'email',
+    now(),
+    now(),
+    now()
+  );
+
+  return v_user_id;
+end;
+$$;
 
 -- Người dùng đọc hồ sơ của mình và có thể cập nhật Họ tên (display_name) của mình; admin đọc và sửa tất cả.
 drop policy if exists profiles_select_own   on public.profiles;
@@ -257,6 +330,36 @@ create policy fb_select_admin on public.user_feedbacks for select using (public.
 create policy fb_update_admin on public.user_feedbacks for update using (public.is_admin()) with check (public.is_admin());
 create policy fb_delete_admin on public.user_feedbacks for delete using (public.is_admin());
 
+-- ============ 4B. Thống kê lượt truy cập & tổng thời gian đọc toàn trang ============
+create table if not exists public.site_metrics (
+  id                 integer primary key default 1 check (id = 1),
+  total_visits       bigint not null default 0,
+  total_read_seconds bigint not null default 0,
+  updated_at         timestamptz not null default now()
+);
+insert into public.site_metrics (id, total_visits, total_read_seconds)
+values (1, 1, 0)
+on conflict (id) do nothing;
+
+alter table public.site_metrics enable row level security;
+drop policy if exists site_metrics_select_admin on public.site_metrics;
+create policy site_metrics_select_admin on public.site_metrics for select using (public.is_admin());
+
+create or replace function public.record_site_activity(p_visit integer default 0, p_read_seconds integer default 0)
+returns void
+language plpgsql security definer set search_path = public as $$
+declare
+  v_vis integer := greatest(0, least(coalesce(p_visit, 0), 1));
+  v_sec integer := greatest(0, least(coalesce(p_read_seconds, 0), 300));
+begin
+  update public.site_metrics
+  set total_visits       = total_visits + v_vis,
+      total_read_seconds = total_read_seconds + v_sec,
+      updated_at         = now()
+  where id = 1;
+end;
+$$;
+
 -- ============ 5. Khởi tạo sẵn tài khoản Admin mặc định (TK: admin / MK: admin) ============
 -- Lưu ý: Supabase bắt mật khẩu tối thiểu 6 ký tự, nên web tự đệm hậu tố '#TS3D!' cho mật khẩu ngắn hơn 6 ký tự.
 -- Vì vậy mật khẩu 'admin' gõ trên web sẽ được gửi lên là 'admin#TS3D!' — dòng dưới lưu đúng giá trị đó.
@@ -320,7 +423,8 @@ grant select, insert, update, delete on
   public.user_books,
   public.reading_progress,
   public.bookmarks,
-  public.user_feedbacks
+  public.user_feedbacks,
+  public.site_metrics
 to authenticated;
 
 grant usage, select on all sequences in schema public to authenticated;
@@ -329,6 +433,8 @@ grant execute on function public.is_approved()                          to anon,
 grant execute on function public.is_admin()                             to anon, authenticated;
 grant execute on function public.can_read_book_file(text)               to anon, authenticated;
 grant execute on function public.file_is_shared(text)                   to anon, authenticated;
+grant execute on function public.register_account(text, text, text)     to anon, authenticated;
+grant execute on function public.record_site_activity(integer, integer) to anon, authenticated;
 grant execute on function public.admin_reset_user_password(uuid, text)  to authenticated;
 
 -- Báo cho Data API nạp lại cấu hình

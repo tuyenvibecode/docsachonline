@@ -127,12 +127,337 @@
   }
   .pill-btn.active { background: var(--surface); color: var(--fg); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
 
-  /* ================= KỆ SÁCH 3D ================= */
-  #shelfView { max-width: 1180px; margin: 0 auto; padding: 28px 20px 72px; }
+  /* ================= KỆ SÁCH 3D — BỐ CỤC 3 CỘT "GÓC ĐỌC SÁCH" ================= */
+  #shelfView {
+    width: 100%;
+    max-width: min(1680px, 100%);
+    margin: 0 auto;
+    padding: 24px clamp(14px, 2.5vw, 40px) 56px;
+  }
+
+  .shelf-layout-grid {
+    display: grid;
+    grid-template-columns: minmax(260px, 340px) minmax(0, 1fr) minmax(260px, 340px);
+    justify-content: space-between;
+    align-items: start;
+    gap: clamp(20px, 2.6vw, 42px);
+  }
+  .shelf-center-col { min-width: 0; }
+  .shelf-side-rail {
+    position: sticky;
+    top: 84px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .rail-card {
+    background: color-mix(in srgb, var(--surface) 92%, transparent);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow: 0 10px 28px rgba(43, 33, 24, 0.06);
+  }
+  .rail-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 3px 9px;
+    border-radius: 99px;
+    margin-bottom: 12px;
+  }
+  .rail-heading {
+    font-family: var(--font-spine);
+    font-size: 15.5px;
+    font-weight: 700;
+    margin: 0 0 10px;
+    color: var(--fg);
+  }
+
+  /* Thẻ Đọc tiếp (Cột trái) */
+  .rail-continue-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .mini-cover-3d {
+    width: 52px;
+    height: 74px;
+    border-radius: 3px 6px 6px 3px;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+    box-shadow: -2px 0 0 rgba(0,0,0,0.22), 0 6px 14px rgba(43, 33, 24, 0.22);
+    background: var(--spine-bg, #6D3D6E);
+  }
+  .mini-cover-3d::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(0,0,0,0.25) 0%, rgba(255,255,255,0.22) 8%, transparent 18%);
+    pointer-events: none;
+  }
+  .mini-cover-3d img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .rail-book-title {
+    font-family: var(--font-spine);
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 1.3;
+    margin: 0 0 3px;
+    color: var(--fg);
+  }
+  .rail-book-author {
+    font-size: 12px;
+    color: var(--fg-muted);
+    margin-bottom: 6px;
+  }
+  .rail-prog-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11.5px;
+    color: var(--fg-muted);
+    margin-bottom: 5px;
+  }
+  .rail-prog-bar {
+    height: 5px;
+    border-radius: 99px;
+    background: var(--surface-2);
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .rail-prog-fill {
+    height: 100%;
+    border-radius: 99px;
+    background: var(--accent);
+    transition: width 0.25s;
+  }
+  .rail-btn-full {
+    width: 100%;
+    justify-content: center;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Bộ lọc nhanh trên Cột trái */
+  .rail-filter-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .rail-filter-btn {
+    width: 100%;
+    border: 1px solid transparent;
+    background: transparent;
+    padding: 8px 11px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--fg-muted);
+    transition: all 0.16s;
+    text-align: left;
+  }
+  .rail-filter-btn:hover {
+    background: var(--surface-2);
+    color: var(--fg);
+  }
+  .rail-filter-btn.active {
+    background: var(--accent-soft);
+    border-color: color-mix(in srgb, var(--accent) 32%, transparent);
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .rail-filter-count {
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 1px 7px;
+    border-radius: 99px;
+    background: var(--surface-2);
+    color: var(--fg-muted);
+  }
+  .rail-filter-btn.active .rail-filter-count {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .rail-mini-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .rail-stat-tile {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 9px 10px;
+    text-align: center;
+  }
+  .rail-stat-num {
+    font-family: var(--font-spine);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--fg);
+    line-height: 1.1;
+  }
+  .rail-stat-lbl {
+    font-size: 11px;
+    color: var(--fg-muted);
+    margin-top: 2px;
+  }
+
+  /* Thẻ Tiêu điểm chi tiết sách (Cột phải) */
+  .spotlight-cover-stage {
+    display: flex;
+    justify-content: center;
+    padding: 8px 0 14px;
+  }
+  .spotlight-book-3d {
+    width: 104px;
+    height: 148px;
+    border-radius: 3px 8px 8px 3px;
+    position: relative;
+    overflow: hidden;
+    background: var(--spine-bg, #6D3D6E);
+    color: var(--spine-fg, #F5E6D3);
+    box-shadow:
+      -4px 0 0 rgba(0,0,0,0.22),
+      -7px 4px 12px rgba(0,0,0,0.18),
+      0 14px 26px rgba(43, 33, 24, 0.24);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 12px 10px;
+    text-align: center;
+    transition: transform 0.28s cubic-bezier(.2,.8,.2,1), background 0.25s;
+  }
+  .spotlight-book-3d:hover { transform: translateY(-3px) rotate(-1deg); }
+  .spotlight-book-3d::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(0,0,0,0.28) 0%, rgba(255,255,255,0.22) 7%, transparent 16%);
+    pointer-events: none;
+    z-index: 2;
+  }
+  .spotlight-book-3d img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+  }
+  .spotlight-cover-art-title {
+    position: relative;
+    z-index: 3;
+    font-family: var(--font-spine);
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.28;
+    text-transform: uppercase;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .spotlight-cover-art-author {
+    position: relative;
+    z-index: 3;
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    opacity: 0.9;
+    text-transform: uppercase;
+  }
+  .spotlight-title {
+    font-family: var(--font-spine);
+    font-size: 17.5px;
+    font-weight: 700;
+    line-height: 1.32;
+    margin: 0 0 4px;
+    text-align: center;
+    color: var(--fg);
+  }
+  .spotlight-author {
+    font-size: 12.5px;
+    color: var(--fg-muted);
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .spotlight-chips {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .spotlight-chip {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 99px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    color: var(--fg-muted);
+  }
+  .spotlight-chip.real {
+    background: rgba(39, 174, 96, 0.14);
+    border-color: rgba(39, 174, 96, 0.28);
+    color: #1e8449;
+  }
+  .spotlight-blurb {
+    font-family: var(--font-serif);
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--fg-muted);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+  }
+  .spotlight-hint {
+    font-size: 11.5px;
+    color: var(--fg-muted);
+    text-align: center;
+    margin-top: 9px;
+    opacity: 0.85;
+  }
+  .rail-quote-text {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--fg-muted);
+    margin: 0 0 12px;
+  }
+
+  @media (max-width: 1120px) {
+    .shelf-layout-grid {
+      grid-template-columns: 1fr;
+      max-width: 580px;
+      margin: 0 auto;
+      gap: 22px;
+    }
+    .shelf-side-rail {
+      position: static;
+    }
+  }
 
   .continue-banner {
     background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
-    padding: 16px 22px; margin-bottom: 36px;
+    padding: 14px 20px; margin-bottom: 24px;
     display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
     box-shadow: 0 8px 24px rgba(0,0,0,0.05);
   }
@@ -150,15 +475,113 @@
   }
   .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
 
-  /* ================= DÃY GÁY SÁCH THEO KE-SACH-SPEC.MD ================= */
-  .shelf-section { margin-bottom: 42px; position: relative; }
+  /* ================= DÃY GÁY SÁCH GỌN (THEO THỂ LOẠI · 5 CUỐN / KỆ) ================= */
+  .shelf-section {
+    max-width: 560px;
+    margin: 0 auto 22px;
+    position: relative;
+  }
+  .shelf-cat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 0 8px 2px;
+    margin-bottom: -8px;
+    position: relative;
+    z-index: 4;
+  }
+  .shelf-cat-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+  .shelf-cat-title {
+    font-family: var(--font-spine);
+    font-size: 15.5px;
+    font-weight: 700;
+    color: var(--fg);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .shelf-cat-count {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 99px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    color: var(--fg-muted);
+    white-space: nowrap;
+  }
+  .shelf-cat-more-btn {
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 11px;
+    border-radius: 99px;
+    white-space: nowrap;
+    transition: all 0.16s;
+  }
+  .shelf-cat-more-btn:hover {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #fff;
+  }
+  .shelf-cat-banner {
+    max-width: 560px;
+    margin: 0 auto 16px;
+    padding: 11px 15px;
+    border-radius: 13px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    box-shadow: 0 4px 14px rgba(43, 33, 24, 0.05);
+  }
+  .shelf-cat-banner-title {
+    font-family: var(--font-spine);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--fg);
+  }
+
+  /* Nút đếm giờ đọc trực tiếp trên trình đọc 3D */
+  .reader-timer-pill {
+    font-variant-numeric: tabular-nums;
+    border-color: color-mix(in srgb, var(--accent) 38%, var(--line));
+    background: color-mix(in srgb, var(--accent-soft) 55%, var(--surface));
+    color: var(--fg);
+    font-weight: 600;
+    font-size: 12.5px;
+  }
+  .timer-live-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #27ae60;
+    box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.22);
+    animation: pulseLiveDot 1.8s infinite ease-in-out;
+  }
+  @keyframes pulseLiveDot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.45; transform: scale(0.86); }
+  }
 
   /* Khung cuộn ngang khi màn hình hẹp (điện thoại) */
   .shelf-scroll {
     overflow-x: auto;
     overflow-y: visible;
-    padding: 46px 20px 10px;
-    margin: 0 -10px;
+    padding: 24px 14px 7px;
+    margin: 0;
     scrollbar-width: thin;
     -webkit-overflow-scrolling: touch;
   }
@@ -168,43 +591,45 @@
     flex-wrap: nowrap;
     align-items: flex-end;
     justify-content: center;
-    gap: 14px;
+    gap: 12px;
     min-width: max-content;
     margin: 0 auto;
     position: relative;
     z-index: 2;
   }
 
-  /* Tấm kệ gỗ nằm dưới hàng sách (nền gỗ #B3844F, vạch sáng ở mép trên) */
+  /* Tấm kệ gỗ gọn gàng vừa khít 5 cuốn sách */
   .wood-plank {
-    height: 22px;
-    margin-top: -10px;
+    height: 15px;
+    width: 100%;
+    max-width: 540px;
+    margin: -6px auto 0;
     position: relative;
     z-index: 1;
     background: linear-gradient(180deg, var(--shelf-wood) 0%, var(--shelf-wood-dark) 100%);
-    border-top: 3px solid var(--shelf-highlight);
-    border-radius: 4px 4px 7px 7px;
-    box-shadow: 0 14px 26px -4px var(--shelf-shadow);
+    border-top: 2.5px solid var(--shelf-highlight);
+    border-radius: 4px 4px 6px 6px;
+    box-shadow: 0 11px 20px -4px var(--shelf-shadow);
   }
   .wood-plank::after {
-    content: ""; position: absolute; left: 20px; right: 20px; bottom: -14px; height: 14px;
+    content: ""; position: absolute; left: 16px; right: 16px; bottom: -11px; height: 11px;
     background: radial-gradient(ellipse at center, var(--shelf-shadow) 0%, transparent 75%);
     pointer-events: none;
   }
 
-  /* Tất cả gáy sách cùng kích thước: 116 x 548 px, xếp thẳng hàng đáy trên kệ */
+  /* Gáy sách thu gọn cân đối: 80 x 308 px, xếp 5 cuốn mỗi kệ */
   .spine-book {
     appearance: none;
     -webkit-appearance: none;
     border: none;
-    padding: 12px 10px 14px;
-    width: 116px;
-    height: 548px;
-    flex: 0 0 116px;
+    padding: 8px 6px 9px;
+    width: 80px;
+    height: 308px;
+    flex: 0 0 80px;
     position: relative;
     cursor: pointer;
     user-select: none;
-    border-radius: 6px 6px 4px 4px;
+    border-radius: 5px 5px 3px 3px;
     background: var(--spine-bg, #b5a83b);
     color: var(--spine-fg, #2B2118);
     display: flex;
@@ -214,13 +639,13 @@
     text-align: center;
     transform-origin: center bottom;
     transition:
-      transform 0.45s cubic-bezier(.2, .8, .2, 1),
-      box-shadow 0.45s cubic-bezier(.2, .8, .2, 1);
+      transform 0.42s cubic-bezier(.2, .8, .2, 1),
+      box-shadow 0.42s cubic-bezier(.2, .8, .2, 1);
     box-shadow:
-      inset 10px 0 16px -6px rgba(255, 255, 255, 0.28),
-      inset -12px 0 18px -6px rgba(0, 0, 0, 0.28),
-      inset 0 2px 2px rgba(255, 255, 255, 0.35),
-      0 8px 16px rgba(43, 33, 24, 0.22);
+      inset 8px 0 12px -5px rgba(255, 255, 255, 0.28),
+      inset -9px 0 14px -5px rgba(0, 0, 0, 0.28),
+      inset 0 1.5px 2px rgba(255, 255, 255, 0.35),
+      0 6px 12px rgba(43, 33, 24, 0.22);
   }
 
   /* Đường gân bo tròn dọc 2 mép gáy */
@@ -237,34 +662,34 @@
     );
   }
 
-  /* Rê chuột / focus bàn phím: sách nhích lên 14px */
+  /* Rê chuột / focus bàn phím: sách nhích nhẹ lên */
   .spine-book:hover,
   .spine-book:focus-visible {
-    transform: translateY(-14px);
+    transform: translateY(-9px);
     box-shadow:
-      inset 10px 0 16px -6px rgba(255, 255, 255, 0.28),
-      inset -12px 0 18px -6px rgba(0, 0, 0, 0.28),
-      inset 0 2px 2px rgba(255, 255, 255, 0.35),
-      0 18px 26px rgba(43, 33, 24, 0.28);
+      inset 8px 0 12px -5px rgba(255, 255, 255, 0.28),
+      inset -9px 0 14px -5px rgba(0, 0, 0, 0.28),
+      inset 0 1.5px 2px rgba(255, 255, 255, 0.35),
+      0 14px 20px rgba(43, 33, 24, 0.28);
     z-index: 5;
   }
 
   /* Viền focus rõ khi dùng bàn phím */
   .spine-book:focus-visible {
-    outline: 3px solid var(--fg);
-    outline-offset: 3px;
+    outline: 2.5px solid var(--fg);
+    outline-offset: 2px;
   }
 
-  /* Bấm vào gáy (sách được rút ra): translateY(-34px) scale(1.07) rotate(-1.5deg) + bóng đổ lớn hơn */
+  /* Bấm vào gáy (sách được rút ra) */
   .spine-book[aria-pressed="true"],
   .spine-book.pulled {
-    transform: translateY(-34px) scale(1.07) rotate(-1.5deg);
+    transform: translateY(-20px) scale(1.06) rotate(-1.5deg);
     box-shadow:
-      inset 10px 0 16px -6px rgba(255, 255, 255, 0.3),
-      inset -12px 0 18px -6px rgba(0, 0, 0, 0.3),
+      inset 8px 0 12px -5px rgba(255, 255, 255, 0.3),
+      inset -9px 0 14px -5px rgba(0, 0, 0, 0.3),
       inset 0 2px 3px rgba(255, 255, 255, 0.4),
-      0 32px 44px -6px rgba(43, 33, 24, 0.46),
-      0 14px 20px -4px rgba(43, 33, 24, 0.32);
+      0 24px 32px -6px rgba(43, 33, 24, 0.46),
+      0 10px 16px -4px rgba(43, 33, 24, 0.32);
     z-index: 12;
   }
 
@@ -280,13 +705,13 @@
 
   /* 1. Ảnh bìa nhỏ vuông ở đỉnh gáy */
   .spine-thumb-box {
-    width: 94px;
-    height: 94px;
+    width: 62px;
+    height: 62px;
     border-radius: 3px;
     overflow: hidden;
     background: rgba(0, 0, 0, 0.14);
     border: 1px solid rgba(0, 0, 0, 0.24);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.18);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.18);
     position: relative;
     z-index: 2;
     flex-shrink: 0;
@@ -306,24 +731,24 @@
   }
   .spine-art-sun {
     position: absolute;
-    width: 28px; height: 28px;
+    width: 18px; height: 18px;
     border-radius: 50%;
-    top: 16px; right: 18px;
+    top: 10px; right: 11px;
     background: var(--art-sun, #fff3c4);
-    box-shadow: 0 0 12px var(--art-sun, #fff3c4);
+    box-shadow: 0 0 9px var(--art-sun, #fff3c4);
   }
   .spine-art-hill-back {
     position: absolute;
-    left: -15%; right: -10%; bottom: -12px;
-    height: 54px;
+    left: -15%; right: -10%; bottom: -8px;
+    height: 35px;
     border-radius: 50% 50% 0 0;
     background: color-mix(in srgb, var(--art-hill, #5b7043) 78%, var(--art-sky, #e8c574));
     transform: rotate(-5deg);
   }
   .spine-art-hill-front {
     position: absolute;
-    left: -10%; right: -20%; bottom: -16px;
-    height: 44px;
+    left: -10%; right: -20%; bottom: -11px;
+    height: 28px;
     border-radius: 55% 45% 0 0;
     background: var(--art-hill, #5b7043);
     transform: rotate(6deg);
@@ -336,7 +761,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 14px 2px;
+    padding: 8px 2px;
     overflow: hidden;
     position: relative;
     z-index: 2;
@@ -346,9 +771,9 @@
     text-orientation: mixed;
     font-family: var(--font-spine);
     font-weight: 600;
-    font-size: 21px;
-    line-height: 1.3;
-    letter-spacing: 0.04em;
+    font-size: 14px;
+    line-height: 1.22;
+    letter-spacing: 0.03em;
     text-transform: uppercase;
     text-align: center;
     display: flex;
@@ -368,7 +793,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 6px;
+    gap: 3px;
     position: relative;
     z-index: 2;
     flex-shrink: 0;
@@ -376,8 +801,8 @@
   .spine-author {
     font-family: var(--font-sans);
     font-weight: 700;
-    font-size: 10.5px;
-    letter-spacing: 0.05em;
+    font-size: 8px;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
     text-align: center;
     line-height: 1.2;
@@ -389,50 +814,80 @@
   .spine-year-box {
     font-family: var(--font-sans);
     font-weight: 700;
-    font-size: 11px;
-    letter-spacing: 0.05em;
-    padding: 2px 10px;
-    border: 1.5px solid currentColor;
+    font-size: 8.5px;
+    letter-spacing: 0.04em;
+    padding: 1px 6px;
+    border: 1.2px solid currentColor;
     border-radius: 3px;
   }
 
   /* Huy hiệu đang đọc & dấu trang trên gáy sách */
   .spine-reading-pill {
-    position: absolute; top: 6px; right: 6px; z-index: 5;
+    position: absolute; top: 4px; right: 4px; z-index: 5;
     background: rgba(25, 20, 15, 0.85); color: #fff;
     font-family: var(--font-sans);
-    font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 99px;
+    font-size: 8.5px; font-weight: 700; padding: 1px 5px; border-radius: 99px;
   }
   .spine-bookmark-flag {
-    position: absolute; top: 0; left: 10px; z-index: 5;
-    width: 11px; height: 20px; background: #c0392b;
+    position: absolute; top: 0; left: 7px; z-index: 5;
+    width: 9px; height: 16px; background: #c0392b;
     clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%);
   }
 
-  /* Kệ thứ hai bên dưới có vài ô trống nét đứt "Chỗ cho sách mới" */
-  .spine-slot-empty {
-    width: 116px;
-    height: 548px;
-    flex: 0 0 116px;
-    border: 2px dashed color-mix(in srgb, var(--fg-muted) 42%, transparent);
-    border-radius: 6px 6px 4px 4px;
-    background: color-mix(in srgb, var(--surface) 35%, transparent);
-    color: var(--fg-muted);
+  /* Thanh phân trang dưới 3 kệ sách */
+  .shelf-pagination {
+    margin-top: 14px;
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .shelf-page-controls {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 16px 8px;
-    user-select: none;
+    gap: 6px;
+    flex-wrap: wrap;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    padding: 5px 8px;
+    border-radius: 99px;
+    box-shadow: 0 6px 18px rgba(43, 33, 24, 0.06);
   }
-  .spine-slot-empty span {
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
-    font-family: var(--font-sans);
+  .shelf-page-btn {
+    min-width: 34px;
+    height: 32px;
+    padding: 0 11px;
+    border-radius: 99px;
+    border: 1px solid transparent;
+    background: transparent;
     font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    opacity: 0.72;
+    font-weight: 600;
+    color: var(--fg-muted);
+    transition: all 0.16s;
+  }
+  .shelf-page-btn:hover:not(:disabled) {
+    color: var(--fg);
+    background: var(--surface-2);
+  }
+  .shelf-page-btn.active {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(156, 86, 40, 0.28);
+  }
+  .shelf-page-btn:disabled {
+    opacity: 0.38;
+    cursor: not-allowed;
+  }
+  .shelf-page-summary {
+    font-size: 12.5px;
+    color: var(--fg-muted);
+  }
+  .shelf-empty-msg {
+    text-align: center;
+    padding: 40px 20px 24px;
+    color: var(--fg-muted);
+    font-size: 14px;
   }
 
   /* ================= MÀN HÌNH ĐỌC SÁCH LẬT TRANG 3D ================= */
@@ -823,7 +1278,10 @@
   }
 
   .panel-view {
-    max-width: 1060px; margin: 0 auto; padding: 28px 20px 72px;
+    width: 100%;
+    max-width: min(1440px, 100%);
+    margin: 0 auto;
+    padding: 24px clamp(14px, 2.5vw, 40px) 68px;
     display: none;
   }
   .panel-view.open { display: block; }
@@ -853,20 +1311,219 @@
   .upload-dropzone:hover { border-color: var(--accent); background: var(--accent-soft); }
 
   .status-pill {
-    display: inline-block; padding: 3px 10px; border-radius: 99px;
-    font-size: 11.5px; font-weight: 700; letter-spacing: 0.02em;
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 10px; border-radius: 99px;
+    font-size: 11.5px; font-weight: 700; letter-spacing: 0.01em;
+    white-space: nowrap; line-height: 1.2;
   }
-  .status-pending { background: rgba(214, 137, 16, 0.16); color: #b7791f; }
-  .status-approved { background: rgba(39, 174, 96, 0.16); color: #1e8449; }
-  .status-shared { background: rgba(41, 128, 185, 0.16); color: #1f618d; }
-  .status-rejected { background: rgba(192, 57, 43, 0.16); color: #c0392b; }
-  .status-blocked { background: rgba(127, 140, 141, 0.2); color: #555; }
+  .status-pending { background: rgba(214, 137, 16, 0.15); color: #b7791f; }
+  .status-approved { background: rgba(39, 174, 96, 0.14); color: #1e8449; }
+  .status-shared { background: rgba(41, 128, 185, 0.14); color: #1f618d; }
+  .status-rejected { background: rgba(192, 57, 43, 0.14); color: #c0392b; }
+  .status-blocked { background: rgba(120, 113, 108, 0.16); color: #57534e; }
 
+  /* Giao diện Quản lý tài khoản chuyên nghiệp */
+  .user-kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .user-kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 13px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    cursor: pointer;
+    transition: border-color 0.16s, transform 0.16s, box-shadow 0.16s;
+  }
+  .user-kpi-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(43, 33, 24, 0.06);
+  }
+  .user-kpi-card.active {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent-soft) 35%, var(--surface));
+  }
+  .user-kpi-num {
+    font-family: var(--font-spine);
+    font-size: 23px;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--fg);
+  }
+  .user-kpi-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--fg-muted);
+    margin-top: 3px;
+  }
+  .user-kpi-badge {
+    width: 36px; height: 36px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+    background: var(--surface-2);
+  }
+
+  .user-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 210px;
+  }
+  .user-avatar-badge {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-spine);
+    font-weight: 700;
+    font-size: 15px;
+    color: #fff;
+    background: var(--av-bg, #8c583a);
+    box-shadow: 0 2px 6px rgba(43, 33, 24, 0.16);
+  }
+  .user-avatar-badge.is-admin {
+    box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px #d49b38;
+  }
+  .user-name-wrap { min-width: 0; }
+  .user-name-line {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--fg);
+    white-space: nowrap;
+  }
+  .self-tag-pill {
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 1px 7px;
+    border-radius: 99px;
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+  .user-handle-tag {
+    font-size: 12px;
+    color: var(--fg-muted);
+    margin-top: 2px;
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  }
+  .role-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 7px;
+    font-size: 11.5px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .role-pill.admin {
+    background: rgba(156, 86, 40, 0.13);
+    color: var(--accent);
+    border: 1px solid rgba(156, 86, 40, 0.26);
+  }
+  .role-pill.reader {
+    background: var(--surface-2);
+    color: var(--fg-muted);
+    border: 1px solid var(--line);
+  }
+  .status-dot-ind {
+    width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex-shrink: 0;
+  }
+  .tbl-actions-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+  }
+  .tbl-btn {
+    height: 30px;
+    padding: 0 10px;
+    border-radius: 7px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--fg);
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .tbl-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .tbl-btn.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .tbl-btn.primary:hover {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+    color: #fff;
+  }
+  .tbl-btn.success {
+    background: #1e8449;
+    border-color: #1e8449;
+    color: #fff;
+  }
+  .tbl-btn.success:hover {
+    background: #17693a;
+    color: #fff;
+  }
+  .tbl-btn.danger {
+    color: #b83227;
+    border-color: rgba(184, 50, 39, 0.28);
+    background: rgba(184, 50, 39, 0.04);
+  }
+  .tbl-btn.danger:hover {
+    background: rgba(184, 50, 39, 0.12);
+    border-color: #b83227;
+    color: #962219;
+  }
+  .pill-cnt-mini {
+    font-size: 11px;
+    opacity: 0.78;
+    margin-left: 3px;
+  }
+
+  .table-scroll-wrap {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
   .table-list { width: 100%; border-collapse: collapse; font-size: 14px; }
   .table-list th, .table-list td {
-    text-align: left; padding: 11px 10px; border-bottom: 1px solid var(--line); vertical-align: middle;
+    text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--line); vertical-align: middle;
   }
-  .table-list th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--fg-muted); }
+  .table-list th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--fg-muted); white-space: nowrap; }
+  .catalog-book-cell { display: flex; align-items: center; gap: 11px; min-width: 210px; }
+  .catalog-thumb {
+    width: 34px; height: 48px; border-radius: 3px 5px 5px 3px; flex-shrink: 0;
+    background: var(--spine-bg, #6d3d6e); color: #fff; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-spine); font-size: 13px; font-weight: 700;
+    box-shadow: -2px 0 0 rgba(0,0,0,0.2), 0 3px 8px rgba(0,0,0,0.16);
+  }
+  .catalog-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .catalog-sub-meta { font-size: 12px; color: var(--fg-muted); margin-top: 2px; }
 
   .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(215px, 1fr)); gap: 16px; margin-bottom: 22px; }
   .stat-card {
@@ -890,15 +1547,16 @@
   .stat-bar-track { height: 6px; background: var(--surface-2); border-radius: 99px; overflow: hidden; margin-top: 4px; }
   .stat-bar-fill { height: 100%; background: var(--stat-accent, var(--accent)); border-radius: 99px; transition: width 0.35s; }
 
-  /* ================= BỐ CỤC DASHBOARD CHUYÊN NGHIỆP CÓ SIDEBAR ================= */
+  /* ================= BỐ CỤC DASHBOARD CHUYÊN NGHIỆP KÉO GIÃN ĐẦY MÀN HÌNH & RESPONSIVE ================= */
   #adminView.panel-view {
-    max-width: 1360px;
-    padding: 20px 24px 64px;
+    width: 100%;
+    max-width: min(1880px, 100%);
+    padding: 22px clamp(14px, 2.4vw, 40px) 64px;
   }
   .admin-shell {
     display: grid;
-    grid-template-columns: 260px 1fr;
-    gap: 24px;
+    grid-template-columns: 268px minmax(0, 1fr);
+    gap: clamp(18px, 2vw, 28px);
     align-items: start;
     min-height: calc(100vh - 130px);
   }
@@ -1007,10 +1665,93 @@
     display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px;
   }
 
-  @media (max-width: 960px) {
-    .admin-shell { grid-template-columns: 1fr; }
-    .admin-sidebar { position: static; }
-    .analytics-grid { grid-template-columns: 1fr; }
+  /* Responsive đa tầng: Laptop vừa -> Tablet -> Điện thoại */
+  @media (max-width: 1280px) {
+    .admin-shell {
+      grid-template-columns: 236px minmax(0, 1fr);
+      gap: 18px;
+    }
+    .tbl-actions-row {
+      flex-wrap: wrap;
+      white-space: normal;
+    }
+    .table-list th, .table-list td {
+      padding: 10px 10px;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    .admin-shell {
+      grid-template-columns: 1fr;
+    }
+    .admin-sidebar {
+      position: static;
+      padding: 14px;
+      gap: 12px;
+    }
+    .admin-side-nav {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .admin-side-btn {
+      width: auto;
+      flex: 1 1 auto;
+      padding: 8px 12px;
+    }
+    .admin-nav-group-label {
+      display: none;
+    }
+    .analytics-grid {
+      grid-template-columns: 1fr;
+    }
+    .user-kpi-strip {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 640px) {
+    #adminView.panel-view,
+    .panel-view,
+    #shelfView {
+      padding: 14px 12px 48px;
+    }
+    .card-box,
+    .admin-topbar {
+      padding: 15px 14px;
+      border-radius: 13px;
+    }
+    .admin-page-title {
+      font-size: 18.5px;
+    }
+    .user-kpi-strip {
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .user-kpi-card {
+      padding: 11px 12px;
+    }
+    .user-kpi-num {
+      font-size: 19px;
+    }
+    .filter-pills-bar {
+      align-items: stretch;
+    }
+    .pill-group {
+      max-width: 100%;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .pill-btn {
+      white-space: nowrap;
+    }
+    #adminUserSearch,
+    #adminCatalogSearch,
+    #adminBookSearch,
+    #adminFeedbackSearch {
+      width: 100% !important;
+      max-width: none !important;
+    }
   }
 
   /* ================= TRANG ĐĂNG NHẬP & ĐĂNG KÝ CHỈN CHU (SPLIT-CARD AUTH) ================= */
@@ -1151,7 +1892,7 @@
     max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
 
-  /* Thẻ góp ý & phản hồi */
+  /* Hộp thư góp ý gọn gàng, chuẩn hội thoại chuyên nghiệp */
   .spine-toast {
     position: fixed; left: 50%; bottom: 28px; z-index: 120;
     transform: translate(-50%, 20px); opacity: 0; pointer-events: none;
@@ -1160,19 +1901,190 @@
     transition: opacity 0.25s, transform 0.25s; max-width: min(560px, 92vw); text-align: center;
   }
   .spine-toast.show { opacity: 1; transform: translate(-50%, 0); }
+
   .fb-card {
-    border: 1px solid var(--line); border-left: 4px solid #d68910;
-    border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 13px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    background: var(--surface);
+    transition: border-color 0.16s, box-shadow 0.16s;
   }
-  .fb-card.replied { border-left-color: #27ae60; }
-  .fb-card-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
-  .fb-card-meta { font-size: 12px; color: var(--fg-muted); margin: 4px 0 8px; }
-  .fb-card-body { font-size: 14px; line-height: 1.6; white-space: pre-wrap; }
+  .fb-card:hover {
+    border-color: color-mix(in srgb, var(--accent) 38%, var(--line));
+    box-shadow: 0 4px 14px rgba(43, 33, 24, 0.05);
+  }
+  .fb-card.pending-ticket {
+    border-left: 3.5px solid #d68910;
+  }
+  .fb-card.replied {
+    border-left: 3.5px solid #1e8449;
+  }
+  .fb-ticket-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .fb-sender-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+  .fb-avatar-sm {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-spine);
+    font-weight: 700;
+    font-size: 13.5px;
+    color: #fff;
+    background: var(--av-bg, #8c583a);
+  }
+  .fb-subject-line {
+    font-weight: 700;
+    font-size: 14.5px;
+    color: var(--fg);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .fb-card-meta {
+    font-size: 12px;
+    color: var(--fg-muted);
+    margin-top: 1px;
+  }
+  .fb-top-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .fb-thread-indent {
+    margin-left: 44px;
+    margin-top: 8px;
+  }
+  .fb-card-body {
+    font-size: 13.8px;
+    line-height: 1.58;
+    color: var(--fg);
+    white-space: pre-wrap;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    padding: 9px 12px;
+    border-radius: 10px;
+  }
   .fb-reply-box {
-    margin-top: 10px; padding: 10px 12px; border-radius: 10px;
-    background: var(--accent-soft); font-size: 13.5px; line-height: 1.55; white-space: pre-wrap;
+    margin-top: 8px;
+    padding: 9px 12px;
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--accent-soft) 65%, var(--surface));
+    border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--line));
+    font-size: 13.5px;
+    line-height: 1.55;
+    white-space: pre-wrap;
   }
-  .fb-reply-label { font-weight: 700; font-size: 12px; color: var(--accent); margin-bottom: 4px; }
+  .fb-reply-label {
+    font-weight: 700;
+    font-size: 11.5px;
+    color: var(--accent);
+    margin-bottom: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .fb-inline-composer {
+    margin-top: 9px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .fb-inline-composer textarea {
+    flex: 1;
+    min-height: 38px;
+    padding: 8px 12px;
+    font-size: 13.5px;
+    resize: vertical;
+  }
+
+  /* Tổng quan Dashboard gọn gàng & Trực tuyến */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+  .stat-card {
+    padding: 15px 17px;
+    gap: 8px;
+  }
+  .stat-val {
+    font-size: 22px;
+  }
+  .live-readers-strip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    margin-bottom: 14px;
+    font-size: 12.5px;
+  }
+  .live-user-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 9px;
+    border-radius: 99px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .ov-book-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 9px 10px;
+    border-radius: 10px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+  }
+  .ov-book-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+  .ov-rank-badge {
+    width: 24px;
+    height: 24px;
+    border-radius: 7px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  @media (max-width: 640px) {
+    .fb-thread-indent { margin-left: 0; }
+    .fb-inline-composer { flex-direction: column; align-items: stretch; }
+  }
 </style>
 </head>
 <body>
@@ -1287,10 +2199,14 @@
   </div>
 </section>
 
-<!-- ================= MÀN HÌNH 1: KỆ SÁCH 3D ================= -->
+<!-- ================= MÀN HÌNH 1: KỆ SÁCH 3D (BỐ CỤC 3 CỘT GÓC ĐỌC SÁCH) ================= -->
 <main id="shelfView">
-  <div id="continueContainer"></div>
-  <div id="shelvesContainer"></div>
+  <div id="continueContainer" style="display:none"></div>
+  <div class="shelf-layout-grid">
+    <aside class="shelf-side-rail shelf-left-rail" id="shelfLeftRail" aria-label="Đang đọc và bộ lọc nhanh"></aside>
+    <div class="shelf-center-col" id="shelvesContainer"></div>
+    <aside class="shelf-side-rail shelf-right-rail" id="shelfRightRail" aria-label="Chi tiết sách và chọn ngẫu nhiên"></aside>
+  </div>
 </main>
 
 <!-- ================= MÀN HÌNH 3: SÁCH CỦA BẠN (TẢI PDF / TXT TRÊN TRÌNH DUYỆT) ================= -->
@@ -1390,6 +2306,10 @@
         <button type="button" class="admin-side-btn active" data-admin-sec="overview">
           <span class="admin-side-btn-left">📊 Tổng quan & Phân tích</span>
         </button>
+        <button type="button" class="admin-side-btn" data-admin-sec="catalog">
+          <span class="admin-side-btn-left">📚 Quản lý sách (Bảng)</span>
+          <span class="admin-side-pill" id="sideBadgeCatalog">1</span>
+        </button>
         <button type="button" class="admin-side-btn" data-admin-sec="moderation">
           <span class="admin-side-btn-left">📥 Duyệt sách & Kệ chung</span>
           <span class="admin-side-pill" id="sideBadgeModeration">0</span>
@@ -1442,42 +2362,67 @@
         </div>
         <div class="admin-topbar-actions">
           <button type="button" class="icon-btn" id="btnAdminRefresh" title="Làm mới dữ liệu">↻ Làm mới</button>
-          <button type="button" class="btn-primary" id="btnAdminAddBook">＋ Thêm sách PDF/TXT</button>
         </div>
       </div>
 
-      <!-- PANE 1: TỔNG QUAN & BIỂU ĐỒ THỐNG KÊ (OVERVIEW) -->
+      <!-- PANE 1: TỔNG QUAN & PHÂN TÍCH GỌN GÀNG, CHUYÊN NGHIỆP -->
       <div class="admin-section-pane active" id="adminPaneOverview">
-        <!-- 4 Thẻ KPI chuyên nghiệp -->
+        <!-- 5 Thẻ KPI điều hành tinh gọn (có Lượt truy cập & Người đang đọc) -->
         <div class="stats-grid" id="adminStatsGrid"></div>
 
-        <!-- 2 Biểu đồ phân tích trực quan -->
-        <div class="analytics-grid">
-          <div class="card-box" style="margin-bottom:0">
-            <h3 class="card-title">Phân bổ khối lượng chữ & số chương theo sách</h3>
-            <p class="card-sub">So sánh quy mô ký tự, số chương và ước tính thời gian đọc của từng tác phẩm trong thư viện.</p>
-            <div class="chart-bars-list" id="adminBookVolumeChart"></div>
+        <!-- 2 Khối phân tích đối xứng -->
+        <div class="analytics-grid" style="margin-bottom:18px">
+          <div class="card-box" style="margin-bottom:0;padding:18px 20px">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;flex-wrap:wrap">
+              <h3 class="card-title" style="font-size:17px;margin:0">Hoạt động trực tuyến & Tác phẩm nổi bật</h3>
+              <span class="status-pill status-approved" id="adminLiveOnlineBadge"><span class="status-dot-ind"></span> 1 đang online</span>
+            </div>
+            <div class="live-readers-strip" id="adminLiveReadersStrip"></div>
+            <div class="chart-bars-list" id="adminBookVolumeChart" style="gap:8px"></div>
           </div>
 
-          <div class="card-box" style="margin-bottom:0">
-            <h3 class="card-title">Cơ cấu nguồn sách & Trạng thái duyệt</h3>
-            <p class="card-sub">Tỷ trọng giữa sách gốc tĩnh (`books.json`), sách kệ chung và hàng chờ duyệt.</p>
-            <div class="dist-stack-bar" id="adminSourceStackBar"></div>
-            <div class="dist-legend" id="adminSourceLegend"></div>
-            <div id="adminTopReadBox" style="margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:13px;color:var(--fg-muted)"></div>
+          <div class="card-box" style="margin-bottom:0;padding:18px 20px">
+            <h3 class="card-title" style="font-size:17px;margin:0 0 4px">Cơ cấu thư viện & Trạng thái duyệt</h3>
+            <p class="card-sub" style="font-size:12.5px;margin-bottom:12px">Tỷ trọng các nguồn sách đang phục vụ trên hệ thống.</p>
+            <div class="dist-stack-bar" id="adminSourceStackBar" style="margin:10px 0 14px"></div>
+            <div class="dist-legend" id="adminSourceLegend" style="gap:7px"></div>
+            <div id="adminTopReadBox" style="margin-top:12px;padding-top:10px;border-top:1px solid var(--line);font-size:12.5px;color:var(--fg-muted)"></div>
           </div>
         </div>
 
-        <!-- Bảng xem nhanh các sách chờ xử lý gần nhất -->
-        <div class="card-box" style="margin-bottom:0">
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap">
-            <div>
-              <h3 class="card-title" style="margin-bottom:2px">Hoạt động & Sách gửi gần đây</h3>
-              <p class="card-sub" style="margin:0">Các sách người dùng mới tải lên hoặc sách vừa cập nhật trong thư viện.</p>
-            </div>
-            <button type="button" class="icon-btn" id="btnGoToModeration">Xem toàn bộ hàng chờ →</button>
+        <!-- Bảng xem nhanh các sách cập nhật gần nhất -->
+        <div class="card-box" style="margin-bottom:0;padding:18px 20px">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;flex-wrap:wrap">
+            <h3 class="card-title" style="font-size:17px;margin:0">Danh mục sách cập nhật gần đây</h3>
+            <button type="button" class="tbl-btn" id="btnGoToModeration">Quản lý toàn bộ sách →</button>
           </div>
-          <div id="adminRecentActivityWrap"></div>
+          <div class="table-scroll-wrap" id="adminRecentActivityWrap"></div>
+        </div>
+      </div>
+
+      <!-- PANE 1B: QUẢN LÝ TOÀN BỘ SÁCH DẠNG BẢNG (CATALOG TABLE) -->
+      <div class="admin-section-pane" id="adminPaneCatalog">
+        <div class="card-box" style="margin-bottom:0">
+          <div class="filter-pills-bar" style="justify-content:space-between">
+            <div class="pill-group" id="adminCatalogFilterGroup">
+              <button type="button" class="pill-btn active" data-catalog-filter="all">Tất cả sách</button>
+              <button type="button" class="pill-btn" data-catalog-filter="on_shelf">Đang trên kệ</button>
+              <button type="button" class="pill-btn" data-catalog-filter="static">Kho gốc (Repo)</button>
+              <button type="button" class="pill-btn" data-catalog-filter="user">Sách thành viên</button>
+              <button type="button" class="pill-btn" data-catalog-filter="pending">⏳ Chờ duyệt</button>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <select id="adminCatalogSort" class="text-input" style="width:auto;padding:7px 10px;font-size:13px">
+                <option value="newest">Sắp xếp: Mới nhất</option>
+                <option value="title">Tên sách (A → Z)</option>
+                <option value="chapters">Nhiều chương nhất</option>
+                <option value="reads">Đọc nhiều nhất</option>
+              </select>
+              <input type="search" id="adminCatalogSearch" class="text-input" style="width:220px;padding:7px 12px;font-size:13px" placeholder="Tìm tên sách, tác giả, mã…">
+            </div>
+          </div>
+          <div class="table-scroll-wrap" id="adminCatalogTableWrap"></div>
+          <div id="adminCatalogPagination"></div>
         </div>
       </div>
 
@@ -1498,32 +2443,43 @@
         </div>
       </div>
 
-      <!-- PANE 3: QUẢN LÝ TÀI KHOẢN THÀNH VIÊN (USERS: DUYỆT, LOCK / UNLOCK, RESET MK, PHÂN QUYỀN) -->
+      <!-- PANE 3: QUẢN LÝ TÀI KHOẢN THÀNH VIÊN CHUYÊN NGHIỆP -->
       <div class="admin-section-pane" id="adminPaneUsers">
+        <div class="user-kpi-strip" id="adminUsersKpiStrip"></div>
+
         <div class="card-box" style="margin-bottom:0">
-          <div class="filter-pills-bar">
+          <div class="filter-pills-bar" style="justify-content:space-between">
             <div class="pill-group" id="adminUserFilterGroup">
-              <button type="button" class="pill-btn active" data-user-filter="all">Tất cả</button>
-              <button type="button" class="pill-btn" data-user-filter="pending">⏳ Chờ duyệt</button>
-              <button type="button" class="pill-btn" data-user-filter="approved">✓ Đang hoạt động</button>
-              <button type="button" class="pill-btn" data-user-filter="blocked">🔒 Đã khóa (Locked)</button>
+              <button type="button" class="pill-btn active" data-user-filter="all">Tất cả <span class="pill-cnt-mini" id="uCntAll">(0)</span></button>
+              <button type="button" class="pill-btn" data-user-filter="pending">Chờ duyệt <span class="pill-cnt-mini" id="uCntPending">(0)</span></button>
+              <button type="button" class="pill-btn" data-user-filter="approved">Hoạt động <span class="pill-cnt-mini" id="uCntApproved">(0)</span></button>
+              <button type="button" class="pill-btn" data-user-filter="blocked">Đã khóa <span class="pill-cnt-mini" id="uCntBlocked">(0)</span></button>
             </div>
-            <input type="search" id="adminUserSearch" class="text-input" style="max-width:240px" placeholder="Tìm tên TK, họ tên…">
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <select id="adminUserRoleFilter" class="text-input" style="width:auto;padding:7px 10px;font-size:13px">
+                <option value="all">Mọi vai trò</option>
+                <option value="admin">Quản trị viên</option>
+                <option value="reader">Thành viên</option>
+              </select>
+              <input type="search" id="adminUserSearch" class="text-input" style="width:210px;padding:7px 12px;font-size:13px" placeholder="Tìm @username, họ tên…">
+              <button type="button" class="btn-primary" id="btnOpenCreateUserModal" style="padding:7px 14px;font-size:13px">＋ Thêm thành viên</button>
+            </div>
           </div>
-          <div id="adminUsersTableWrap"></div>
+          <div class="table-scroll-wrap" id="adminUsersTableWrap"></div>
         </div>
       </div>
 
-      <!-- PANE 3B: MODULE QUẢN LÝ & PHẢN HỒI GÓP Ý TỪ NGƯỜI DÙNG (FEEDBACKS) -->
+      <!-- PANE 3B: HỘP THƯ GÓP Ý & PHẢN HỒI GỌN ĐẸP, CHUYÊN NGHIỆP -->
       <div class="admin-section-pane" id="adminPaneFeedbacks">
-        <div class="card-box" style="margin-bottom:0">
-          <div class="filter-pills-bar">
+        <div class="user-kpi-strip" id="adminFeedbackKpiStrip"></div>
+        <div class="card-box" style="margin-bottom:0;padding:18px 20px">
+          <div class="filter-pills-bar" style="justify-content:space-between;margin-bottom:14px">
             <div class="pill-group" id="adminFeedbackFilterGroup">
-              <button type="button" class="pill-btn active" data-fb-filter="all">Tất cả góp ý</button>
-              <button type="button" class="pill-btn" data-fb-filter="pending">⏳ Chưa phản hồi</button>
-              <button type="button" class="pill-btn" data-fb-filter="replied">✓ Đã phản hồi</button>
+              <button type="button" class="pill-btn active" data-fb-filter="all">Tất cả <span class="pill-cnt-mini" id="fbCntAll">(0)</span></button>
+              <button type="button" class="pill-btn" data-fb-filter="pending">Chưa phản hồi <span class="pill-cnt-mini" id="fbCntPending">(0)</span></button>
+              <button type="button" class="pill-btn" data-fb-filter="replied">Đã phản hồi <span class="pill-cnt-mini" id="fbCntReplied">(0)</span></button>
             </div>
-            <input type="search" id="adminFeedbackSearch" class="text-input" style="max-width:240px" placeholder="Tìm người gửi, tiêu đề…">
+            <input type="search" id="adminFeedbackSearch" class="text-input" style="width:230px;padding:7px 12px;font-size:13px" placeholder="Tìm người gửi, tiêu đề…">
           </div>
           <div id="adminFeedbacksTableWrap"></div>
         </div>
@@ -1545,6 +2501,45 @@
     </div>
   </div>
 </section>
+
+<!-- ================= MODAL ADMIN TẠO THÀNH VIÊN MỚI ================= -->
+<div class="modal-backdrop" id="createUserModalBackdrop">
+  <div class="modal-box" style="width:min(450px,95vw)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <strong style="font-family:var(--font-spine);font-size:19px">👤 Tạo tài khoản thành viên</strong>
+      <button type="button" class="icon-btn" id="btnCloseCreateUserModal">Đóng ✕</button>
+    </div>
+    <p class="card-sub" style="margin-bottom:14px">Tạo nhanh tài khoản cho bạn bè và kích hoạt sẵn để vào đọc ngay mà không cần chờ duyệt.</p>
+    <div class="auth-alert-box" id="createUserAlertBox"></div>
+    <form id="createUserForm">
+      <div style="margin-bottom:12px">
+        <label class="field-label" for="admNewUsername">Tên đăng nhập <span style="color:#c0392b">*</span></label>
+        <input type="text" id="admNewUsername" class="text-input" required placeholder="Ví dụ: minhtuan (chữ không dấu, số)">
+      </div>
+      <div style="margin-bottom:12px">
+        <label class="field-label" for="admNewDisplayName">Họ và tên hiển thị</label>
+        <input type="text" id="admNewDisplayName" class="text-input" placeholder="Ví dụ: Nguyễn Minh Tuấn">
+      </div>
+      <div class="form-grid" style="margin-bottom:14px">
+        <div>
+          <label class="field-label" for="admNewPassword">Mật khẩu khởi tạo <span style="color:#c0392b">*</span></label>
+          <input type="text" id="admNewPassword" class="text-input" required value="123456aA@">
+        </div>
+        <div>
+          <label class="field-label" for="admNewRole">Vai trò</label>
+          <select id="admNewRole" class="text-input">
+            <option value="reader">Thành viên</option>
+            <option value="admin">Quản trị viên (Admin)</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:6px">
+        <button type="button" class="icon-btn" id="btnCancelCreateUser">Hủy</button>
+        <button type="submit" class="btn-primary" id="btnSubmitCreateUser">Tạo & Kích hoạt ngay →</button>
+      </div>
+    </form>
+  </div>
+</div>
 
 <!-- ================= MODAL ĐỔI MẬT KHẨU TÀI KHOẢN CỦA USER ================= -->
 <div class="modal-backdrop" id="changePassModalBackdrop">
@@ -1597,6 +2592,10 @@
     </div>
 
     <div class="reader-top-right">
+      <button type="button" class="icon-btn reader-timer-pill" id="btnReadingTimer" title="Thời gian đọc sách của bạn (bấm để đổi kiểu hiển thị)">
+        <span class="timer-live-dot"></span>
+        <span id="readerTimerText">00:00</span>
+      </button>
       <button type="button" class="icon-btn" id="btnBookmarkTop" title="Đánh dấu trang này để đọc tiếp">🔖 Đánh dấu</button>
       <button type="button" class="icon-btn" id="btnFontDec" title="Giảm cỡ chữ">A-</button>
       <button type="button" class="icon-btn" id="btnFontInc" title="Tăng cỡ chữ">A+</button>
@@ -1726,7 +2725,19 @@ const $ = (id) => document.getElementById(id);
 const STORE_KEY = "book_reader_kit_v2_prefs";
 const LOCAL_USER_BOOKS_KEY = "book_reader_kit_v2_local_user_books";
 const LOCAL_FEEDBACKS_KEY = "book_reader_kit_v2_local_feedbacks";
-let prefs = { uiTheme: "light", paperTheme: "warm", fontSize: 18, forceSingle: false, scrollMode: false, lastBookId: null, progress: {}, bookmarks: {} };
+const SITE_VISITS_KEY = "book_reader_kit_v2_site_visits";
+const SESSION_VISITED_KEY = "book_reader_kit_v2_session_counted";
+let prefs = {
+  uiTheme: "light",
+  paperTheme: "warm",
+  fontSize: 18,
+  forceSingle: false,
+  scrollMode: false,
+  lastBookId: null,
+  progress: {},
+  bookmarks: {},
+  readingStats: { totalSeconds: 0, daily: {}, byBook: {} }
+};
 let books = [];
 let sharedUserBooks = []; // sách bạn bè đóng góp đã đưa lên kệ chung
 let myUserBooks = [];     // sách do người dùng hiện tại tải lên
@@ -1741,8 +2752,11 @@ let authMode = "login";    // 'login' | 'signup'
 let currentTab = "shelf";  // 'shelf' | 'mybooks' | 'feedback' | 'admin'
 let pendingUploadData = null; // { title, author, chapters, chars, jsonStr, sizeBytes }
 
-// Chuyển Tên tài khoản (username) sang email nội bộ chuẩn cho Supabase Auth
-function usernameToInternalEmail(rawUsername) {
+// Chuyển Tên tài khoản (username) sang định danh nội bộ hợp lệ cho Supabase Auth (ẩn hoàn toàn với người dùng)
+const INTERNAL_AUTH_DOMAIN = "tusach3d.vn";
+const LEGACY_AUTH_DOMAIN = "tusach.local";
+
+function usernameToInternalEmail(rawUsername, domain = INTERNAL_AUTH_DOMAIN) {
   const clean = (rawUsername || "").trim().toLowerCase();
   if (!clean) return "";
   if (clean.includes("@")) return clean;
@@ -1752,7 +2766,7 @@ function usernameToInternalEmail(rawUsername) {
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/đ/g, "d")
     .replace(/[^a-z0-9._-]/g, "");
-  return (slug || "user") + "@tusach.local";
+  return (slug || "user") + "@" + domain;
 }
 
 // Khép mật khẩu vào định dạng tối thiểu 6 ký tự của GoTrue (nhưng người dùng chỉ cần gõ 'admin' hoặc bất kỳ)
@@ -1762,10 +2776,28 @@ function normalizeInternalPassword(rawPass) {
   return p + "#TS3D!";
 }
 
+// Làm sạch thông báo lỗi từ Supabase để không lộ định danh email nội bộ ra giao diện
+function formatFriendlyAuthError(errMsg) {
+  const m = String(errMsg || "");
+  if (/registered|already|exists|tồn tại/i.test(m)) {
+    return "Tên tài khoản này đã có người đăng ký, vui lòng chọn tên khác.";
+  }
+  if (/email not confirmed/i.test(m)) {
+    return "Tài khoản chưa kích hoạt đăng nhập. Admin hãy tắt 'Confirm email' trong Supabase (Authentication → Providers → Email) hoặc chạy lại file supabase/schema.sql.";
+  }
+  if (/rate limit|too many requests/i.test(m)) {
+    return "Thao tác quá nhanh hoặc vượt giới hạn gửi của Supabase. Admin hãy chạy lại file supabase/schema.sql (hoặc tắt Confirm email trong Supabase) để đăng ký không giới hạn.";
+  }
+  if (/invalid login credentials/i.test(m)) {
+    return "Tên tài khoản hoặc mật khẩu chưa chính xác.";
+  }
+  return m.replace(/[a-z0-9._-]+@(tusach3d\.vn|tusach\.local)/gi, (match) => match.split("@")[0]);
+}
+
 function getProfileUsername(p) {
   if (!p) return "Tài khoản";
   if (p.username) return p.username;
-  if (p.email) return p.email.replace(/@tusach\.local$/i, "");
+  if (p.email) return p.email.replace(/@(tusach3d\.vn|tusach\.local)$/i, "");
   return "Tài khoản";
 }
 
@@ -1856,6 +2888,8 @@ async function initLibrary() {
 
   loadLocalUserBooks();
   await refreshAuthSession();
+  initVisitAndPresence();
+  syncRealtimePresence();
   updateLibraryHeaderCount();
   renderBookshelf();
 
@@ -1865,19 +2899,130 @@ async function initLibrary() {
 }
 
 function updateLibraryHeaderCount() {
-  const total = books.length + sharedUserBooks.length;
-  $("libraryStatus").textContent = total + " cuốn sách trên kệ";
+  const realCount = books.length + sharedUserBooks.length;
+  const displayCount = getShelfDisplayBooks().length;
+  if (displayCount > realCount) {
+    $("libraryStatus").textContent = displayCount + " cuốn trên kệ (" + realCount + " sách thật · " + (displayCount - realCount) + " sách mẫu)";
+  } else {
+    $("libraryStatus").textContent = realCount + " cuốn sách trên kệ";
+  }
 }
 
-// Bảng màu gáy sách và màu minh họa bìa tạm (sky, hill, sun) theo KE-SACH-SPEC.md
-const SPINE_PALETTES = [
-  { bg: "#B5A83B", fg: "#26210B", sky: "#F3D32C", hill: "#4A5D23", sun: "#FFF7B2" }, // Vàng olive
-  { bg: "#6C8C94", fg: "#F2F6F7", sky: "#6EA4BF", hill: "#2D4C3E", sun: "#FFE89E" }, // Xanh khói
-  { bg: "#CFC7B8", fg: "#6E4E3A", sky: "#B8D4E3", hill: "#5C7658", sun: "#FFF4C2" }, // Kem ngà
-  { bg: "#CBB35C", fg: "#7A301E", sky: "#E6A962", hill: "#7A4326", sun: "#FFE596" }, // Vàng cát chữ đỏ nâu
-  { bg: "#6D3D6E", fg: "#E6B970", sky: "#5C3863", hill: "#2C1A33", sun: "#F2C97D" }, // Tím trầm chữ vàng kim
-  { bg: "#AD2330", fg: "#F2D6D6", sky: "#C83E4B", hill: "#6B1520", sun: "#FFD1A6" }  // Đỏ đô
+// Cấu hình bố cục kệ sách: 5 cuốn / kệ × 3 kệ / trang = 15 cuốn / trang
+const BOOKS_PER_SHELF = 5;
+const SHELVES_PER_PAGE = 3;
+const BOOKS_PER_PAGE = BOOKS_PER_SHELF * SHELVES_PER_PAGE;
+// Tắt sách mẫu (DEMO_SHELF_TARGET = 0): chỉ hiển thị sách thật trong thư viện & kệ chung
+const DEMO_SHELF_TARGET = 0;
+let currentShelfPage = 1;
+let currentShelfFilter = "all"; // 'all' | 'library' | 'reading' | 'bookmarked'
+let selectedShelfCategory = null; // null = xem theo từng kệ thể loại; chuỗi tên thể loại = xem toàn bộ thể loại đó
+let inspectedBookItem = null;   // cuốn sách đang được xem chi tiết ở cột phải
+
+// Danh sách Thể loại chuẩn hiển thị trên kệ sách
+const BOOK_CATEGORIES = [
+  "Kỹ năng & Sống đẹp",
+  "Văn học Việt Nam",
+  "Kinh điển Thế giới",
+  "Tiểu thuyết Chọn lọc",
+  "Tri thức & Nhân sinh"
 ];
+
+// Bảng màu gáy sách và màu minh họa bìa tạm (sky, hill, sun) đa dạng cho 15 cuốn/trang
+const SPINE_PALETTES = [
+  { bg: "#6D3D6E", fg: "#E6B970", sky: "#5C3863", hill: "#2C1A33", sun: "#F2C97D" }, // Tím trầm chữ vàng kim
+  { bg: "#2E5244", fg: "#EFE6D5", sky: "#8CB8A8", hill: "#1D382E", sun: "#FFF2B2" }, // Xanh rừng thông
+  { bg: "#AD2330", fg: "#F2D6D6", sky: "#C83E4B", hill: "#6B1520", sun: "#FFD1A6" }, // Đỏ đô cổ điển
+  { bg: "#B5A83B", fg: "#26210B", sky: "#F3D32C", hill: "#4A5D23", sun: "#FFF7B2" }, // Vàng olive
+  { bg: "#354F6B", fg: "#EBF1F5", sky: "#7DA7C8", hill: "#21354A", sun: "#FFE7A3" }, // Xanh chàm trầm
+  { bg: "#CBB35C", fg: "#6B2918", sky: "#E6A962", hill: "#7A4326", sun: "#FFE596" }, // Vàng cát chữ đỏ nâu
+  { bg: "#6C8C94", fg: "#F2F6F7", sky: "#6EA4BF", hill: "#2D4C3E", sun: "#FFE89E" }, // Xanh khói
+  { bg: "#7C4A32", fg: "#F5E6D3", sky: "#D99B66", hill: "#4D2B1B", sun: "#FFF0BA" }, // Nâu đất nung
+  { bg: "#CFC7B8", fg: "#5E402E", sky: "#B8D4E3", hill: "#5C7658", sun: "#FFF4C2" }, // Kem ngà
+  { bg: "#4E5D42", fg: "#F0EAD8", sky: "#C7D3A8", hill: "#2F3B26", sun: "#FFF3B8" }, // Xanh rêu cổ
+  { bg: "#8A3B4C", fg: "#F6E3E7", sky: "#E09BA8", hill: "#541E2B", sun: "#FFE8B5" }, // Hồng rượu vang
+  { bg: "#463C35", fg: "#E8D8B9", sky: "#B8A590", hill: "#29221E", sun: "#FFE6A1" }  // Nâu cà phê rang
+];
+
+// Danh sách sách mẫu (chia đều vào 5 thể loại để mỗi thể loại có 6 cuốn, xem trên kệ đủ 5 cuốn + nút Xem tất cả)
+const DEMO_BOOKS_SEED = [
+  { title: "Tuổi Trẻ Đáng Giá Bao Nhiêu", author: "Rosie Nguyễn", year: "2021", category: "Kỹ năng & Sống đẹp", chapters: 15, blurb: "Những trang viết truyền cảm hứng tự học, xê dịch và khám phá bản thân trong năm tháng thanh xuân." },
+  { title: "Đi Tìm Lẽ Sống", author: "Viktor Frankl", year: "2022", category: "Kỹ năng & Sống đẹp", chapters: 9, blurb: "Sức mạnh của niềm tin và ý nghĩa cuộc sống giúp con người vượt qua nghịch cảnh khắc nghiệt nhất." },
+  { title: "Hiểu Về Trái Tim", author: "Minh Niệm", year: "2021", category: "Kỹ năng & Sống đẹp", chapters: 50, blurb: "Những bài thực tập chữa lành nhẹ nhàng giúp lắng nghe cảm xúc và nuôi dưỡng bình an nội tâm." },
+  { title: "Chiến Binh Cầu Vồng", author: "Andrea Hirata", year: "2020", category: "Kỹ năng & Sống đẹp", chapters: 24, blurb: "Mười đứa trẻ nghèo trên đảo Belitong và nghị lực đến trường chạm tới ước mơ." },
+  { title: "Đời Ngắn Đừng Ngủ Dài", author: "Robin Sharma", year: "2021", category: "Kỹ năng & Sống đẹp", chapters: 101, blurb: "Những suy ngẫm ngắn gọn, súc tích đánh thức năng lượng sống tích cực và tử tế mỗi ngày." },
+
+  { title: "Dế Mèn Phiêu Lưu Ký", author: "Tô Hoài", year: "2019", category: "Văn học Việt Nam", chapters: 10, blurb: "Chuyến phiêu lưu kỳ thú của chú Dế Mèn qua thế giới loài vật đầy bài học nhân văn sâu sắc." },
+  { title: "Số Đỏ", author: "Vũ Trọng Phụng", year: "2018", category: "Văn học Việt Nam", chapters: 20, blurb: "Tiểu thuyết trào phúng bậc thầy khắc họa bức tranh xã hội giao thời qua nhân vật Xuân Tóc Đỏ." },
+  { title: "Mắt Biếc", author: "Nguyễn Nhật Ánh", year: "2019", category: "Văn học Việt Nam", chapters: 16, blurb: "Mối tình đơn phương trong veo và day dứt của Ngạn dành cho Hà Lan từ làng Đo Đo yên bình." },
+  { title: "Gió Lạnh Đầu Mùa", author: "Thạch Lam", year: "2017", category: "Văn học Việt Nam", chapters: 12, blurb: "Tập truyện ngắn nhẹ nhàng, thấm đẫm tình người nơi phố huyện bình dị những ngày chớm đông." },
+  { title: "Vang Bóng Một Thời", author: "Nguyễn Tuân", year: "2018", category: "Văn học Việt Nam", chapters: 11, blurb: "Mười một thiên truyện trau chuốt lưu giữ vẻ đẹp tài hoa và nét văn hóa cổ truyền Việt Nam." },
+  { title: "Đất Rừng Phương Nam", author: "Đoàn Giỏi", year: "2019", category: "Văn học Việt Nam", chapters: 20, blurb: "Bức tranh thiên nhiên trù phú và con người hào sảng miền Tây Nam Bộ qua đôi mắt cậu bé An." },
+
+  { title: "Nhà Giả Kim", author: "Paulo Coelho", year: "2020", category: "Kinh điển Thế giới", chapters: 18, blurb: "Hành trình theo đuổi vận mệnh của chàng chăn cừu Santiago băng qua sa mạc Ai Cập huyền bí." },
+  { title: "Cây Cam Ngọt Của Tôi", author: "José Mauro", year: "2021", category: "Kinh điển Thế giới", chapters: 14, blurb: "Ký ức tuổi thơ trong trẻo, tinh nghịch nhưng đầy xúc động của cậu bé năm tuổi Zezé ở Brazil." },
+  { title: "Hoàng Tử Bé", author: "Saint-Exupéry", year: "2020", category: "Kinh điển Thế giới", chapters: 27, blurb: "Tác phẩm kinh điển dịu dàng nhắc người lớn nhớ về cách nhìn thế giới bằng cả trái tim." },
+  { title: "Ông Già Và Biển Cả", author: "Hemingway", year: "2019", category: "Kinh điển Thế giới", chapters: 8, blurb: "Khúc tráng ca cô độc nhưng kiên cường của lão ngư dân Santiago trước đại dương mênh mông." },
+  { title: "Không Gia Đình", author: "Hector Malot", year: "2018", category: "Kinh điển Thế giới", chapters: 32, blurb: "Bước chân thiên lý của cậu bé Rémi cùng gánh xiếc rong ruổi khắp nước Pháp tìm lại gia đình." },
+  { title: "Những Người Khốn Khổ", author: "Victor Hugo", year: "2020", category: "Kinh điển Thế giới", chapters: 45, blurb: "Bản hùng ca bất hủ về lòng nhân ái, sự cứu rỗi và phẩm giá con người qua cuộc đời Jean Valjean." },
+
+  { title: "Trăm Năm Cô Đơn", author: "García Márquez", year: "2020", category: "Tiểu thuyết Chọn lọc", chapters: 20, blurb: "Biên niên sử huyền ảo về bảy thế hệ gia tộc Buendía tại ngôi làng Macondo kỳ diệu." },
+  { title: "Người Đua Diều", author: "Khaled Hosseini", year: "2021", category: "Tiểu thuyết Chọn lọc", chapters: 25, blurb: "Câu chuyện lay động lòng người về tình bạn, lỗi lầm và hành trình chuộc lỗi dưới bầu trời Kabul." },
+  { title: "Rừng Na Uy", author: "Haruki Murakami", year: "2020", category: "Tiểu thuyết Chọn lọc", chapters: 11, blurb: "Giai điệu hoài niệm trầm lắng về tuổi trẻ, tình yêu và những mất mát sâu thẳm ở Tokyo." },
+  { title: "Bố Già", author: "Mario Puzo", year: "2019", category: "Tiểu thuyết Chọn lọc", chapters: 32, blurb: "Tiểu thuyết kinh điển đầy kịch tính về gia tộc Corleone, danh dự, quyền lực và gia đình." },
+  { title: "Hai Số Phận", author: "Jeffrey Archer", year: "2021", category: "Tiểu thuyết Chọn lọc", chapters: 34, blurb: "Hai con người sinh cùng ngày cùng giờ ở hai chân trời đối lập và cuộc chạm trán định mệnh." },
+  { title: "Đồi Gió Hú", author: "Emily Brontë", year: "2019", category: "Tiểu thuyết Chọn lọc", chapters: 34, blurb: "Mối tình mãnh liệt, hoang dại giữa khung cảnh đồng cỏ nước Anh đầy sương mù và gió lộng." },
+
+  { title: "Muôn Kiếp Nhân Sinh", author: "Nguyên Phong", year: "2022", category: "Tri thức & Nhân sinh", chapters: 22, blurb: "Câu chuyện xuyên suốt nhiều kiếp sống mở ra góc nhìn chiêm nghiệm về luật nhân quả và vũ trụ." },
+  { title: "Lược Sử Loài Người", author: "Yuval Harari", year: "2022", category: "Tri thức & Nhân sinh", chapters: 20, blurb: "Bức tranh toàn cảnh sống động về chặng đường tiến hóa, văn minh và tương lai của nhân loại." },
+  { title: "Tư Duy Nhanh Và Chậm", author: "Daniel Kahneman", year: "2021", category: "Tri thức & Nhân sinh", chapters: 38, blurb: "Khám phá hai hệ thống dẫn dắt cách con người suy nghĩ, phán đoán và đưa ra quyết định." },
+  { title: "Suối Nguồn", author: "Ayn Rand", year: "2021", category: "Tri thức & Nhân sinh", chapters: 28, blurb: "Câu chuyện mạnh mẽ về kiến trúc sư Howard Roark và đam mê sáng tạo độc lập không thỏa hiệp." },
+  { title: "Hà Nội Băm Sáu Phố Phường", author: "Thạch Lam", year: "2018", category: "Tri thức & Nhân sinh", chapters: 21, blurb: "Tập tùy bút tinh tế lưu giữ hồn cốt ẩm thực, nếp sống và vẻ đẹp trầm mặc của Hà Nội xưa." },
+  { title: "Bắt Trẻ Đồng Xanh", author: "J.D. Salinger", year: "2020", category: "Tri thức & Nhân sinh", chapters: 26, blurb: "Những ngày lang thang đầy trăn trở của Holden Caulfield giữa ngưỡng cửa trưởng thành." },
+  { title: "Chí Phèo", author: "Nam Cao", year: "2018", category: "Văn học Việt Nam", chapters: 9, blurb: "Tuyệt phẩm văn học hiện thực về khát vọng lương thiện cháy bỏng nơi làng Vũ Đại." }
+];
+
+// Xác định thể loại cho sách thật hoặc sách thành viên gửi lên nếu chưa gắn nhãn category
+function inferBookCategory(b) {
+  if (b && b.category) return b.category;
+  const t = ((b && b.title) || "").toLowerCase();
+  if (/đắc nhân tâm|kỹ năng|tâm|sống|tuổi trẻ|thói quen/.test(t)) return "Kỹ năng & Sống đẹp";
+  if (/lịch sử|khoa học|tư duy|nhân sinh|kinh tế|triết/.test(t)) return "Tri thức & Nhân sinh";
+  if (/dế mèn|số đỏ|mắt biếc|thạch lam|nam cao|nguyễn nhật ánh|tô hoài/.test(t)) return "Văn học Việt Nam";
+  return BOOK_CATEGORIES[0];
+}
+
+const READING_QUOTES = [
+  "“Một cuốn sách thực sự hay nên đọc trong tuổi trẻ, rồi đọc lại khi đã trưởng thành.”",
+  "“Căn phòng không có sách giống như cơ thể không có tâm hồn.”",
+  "“Đọc sách là trò chuyện với những tâm hồn đồng điệu vượt qua mọi khoảng cách thời gian.”",
+  "“Mỗi lần lật một trang giấy ấm là mở ra một khoảng lặng bình yên cho riêng mình.”"
+];
+let currentQuoteIdx = 0;
+
+// Ghép danh sách sách thật với sách ảo (nếu DEMO_SHELF_TARGET > số sách thật) để hiển thị trên kệ
+function getShelfDisplayBooks() {
+  const realList = books.concat(sharedUserBooks);
+  if (!DEMO_SHELF_TARGET || realList.length >= DEMO_SHELF_TARGET) return realList;
+  const out = realList.slice();
+  let seedIdx = 0;
+  while (out.length < DEMO_SHELF_TARGET) {
+    const seed = DEMO_BOOKS_SEED[seedIdx % DEMO_BOOKS_SEED.length];
+    const demoNum = out.length + 1;
+    out.push({
+      id: "demo-" + demoNum,
+      title: seed.title.trim(),
+      author: seed.author,
+      year: seed.year,
+      category: seed.category,
+      chapters: seed.chapters,
+      blurb: seed.blurb,
+      isDemo: true
+    });
+    seedIdx++;
+  }
+  return out;
+}
 
 let pulledBookId = null; // id cuốn sách đang được "rút ra" khỏi kệ
 
@@ -1901,16 +3046,20 @@ function splitTitleToLines(rawTitle) {
   return [words.slice(0, bestSplit).join(" "), words.slice(bestSplit).join(" ")];
 }
 
-// Chuyển một cuốn sách từ books.json hoặc kệ chung sang đúng định dạng object của KE-SACH-SPEC.md
+// Chuyển một cuốn sách từ books.json, kệ chung hoặc sách mẫu sang object hiển thị trên gáy sách
 function toSpecBookObject(b, idx) {
-  const numId = typeof b.id === "number" ? b.id : idx + 1;
-  const pal = SPINE_PALETTES[(numId + 3 + idx) % SPINE_PALETTES.length];
+  const pal = SPINE_PALETTES[idx % SPINE_PALETTES.length];
   return {
     id: b.id,
     lines: Array.isArray(b.lines) && b.lines.length ? b.lines : splitTitleToLines(b.title),
     title: b.title,
     author: (b.author || "KHÔNG RÕ").toUpperCase(),
+    rawAuthor: b.author || "Không rõ tác giả",
     year: b.year || (b.added ? b.added.slice(0, 4) : "2026"),
+    category: inferBookCategory(b),
+    chapters: b.chapters || 12,
+    chars: b.chars || 0,
+    blurb: b.blurb || "",
     contributor: b.contributor || "",
     bg: b.bg || pal.bg,
     fg: b.fg || pal.fg,
@@ -1918,81 +3067,826 @@ function toSpecBookObject(b, idx) {
     sky: b.sky || pal.sky,
     hill: b.hill || pal.hill,
     sun: b.sun || pal.sun,
-    realBook: b
+    isDemo: Boolean(b.isDemo),
+    realBook: b.isDemo ? null : b
   };
 }
 
-// 2. Vẽ kệ sách: hiển thị sách gốc trong thư viện (books.json) + sách người dùng đã đưa lên kệ chung
-function renderBookshelf() {
-  const q = ($("searchInput").value || "").trim().toLowerCase();
-  const allShelfBooks = books.concat(sharedUserBooks);
-  const filteredReal = allShelfBooks.filter((b) => {
-    if (!q) return true;
-    return (b.title || "").toLowerCase().includes(q)
-      || (b.author || "").toLowerCase().includes(q)
-      || (b.contributor || "").toLowerCase().includes(q);
+// ================= BỘ ĐẾM THỜI GIAN ĐỌC SÁCH & LƯỢT TRUY CẬP =================
+let sessionReadSeconds = 0;
+let readerTimerInterval = null;
+let readerTimerMode = 0; // 0: Phiên + Tổng, 1: Hôm nay + Cuốn này
+let unsavedReadDelta = 0;
+let presenceChannel = null;
+let livePresenceMap = {}; // danh sách người dùng đang trực tuyến Realtime
+
+function getTodayKey() {
+  const d = new Date();
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
+
+// Định dạng số giây sang chuỗi ngắn gọn dễ đọc (ví dụ: 04:18 hoặc 1g 24p)
+function formatClockMMSS(sec) {
+  const s = Math.max(0, Math.floor(sec || 0));
+  const hrs = Math.floor(s / 3600);
+  const mins = Math.floor((s % 3600) / 60);
+  const rem = s % 60;
+  if (hrs > 0) {
+    return hrs + ":" + String(mins).padStart(2, "0") + ":" + String(rem).padStart(2, "0");
+  }
+  return String(mins).padStart(2, "0") + ":" + String(rem).padStart(2, "0");
+}
+
+function formatDurationCompactVN(sec) {
+  const s = Math.max(0, Math.floor(sec || 0));
+  if (s < 60) return s + " giây";
+  const hrs = Math.floor(s / 3600);
+  const mins = Math.floor((s % 3600) / 60);
+  if (hrs === 0) return mins + " phút";
+  return mins > 0 ? (hrs + "g " + mins + "p") : (hrs + " giờ");
+}
+
+function ensureReadingStats() {
+  if (!prefs.readingStats || typeof prefs.readingStats !== "object") {
+    prefs.readingStats = { totalSeconds: 0, daily: {}, byBook: {} };
+  }
+  if (!prefs.readingStats.daily) prefs.readingStats.daily = {};
+  if (!prefs.readingStats.byBook) prefs.readingStats.byBook = {};
+  return prefs.readingStats;
+}
+
+function updateReaderTimerUI() {
+  const el = $("readerTimerText");
+  if (!el) return;
+  const stats = ensureReadingStats();
+  const todaySec = stats.daily[getTodayKey()] || 0;
+  const bKey = activeBook ? String(activeBook.id) : "";
+  const bookSec = bKey ? (stats.byBook[bKey] || 0) : 0;
+
+  if (readerTimerMode === 0) {
+    el.textContent = formatClockMMSS(sessionReadSeconds) + " · Tổng " + formatDurationCompactVN(stats.totalSeconds);
+  } else {
+    el.textContent = "Hôm nay " + formatDurationCompactVN(todaySec) + " · Sách này " + formatDurationCompactVN(bookSec);
+  }
+}
+
+function startReadingTimer() {
+  stopReadingTimer(false);
+  sessionReadSeconds = 0;
+  unsavedReadDelta = 0;
+  updateReaderTimerUI();
+  syncRealtimePresence();
+
+  readerTimerInterval = setInterval(() => {
+    const readerOpen = $("readerView") && $("readerView").classList.contains("open");
+    if (!readerOpen || document.visibilityState === "hidden") return;
+
+    sessionReadSeconds += 1;
+    unsavedReadDelta += 1;
+    const stats = ensureReadingStats();
+    stats.totalSeconds = (stats.totalSeconds || 0) + 1;
+    const tKey = getTodayKey();
+    stats.daily[tKey] = (stats.daily[tKey] || 0) + 1;
+    if (activeBook) {
+      const bKey = String(activeBook.id);
+      stats.byBook[bKey] = (stats.byBook[bKey] || 0) + 1;
+    }
+    updateReaderTimerUI();
+
+    if (unsavedReadDelta >= 15) {
+      flushReadingTimeDelta();
+    }
+  }, 1000);
+}
+
+function flushReadingTimeDelta() {
+  savePrefs();
+  if (unsavedReadDelta > 0 && sb) {
+    const delta = unsavedReadDelta;
+    unsavedReadDelta = 0;
+    sb.rpc("record_site_activity", { p_visit: 0, p_read_seconds: delta }).then(() => {}).catch(() => {});
+  } else {
+    unsavedReadDelta = 0;
+  }
+}
+
+function stopReadingTimer(syncPresence = true) {
+  if (readerTimerInterval) {
+    clearInterval(readerTimerInterval);
+    readerTimerInterval = null;
+  }
+  flushReadingTimeDelta();
+  if (syncPresence) syncRealtimePresence();
+}
+
+// Ghi nhận lượt truy cập phiên mới và kết nối kênh Realtime đếm số người đang online / đang đọc sách
+function initVisitAndPresence() {
+  try {
+    if (!sessionStorage.getItem(SESSION_VISITED_KEY)) {
+      sessionStorage.setItem(SESSION_VISITED_KEY, "1");
+      const prev = Number(localStorage.getItem(SITE_VISITS_KEY) || "0") || 0;
+      localStorage.setItem(SITE_VISITS_KEY, String(prev + 1));
+      if (sb) {
+        sb.rpc("record_site_activity", { p_visit: 1, p_read_seconds: 0 }).then(() => {}).catch(() => {});
+      }
+    }
+  } catch (e) {}
+
+  if (sb && !presenceChannel && typeof sb.channel === "function") {
+    const clientKey = "c-" + Math.random().toString(36).slice(2, 10);
+    presenceChannel = sb.channel("tusach_readers_online", {
+      config: { presence: { key: clientKey } }
+    });
+    presenceChannel
+      .on("presence", { event: "sync" }, () => {
+        livePresenceMap = presenceChannel.presenceState() || {};
+      })
+      .subscribe((status) => {
+        if (status === "SUBSCRIBED") {
+          syncRealtimePresence();
+        }
+      });
+  }
+}
+
+function syncRealtimePresence() {
+  if (!presenceChannel) return;
+  const readerOpen = $("readerView") && $("readerView").classList.contains("open");
+  presenceChannel.track({
+    username: currentProfile ? getProfileUsername(currentProfile) : "khach",
+    name: currentProfile ? getProfileFullName(currentProfile) : "Bạn đọc",
+    isReading: Boolean(readerOpen && activeBook),
+    bookTitle: readerOpen && activeBook ? activeBook.title : "",
+    at: new Date().toISOString()
+  }).catch(() => {});
+}
+
+function getLivePresenceSummary() {
+  const entries = [];
+  Object.values(livePresenceMap || {}).forEach((arr) => {
+    if (Array.isArray(arr) && arr[0]) entries.push(arr[0]);
+  });
+  if (!entries.length) {
+    entries.push({
+      username: currentProfile ? getProfileUsername(currentProfile) : "admin",
+      name: currentProfile ? getProfileFullName(currentProfile) : "Bạn",
+      isReading: Boolean($("readerView") && $("readerView").classList.contains("open") && activeBook),
+      bookTitle: activeBook ? activeBook.title : ""
+    });
+  }
+  const readingList = entries.filter((x) => x.isReading);
+  return { totalOnline: entries.length, readingCount: readingList.length, entries };
+}
+
+// Kiểm tra một sách có khớp bộ lọc nhanh ở cột trái hay không
+function matchShelfFilter(b, filterKey) {
+  if (filterKey === "library") return !b.isDemo;
+  if (filterKey === "reading") return Boolean(!b.isDemo && prefs.progress && prefs.progress[b.id]);
+  if (filterKey === "bookmarked") return Boolean(!b.isDemo && prefs.bookmarks && (prefs.bookmarks[b.id] || []).length > 0);
+  return true;
+}
+
+// Vẽ Cột trái: Thẻ Đọc tiếp + Bộ lọc nhanh + Thống kê góc đọc sách
+function renderShelfLeftRail(allItems) {
+  const leftBox = $("shelfLeftRail");
+  if (!leftBox) return;
+  leftBox.textContent = "";
+
+  const realItems = allItems.filter((it) => !it.isDemo);
+  const readingItems = realItems.filter((it) => prefs.progress && prefs.progress[it.id]);
+  const bookmarkedItems = realItems.filter((it) => prefs.bookmarks && (prefs.bookmarks[it.id] || []).length > 0);
+
+  // 1. Thẻ Đọc tiếp cuốn gần nhất (hoặc gợi ý cuốn sách thật đầu tiên)
+  const targetContinue =
+    realItems.find((it) => String(it.id) === String(prefs.lastBookId)) ||
+    readingItems[0] ||
+    realItems[0];
+
+  if (targetContinue) {
+    const contCard = document.createElement("div");
+    contCard.className = "rail-card";
+
+    const prog = (prefs.progress && prefs.progress[targetContinue.id]) || null;
+    const eyebrow = document.createElement("div");
+    eyebrow.className = "rail-eyebrow";
+    eyebrow.textContent = prog ? "📖 Đang đọc dở" : "✨ Sẵn sàng mở đọc";
+
+    const row = document.createElement("div");
+    row.className = "rail-continue-row";
+
+    const miniCover = document.createElement("div");
+    miniCover.className = "mini-cover-3d";
+    miniCover.style.setProperty("--spine-bg", targetContinue.bg);
+    if (targetContinue.cover) {
+      const img = document.createElement("img");
+      img.src = targetContinue.cover;
+      img.alt = "";
+      miniCover.append(img);
+    }
+
+    const info = document.createElement("div");
+    info.style.minWidth = "0";
+    const tEl = document.createElement("div");
+    tEl.className = "rail-book-title";
+    tEl.textContent = targetContinue.title;
+    const aEl = document.createElement("div");
+    aEl.className = "rail-book-author";
+    aEl.textContent = targetContinue.rawAuthor;
+    info.append(tEl, aEl);
+    row.append(miniCover, info);
+
+    const totalChap = Math.max(1, targetContinue.chapters || 1);
+    const curChap = prog ? Math.min(prog.chapter || 1, totalChap) : 1;
+    const pct = prog ? Math.max(6, Math.round((curChap / totalChap) * 100)) : 0;
+
+    const progMeta = document.createElement("div");
+    progMeta.className = "rail-prog-meta";
+    const pLeft = document.createElement("span");
+    pLeft.textContent = prog ? ("Chương " + curChap + " / " + totalChap) : (totalChap + " chương");
+    const pRight = document.createElement("span");
+    pRight.textContent = prog ? (pct + "%") : "Chưa mở";
+    progMeta.append(pLeft, pRight);
+
+    const progBar = document.createElement("div");
+    progBar.className = "rail-prog-bar";
+    const progFill = document.createElement("div");
+    progFill.className = "rail-prog-fill";
+    progFill.style.width = (prog ? pct : 4) + "%";
+    progBar.append(progFill);
+
+    const btnRead = document.createElement("button");
+    btnRead.type = "button";
+    btnRead.className = "btn-primary rail-btn-full";
+    btnRead.textContent = prog ? ("Đọc tiếp chương " + curChap + " →") : "Mở đọc 3D ngay →";
+    btnRead.onclick = () => openBook(targetContinue.realBook);
+
+    contCard.append(eyebrow, row, progMeta, progBar, btnRead);
+    leftBox.append(contCard);
+  }
+
+  // 2. Thẻ Danh mục Thể loại & Bộ lọc nhanh
+  const catCard = document.createElement("div");
+  catCard.className = "rail-card";
+  const cHead = document.createElement("h3");
+  cHead.className = "rail-heading";
+  cHead.textContent = "Thể loại sách";
+
+  const cList = document.createElement("div");
+  cList.className = "rail-filter-list";
+
+  const allCatBtn = document.createElement("button");
+  allCatBtn.type = "button";
+  allCatBtn.className = "rail-filter-btn" + (!selectedShelfCategory && currentShelfFilter === "all" ? " active" : "");
+  const allCatLbl = document.createElement("span");
+  allCatLbl.textContent = "📚 Tất cả thể loại";
+  const allCatCnt = document.createElement("span");
+  allCatCnt.className = "rail-filter-count";
+  allCatCnt.textContent = String(allItems.length);
+  allCatBtn.append(allCatLbl, allCatCnt);
+  allCatBtn.onclick = () => {
+    selectedShelfCategory = null;
+    currentShelfFilter = "all";
+    currentShelfPage = 1;
+    pulledBookId = null;
+    renderBookshelf();
+  };
+  cList.append(allCatBtn);
+
+  BOOK_CATEGORIES.forEach((catName) => {
+    const cntVal = allItems.filter((x) => x.category === catName).length;
+    if (!cntVal) return;
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "rail-filter-btn" + (selectedShelfCategory === catName ? " active" : "");
+    const lbl = document.createElement("span");
+    lbl.textContent = catName;
+    const cnt = document.createElement("span");
+    cnt.className = "rail-filter-count";
+    cnt.textContent = String(cntVal);
+    b.append(lbl, cnt);
+    b.onclick = () => {
+      selectedShelfCategory = catName;
+      currentShelfPage = 1;
+      pulledBookId = null;
+      renderBookshelf();
+    };
+    cList.append(b);
   });
 
-  const shelfItems = filteredReal.map((b, i) => toSpecBookObject(b, i));
+  catCard.append(cHead, cList);
+  leftBox.append(catCard);
 
-  const contBox = $("continueContainer");
-  contBox.textContent = "";
+  // 3. Thẻ Bộ lọc cá nhân & Thời gian đọc tích lũy
+  const filterCard = document.createElement("div");
+  filterCard.className = "rail-card";
+  const fHead = document.createElement("h3");
+  fHead.className = "rail-heading";
+  fHead.textContent = "Góc đọc của bạn";
+
+  const stats = ensureReadingStats();
+  const todaySec = stats.daily[getTodayKey()] || 0;
+  const totalBookmarks = Object.values(prefs.bookmarks || {}).reduce((acc, arr) => acc + (Array.isArray(arr) ? arr.length : 0), 0);
+
+  const grid = document.createElement("div");
+  grid.className = "rail-mini-stats";
+
+  const t1 = document.createElement("div");
+  t1.className = "rail-stat-tile";
+  const t1n = document.createElement("div");
+  t1n.className = "rail-stat-num";
+  t1n.style.fontSize = "15.5px";
+  t1n.textContent = formatDurationCompactVN(stats.totalSeconds || 0);
+  const t1l = document.createElement("div");
+  t1l.className = "rail-stat-lbl";
+  t1l.textContent = "Đã đọc (Hôm nay: " + formatDurationCompactVN(todaySec) + ")";
+  t1.append(t1n, t1l);
+
+  const t2 = document.createElement("div");
+  t2.className = "rail-stat-tile";
+  const t2n = document.createElement("div");
+  t2n.className = "rail-stat-num";
+  t2n.style.fontSize = "15.5px";
+  t2n.textContent = totalBookmarks + " mục";
+  const t2l = document.createElement("div");
+  t2l.className = "rail-stat-lbl";
+  t2l.textContent = "Dấu trang đã lưu";
+  t2.append(t2n, t2l);
+
+  grid.append(t1, t2);
+
+  const fList = document.createElement("div");
+  fList.className = "rail-filter-list";
+  fList.style.marginBottom = "10px";
+  const filters = DEMO_SHELF_TARGET > 0
+    ? [
+        { key: "library", label: "🏛 Sách thật hiện có", count: realItems.length },
+        { key: "reading", label: "📖 Đang đọc dở", count: readingItems.length },
+        { key: "bookmarked", label: "🔖 Đã lưu dấu trang", count: bookmarkedItems.length }
+      ]
+    : [
+        { key: "reading", label: "📖 Đang đọc dở", count: readingItems.length },
+        { key: "bookmarked", label: "🔖 Đã lưu dấu trang", count: bookmarkedItems.length }
+      ];
+
+  filters.forEach((f) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "rail-filter-btn" + (currentShelfFilter === f.key ? " active" : "");
+    const lbl = document.createElement("span");
+    lbl.textContent = f.label;
+    const cnt = document.createElement("span");
+    cnt.className = "rail-filter-count";
+    cnt.textContent = String(f.count);
+    b.append(lbl, cnt);
+    b.onclick = () => {
+      currentShelfFilter = currentShelfFilter === f.key ? "all" : f.key;
+      selectedShelfCategory = null;
+      currentShelfPage = 1;
+      pulledBookId = null;
+      renderBookshelf();
+    };
+    fList.append(b);
+  });
+
+  const btnAdd = document.createElement("button");
+  btnAdd.type = "button";
+  btnAdd.className = "icon-btn rail-btn-full";
+  btnAdd.textContent = "＋ Tải thêm sách PDF / TXT";
+  btnAdd.onclick = () => switchMainTab("mybooks");
+
+  filterCard.append(fHead, grid, fList, btnAdd);
+  leftBox.append(filterCard);
+}
+
+// Vẽ Cột phải: Thẻ Tiêu điểm cuốn sách đang rê chuột / chọn + Chọn sách ngẫu nhiên
+function renderShelfRightRail(filteredItems) {
+  const rightBox = $("shelfRightRail");
+  if (!rightBox) return;
+  rightBox.textContent = "";
+
+  const item =
+    (inspectedBookItem && filteredItems.find((x) => String(x.id) === String(inspectedBookItem.id))) ||
+    filteredItems[0] ||
+    null;
+
+  // 1. Thẻ Tiêu điểm cuốn sách đang chọn / rê chuột
+  const spotCard = document.createElement("div");
+  spotCard.className = "rail-card";
+
+  const eyebrow = document.createElement("div");
+  eyebrow.className = "rail-eyebrow";
+  eyebrow.textContent = "🔍 Chi tiết cuốn sách";
+  spotCard.append(eyebrow);
+
+  if (item) {
+    const stage = document.createElement("div");
+    stage.className = "spotlight-cover-stage";
+    const book3d = document.createElement("div");
+    book3d.className = "spotlight-book-3d";
+    book3d.style.setProperty("--spine-bg", item.bg);
+    book3d.style.setProperty("--spine-fg", item.fg);
+
+    if (item.cover) {
+      const img = document.createElement("img");
+      img.src = item.cover;
+      img.alt = "";
+      book3d.append(img);
+    } else {
+      const cTitle = document.createElement("div");
+      cTitle.className = "spotlight-cover-art-title";
+      cTitle.textContent = item.title;
+      const cAuthor = document.createElement("div");
+      cAuthor.className = "spotlight-cover-art-author";
+      cAuthor.textContent = item.rawAuthor;
+      book3d.append(cTitle, cAuthor);
+    }
+    stage.append(book3d);
+
+    const titleEl = document.createElement("h3");
+    titleEl.className = "spotlight-title";
+    titleEl.textContent = item.title;
+
+    const authorEl = document.createElement("div");
+    authorEl.className = "spotlight-author";
+    authorEl.textContent = item.rawAuthor + " · " + item.year;
+
+    const chips = document.createElement("div");
+    chips.className = "spotlight-chips";
+
+    const catChip = document.createElement("span");
+    catChip.className = "spotlight-chip";
+    catChip.textContent = item.category || "Chưa phân loại";
+
+    const typeChip = document.createElement("span");
+    typeChip.className = "spotlight-chip" + (item.isDemo ? "" : " real");
+    typeChip.textContent = item.isDemo ? "Sách mẫu UI" : "Sẵn sàng đọc 3D";
+
+    const chapChip = document.createElement("span");
+    chapChip.className = "spotlight-chip";
+    chapChip.textContent = (item.chapters || 12) + " chương";
+
+    chips.append(catChip, typeChip, chapChip);
+
+    const blurb = document.createElement("div");
+    blurb.className = "spotlight-blurb";
+    if (item.blurb) {
+      blurb.textContent = item.blurb;
+    } else if (item.contributor) {
+      blurb.textContent = "Tác phẩm được đóng góp lên kệ chung bởi " + item.contributor + ". Bấm mở đọc để lật từng trang giấy 3D.";
+    } else {
+      blurb.textContent = "Ấn phẩm trong kho sách cá nhân, đã tách chương sạch sẽ và hỗ trợ lật trang 3D, lưu dấu trang tự động.";
+    }
+
+    const actionBtn = document.createElement("button");
+    actionBtn.type = "button";
+    actionBtn.className = (item.isDemo ? "icon-btn" : "btn-primary") + " rail-btn-full";
+    actionBtn.textContent = item.isDemo ? "✨ Nhấc thử trên kệ gỗ" : "📖 Mở đọc lật trang 3D →";
+    actionBtn.onclick = () => {
+      if (item.realBook) openBook(item.realBook);
+      else togglePullBook(item);
+    };
+
+    const hint = document.createElement("div");
+    hint.className = "spotlight-hint";
+    hint.textContent = "Rê chuột qua gáy sách trên kệ để xem nhanh";
+
+    spotCard.append(stage, titleEl, authorEl, chips, blurb, actionBtn, hint);
+  } else {
+    const emptyP = document.createElement("div");
+    emptyP.className = "spotlight-hint";
+    emptyP.textContent = "Chưa có cuốn sách nào trong mục lọc này.";
+    spotCard.append(emptyP);
+  }
+  rightBox.append(spotCard);
+
+  // 2. Thẻ Gợi ý ngẫu nhiên & Châm ngôn đọc sách
+  const randCard = document.createElement("div");
+  randCard.className = "rail-card";
+  const rHead = document.createElement("h3");
+  rHead.className = "rail-heading";
+  rHead.textContent = "Hôm nay đọc gì?";
+
+  const quoteEl = document.createElement("p");
+  quoteEl.className = "rail-quote-text";
+  quoteEl.textContent = READING_QUOTES[currentQuoteIdx % READING_QUOTES.length];
+
+  const randBtn = document.createElement("button");
+  randBtn.type = "button";
+  randBtn.className = "icon-btn rail-btn-full";
+  randBtn.textContent = "🎲 Chọn ngẫu nhiên 1 cuốn";
+  randBtn.disabled = filteredItems.length === 0;
+  randBtn.onclick = () => {
+    if (!filteredItems.length) return;
+    let pool = filteredItems;
+    if (filteredItems.length > 1 && inspectedBookItem) {
+      pool = filteredItems.filter((x) => String(x.id) !== String(inspectedBookItem.id));
+    }
+    const pick = pool[Math.floor(Math.random() * pool.length)];
+    const pickIdx = filteredItems.findIndex((x) => String(x.id) === String(pick.id));
+    currentQuoteIdx = (currentQuoteIdx + 1) % READING_QUOTES.length;
+    currentShelfPage = Math.floor(Math.max(0, pickIdx) / BOOKS_PER_PAGE) + 1;
+    pulledBookId = pick.id;
+    inspectedBookItem = pick;
+    renderBookshelf();
+    showSpineToast("🎲 Gợi ý cho bạn: " + pick.title + " — " + pick.rawAuthor);
+  };
+
+  randCard.append(rHead, quoteEl, randBtn);
+  rightBox.append(randCard);
+}
+
+// Cập nhật nhanh thẻ Chi tiết sách ở cột phải khi người dùng rê chuột hoặc focus vào một gáy sách
+function inspectSpineItem(item, filteredItems) {
+  if (inspectedBookItem && String(inspectedBookItem.id) === String(item.id)) return;
+  inspectedBookItem = item;
+  renderShelfRightRail(filteredItems);
+}
+
+// 2. Vẽ kệ sách: Mặc định mỗi kệ 5 cuốn là 1 Thể loại kèm nút "Xem tất cả →"; khi chọn 1 thể loại thì xem toàn bộ thể loại đó
+function renderBookshelf() {
+  const q = ($("searchInput").value || "").trim().toLowerCase();
+  const allShelfBooks = getShelfDisplayBooks();
+  const allSpecItems = allShelfBooks.map((b, i) => toSpecBookObject(b, i));
+
+  const filteredItems = allSpecItems.filter((item, idx) => {
+    const rawBook = allShelfBooks[idx];
+    if (selectedShelfCategory && item.category !== selectedShelfCategory) return false;
+    if (!matchShelfFilter(rawBook, currentShelfFilter)) return false;
+    if (!q) return true;
+    return (item.title || "").toLowerCase().includes(q)
+      || (item.rawAuthor || "").toLowerCase().includes(q)
+      || (item.category || "").toLowerCase().includes(q)
+      || (item.contributor || "").toLowerCase().includes(q);
+  });
+
+  if (!inspectedBookItem || !filteredItems.some((x) => String(x.id) === String(inspectedBookItem.id))) {
+    inspectedBookItem = filteredItems[0] || null;
+  }
+
+  renderShelfLeftRail(allSpecItems);
+  renderShelfRightRail(filteredItems);
 
   const shelvesBox = $("shelvesContainer");
   shelvesBox.textContent = "";
 
-  // --- KỆ 1: Hàng sách hiện có trong thư viện + sách kệ chung ---
-  const shelf1 = document.createElement("section");
-  shelf1.className = "shelf-section";
-  shelf1.setAttribute("aria-label", "Kệ sách chính");
+  // Thanh thông báo đang xem riêng 1 Thể loại (hoặc bộ lọc riêng) kèm nút Quay lại
+  if (selectedShelfCategory) {
+    const banner = document.createElement("div");
+    banner.className = "shelf-cat-banner";
+    const leftInfo = document.createElement("div");
+    const bTitle = document.createElement("div");
+    bTitle.className = "shelf-cat-banner-title";
+    bTitle.textContent = "📂 " + selectedShelfCategory + " (" + filteredItems.length + " cuốn)";
+    leftInfo.append(bTitle);
 
-  const scroll1 = document.createElement("div");
-  scroll1.className = "shelf-scroll";
-  const rack1 = document.createElement("div");
-  rack1.className = "spines-rack";
-
-  shelfItems.forEach((item) => {
-    rack1.append(createBookCard(item));
-  });
-
-  scroll1.append(rack1);
-  const plank1 = document.createElement("div");
-  plank1.className = "wood-plank";
-  shelf1.append(scroll1, plank1);
-  shelvesBox.append(shelf1);
-
-  // --- KỆ 2 BÊN DƯỚI: Các ô trống nét đứt "Chỗ cho sách mới" (bấm vào mở mục "+ Sách của bạn") ---
-  const shelf2 = document.createElement("section");
-  shelf2.className = "shelf-section";
-  shelf2.setAttribute("aria-label", "Kệ cho sách mới");
-
-  const scroll2 = document.createElement("div");
-  scroll2.className = "shelf-scroll";
-  const rack2 = document.createElement("div");
-  rack2.className = "spines-rack";
-
-  const emptyCount = 4;
-  for (let i = 0; i < emptyCount; i++) {
-    const slot = document.createElement("div");
-    slot.className = "spine-slot-empty";
-    slot.style.cursor = "pointer";
-    slot.title = "Bấm để thêm sách PDF hoặc TXT của bạn";
-    slot.onclick = () => switchMainTab("mybooks");
-    const lbl = document.createElement("span");
-    lbl.textContent = "Chỗ cho sách mới";
-    slot.append(lbl);
-    rack2.append(slot);
+    const backBtn = document.createElement("button");
+    backBtn.type = "button";
+    backBtn.className = "shelf-cat-more-btn";
+    backBtn.textContent = "← Xem tất cả thể loại";
+    backBtn.onclick = () => {
+      selectedShelfCategory = null;
+      currentShelfPage = 1;
+      pulledBookId = null;
+      renderBookshelf();
+    };
+    banner.append(leftInfo, backBtn);
+    shelvesBox.append(banner);
   }
 
-  scroll2.append(rack2);
-  const plank2 = document.createElement("div");
-  plank2.className = "wood-plank";
-  shelf2.append(scroll2, plank2);
-  shelvesBox.append(shelf2);
+  if (filteredItems.length === 0) {
+    const emptyMsg = document.createElement("div");
+    emptyMsg.className = "rail-card shelf-empty-msg";
+    emptyMsg.textContent = "Không có cuốn sách nào trong mục này.";
+    shelvesBox.append(emptyMsg);
+    return;
+  }
+
+  // CHẾ ĐỘ 1: Xem theo từng kệ Thể loại (1 kệ tối đa 5 cuốn = 1 thể loại + nút Xem tất cả →)
+  const isCategoryOverviewMode = !selectedShelfCategory && !q && currentShelfFilter === "all";
+  if (isCategoryOverviewMode) {
+    const catGroups = [];
+    BOOK_CATEGORIES.forEach((catName) => {
+      const items = filteredItems.filter((it) => it.category === catName);
+      if (items.length > 0) catGroups.push({ category: catName, items });
+    });
+    // Nhóm các thể loại phát sinh ngoài danh sách mặc định (nếu có)
+    filteredItems.forEach((it) => {
+      if (!BOOK_CATEGORIES.includes(it.category)) {
+        let g = catGroups.find((x) => x.category === it.category);
+        if (!g) { g = { category: it.category, items: [] }; catGroups.push(g); }
+        g.items.push(it);
+      }
+    });
+
+    const totalCatPages = Math.max(1, Math.ceil(catGroups.length / SHELVES_PER_PAGE));
+    if (currentShelfPage > totalCatPages) currentShelfPage = totalCatPages;
+    if (currentShelfPage < 1) currentShelfPage = 1;
+
+    const startCat = (currentShelfPage - 1) * SHELVES_PER_PAGE;
+    const pageGroups = catGroups.slice(startCat, startCat + SHELVES_PER_PAGE);
+
+    pageGroups.forEach((grp) => {
+      const shelfSec = document.createElement("section");
+      shelfSec.className = "shelf-section";
+      shelfSec.setAttribute("aria-label", "Kệ thể loại " + grp.category);
+
+      // Thanh tiêu đề Thể loại phía trên kệ + nút Xem tất cả
+      const catHead = document.createElement("div");
+      catHead.className = "shelf-cat-header";
+      const titleWrap = document.createElement("div");
+      titleWrap.className = "shelf-cat-title-wrap";
+      const hEl = document.createElement("h2");
+      hEl.className = "shelf-cat-title";
+      hEl.textContent = grp.category;
+      const cntBadge = document.createElement("span");
+      cntBadge.className = "shelf-cat-count";
+      cntBadge.textContent = grp.items.length + " cuốn";
+      titleWrap.append(hEl, cntBadge);
+
+      const btnAll = document.createElement("button");
+      btnAll.type = "button";
+      btnAll.className = "shelf-cat-more-btn";
+      btnAll.textContent = "Xem tất cả →";
+      btnAll.onclick = () => {
+        selectedShelfCategory = grp.category;
+        currentShelfPage = 1;
+        pulledBookId = null;
+        renderBookshelf();
+        $("shelfView").scrollIntoView({ behavior: "smooth", block: "start" });
+      };
+      catHead.append(titleWrap, btnAll);
+
+      const scrollWrap = document.createElement("div");
+      scrollWrap.className = "shelf-scroll";
+      const rack = document.createElement("div");
+      rack.className = "spines-rack";
+
+      grp.items.slice(0, BOOKS_PER_SHELF).forEach((item) => {
+        const card = createBookCard(item);
+        card.addEventListener("mouseenter", () => inspectSpineItem(item, filteredItems));
+        card.addEventListener("focus", () => inspectSpineItem(item, filteredItems));
+        rack.append(card);
+      });
+
+      scrollWrap.append(rack);
+      const plank = document.createElement("div");
+      plank.className = "wood-plank";
+      shelfSec.append(catHead, scrollWrap, plank);
+      shelvesBox.append(shelfSec);
+    });
+
+    if (totalCatPages > 1) {
+      const pagWrap = document.createElement("nav");
+      pagWrap.className = "shelf-pagination";
+      pagWrap.setAttribute("aria-label", "Phân trang nhóm thể loại");
+
+      const controls = document.createElement("div");
+      controls.className = "shelf-page-controls";
+      const goCatPage = (p) => {
+        if (p < 1 || p > totalCatPages || p === currentShelfPage) return;
+        currentShelfPage = p;
+        pulledBookId = null;
+        renderBookshelf();
+        $("shelfView").scrollIntoView({ behavior: "smooth", block: "start" });
+      };
+
+      const prevBtn = document.createElement("button");
+      prevBtn.type = "button";
+      prevBtn.className = "shelf-page-btn";
+      prevBtn.textContent = "‹ Trước";
+      prevBtn.disabled = currentShelfPage <= 1;
+      prevBtn.onclick = () => goCatPage(currentShelfPage - 1);
+      controls.append(prevBtn);
+
+      for (let p = 1; p <= totalCatPages; p++) {
+        const pageBtn = document.createElement("button");
+        pageBtn.type = "button";
+        pageBtn.className = "shelf-page-btn" + (p === currentShelfPage ? " active" : "");
+        pageBtn.textContent = String(p);
+        pageBtn.onclick = () => goCatPage(p);
+        controls.append(pageBtn);
+      }
+
+      const nextBtn = document.createElement("button");
+      nextBtn.type = "button";
+      nextBtn.className = "shelf-page-btn";
+      nextBtn.textContent = "Sau ›";
+      nextBtn.disabled = currentShelfPage >= totalCatPages;
+      nextBtn.onclick = () => goCatPage(currentShelfPage + 1);
+      controls.append(nextBtn);
+
+      const summary = document.createElement("div");
+      summary.className = "shelf-page-summary";
+      summary.textContent = "Trang kệ " + currentShelfPage + " / " + totalCatPages + " · " + catGroups.length + " thể loại (" + filteredItems.length + " cuốn)";
+      pagWrap.append(controls, summary);
+      shelvesBox.append(pagWrap);
+    }
+    return;
+  }
+
+  // CHẾ ĐỘ 2: Xem toàn bộ 1 Thể loại hoặc kết quả Tìm kiếm / Bộ lọc (5 cuốn / kệ × 3 kệ / trang)
+  const totalItems = filteredItems.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / BOOKS_PER_PAGE));
+  if (currentShelfPage > totalPages) currentShelfPage = totalPages;
+  if (currentShelfPage < 1) currentShelfPage = 1;
+
+  const startIdx = (currentShelfPage - 1) * BOOKS_PER_PAGE;
+  const pageItems = filteredItems.slice(startIdx, startIdx + BOOKS_PER_PAGE);
+
+  const shelfCount = Math.ceil(pageItems.length / BOOKS_PER_SHELF);
+  for (let s = 0; s < shelfCount; s++) {
+    const rowItems = pageItems.slice(s * BOOKS_PER_SHELF, (s + 1) * BOOKS_PER_SHELF);
+    const shelfSec = document.createElement("section");
+    shelfSec.className = "shelf-section";
+    shelfSec.setAttribute("aria-label", "Kệ sách tầng " + (s + 1));
+
+    const scrollWrap = document.createElement("div");
+    scrollWrap.className = "shelf-scroll";
+    const rack = document.createElement("div");
+    rack.className = "spines-rack";
+
+    rowItems.forEach((item) => {
+      const card = createBookCard(item);
+      card.addEventListener("mouseenter", () => inspectSpineItem(item, filteredItems));
+      card.addEventListener("focus", () => inspectSpineItem(item, filteredItems));
+      rack.append(card);
+    });
+
+    scrollWrap.append(rack);
+    const plank = document.createElement("div");
+    plank.className = "wood-plank";
+    shelfSec.append(scrollWrap, plank);
+    shelvesBox.append(shelfSec);
+  }
+
+  if (totalPages > 1) {
+    const pagWrap = document.createElement("nav");
+    pagWrap.className = "shelf-pagination";
+    pagWrap.setAttribute("aria-label", "Phân trang kệ sách");
+
+    const controls = document.createElement("div");
+    controls.className = "shelf-page-controls";
+
+    const goToPage = (p) => {
+      if (p < 1 || p > totalPages || p === currentShelfPage) return;
+      currentShelfPage = p;
+      pulledBookId = null;
+      inspectedBookItem = filteredItems[(p - 1) * BOOKS_PER_PAGE] || null;
+      renderBookshelf();
+      $("shelfView").scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+
+    const prevBtn = document.createElement("button");
+    prevBtn.type = "button";
+    prevBtn.className = "shelf-page-btn";
+    prevBtn.textContent = "‹ Trước";
+    prevBtn.disabled = currentShelfPage <= 1;
+    prevBtn.onclick = () => goToPage(currentShelfPage - 1);
+    controls.append(prevBtn);
+
+    for (let p = 1; p <= totalPages; p++) {
+      const pageBtn = document.createElement("button");
+      pageBtn.type = "button";
+      pageBtn.className = "shelf-page-btn" + (p === currentShelfPage ? " active" : "");
+      pageBtn.textContent = String(p);
+      pageBtn.setAttribute("aria-current", p === currentShelfPage ? "page" : "false");
+      pageBtn.onclick = () => goToPage(p);
+      controls.append(pageBtn);
+    }
+
+    const nextBtn = document.createElement("button");
+    nextBtn.type = "button";
+    nextBtn.className = "shelf-page-btn";
+    nextBtn.textContent = "Sau ›";
+    nextBtn.disabled = currentShelfPage >= totalPages;
+    nextBtn.onclick = () => goToPage(currentShelfPage + 1);
+    controls.append(nextBtn);
+
+    const summary = document.createElement("div");
+    summary.className = "shelf-page-summary";
+    const endIdx = Math.min(startIdx + pageItems.length, totalItems);
+    summary.textContent = "Trang " + currentShelfPage + " / " + totalPages + " · Hiển thị " + (startIdx + 1) + "–" + endIdx + " / " + totalItems + " cuốn";
+
+    pagWrap.append(controls, summary);
+    shelvesBox.append(pagWrap);
+  }
 }
 
-// Bấm vào gáy sách: nhấc sách ra khỏi kệ (0.45s) rồi hiển thị luôn màn hình đọc sách
+// Bấm vào gáy sách: nhấc sách ra khỏi kệ; sách thật mở trình đọc, sách ảo báo xem thử UI
 function togglePullBook(item) {
+  if (item.isDemo) {
+    pulledBookId = String(pulledBookId) === String(item.id) ? null : item.id;
+    document.querySelectorAll(".spine-book").forEach((btn) => {
+      const isPressed = String(btn.dataset.id) === String(pulledBookId);
+      btn.setAttribute("aria-pressed", isPressed ? "true" : "false");
+      btn.classList.toggle("pulled", isPressed);
+    });
+    if (pulledBookId) {
+      showSpineToast("📖 Sách mẫu xem thử UI: " + item.title + " — " + item.author);
+    }
+    return;
+  }
+
   pulledBookId = item.id;
   document.querySelectorAll(".spine-book").forEach((btn) => {
     const isPressed = String(btn.dataset.id) === String(pulledBookId);
@@ -2010,7 +3904,7 @@ function togglePullBook(item) {
   }, delay);
 }
 
-// Tạo mỗi gáy sách là <button> 116 x 548 px theo đúng KE-SACH-SPEC.md
+// Tạo mỗi gáy sách gọn 80 x 308 px (xếp 5 cuốn trên 1 kệ)
 function createBookCard(item) {
   const fullTitle = item.title || item.lines.join(" ");
   const isPressed = String(pulledBookId) === String(item.id);
@@ -2024,7 +3918,7 @@ function createBookCard(item) {
   btn.style.setProperty("--spine-bg", item.bg);
   btn.style.setProperty("--spine-fg", item.fg);
 
-  // Khi bấm nhấc sách ra là chuyển thẳng vào màn hình đọc sách
+  // Khi bấm nhấc sách ra là chuyển thẳng vào màn hình đọc sách (hoặc báo sách mẫu)
   btn.onclick = () => togglePullBook(item);
 
   // 1. Ảnh bìa nhỏ vuông ở đỉnh gáy (hoặc hình minh họa sky/hill/sun)
@@ -2079,8 +3973,8 @@ function createBookCard(item) {
   vTitle.className = "spine-vertical-title";
 
   const maxLineLen = Math.max(...item.lines.map((l) => l.length));
-  if (maxLineLen > 15) vTitle.style.fontSize = "18px";
-  else if (maxLineLen > 12) vTitle.style.fontSize = "19.5px";
+  if (maxLineLen > 16) vTitle.style.fontSize = "11.5px";
+  else if (maxLineLen > 12) vTitle.style.fontSize = "12.8px";
 
   item.lines.forEach((lineText) => {
     const lineEl = document.createElement("span");
@@ -2096,7 +3990,7 @@ function createBookCard(item) {
   const authorEl = document.createElement("div");
   authorEl.className = "spine-author";
   authorEl.textContent = item.author;
-  if (item.author.length > 11) authorEl.style.fontSize = "9.5px";
+  if (item.author.length > 12) authorEl.style.fontSize = "7.5px";
   bottomZone.append(authorEl);
 
   if (item.contributor) {
@@ -2150,7 +4044,7 @@ async function loadBookScript(b) {
   });
 }
 
-// 4. Mở trình đọc sách 3D
+// 4. Mở trình đọc sách 3D & Bắt đầu bộ đếm giờ đọc trực tiếp
 async function openBook(b) {
   activeBook = b;
   prefs.lastBookId = b.id;
@@ -2161,6 +4055,7 @@ async function openBook(b) {
   $("readerView").classList.add("open");
   $("readerView").classList.toggle("scroll-mode", !!prefs.scrollMode);
   updateModeButtons();
+  startReadingTimer();
 
   try {
     const { texts, titles } = await loadBookScript(b);
@@ -2178,6 +4073,7 @@ async function openBook(b) {
 }
 
 function closeReader() {
+  stopReadingTimer(true);
   pulledBookId = null;
   $("readerView").classList.remove("open");
   closeDrawer();
@@ -2801,7 +4697,10 @@ function updateModeButtons() {
 
 // 10. Gắn sự kiện tương tác (Bàn phím, Chuột, Vuốt cảm ứng)
 function bindEvents() {
-  $("searchInput").addEventListener("input", renderBookshelf);
+  $("searchInput").addEventListener("input", () => {
+    currentShelfPage = 1;
+    renderBookshelf();
+  });
 
   document.querySelectorAll("[data-set-ui-theme]").forEach((btn) => {
     btn.addEventListener("click", () => applyUiTheme(btn.getAttribute("data-set-ui-theme")));
@@ -2816,6 +4715,24 @@ function bindEvents() {
   $("drawerBackdrop").onclick = closeDrawer;
   $("tabBtnToc").onclick = () => openDrawer("toc");
   $("tabBtnBookmarks").onclick = () => openDrawer("bookmarks");
+
+  if ($("btnReadingTimer")) {
+    $("btnReadingTimer").onclick = () => {
+      readerTimerMode = readerTimerMode === 0 ? 1 : 0;
+      updateReaderTimerUI();
+      const stats = ensureReadingStats();
+      const todaySec = stats.daily[getTodayKey()] || 0;
+      showSpineToast(
+        "⏱ Phiên này: " + formatClockMMSS(sessionReadSeconds) +
+        " · Hôm nay: " + formatDurationCompactVN(todaySec) +
+        " · Tổng tích lũy: " + formatDurationCompactVN(stats.totalSeconds || 0)
+      );
+    };
+  }
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") flushReadingTimeDelta();
+  });
+  window.addEventListener("beforeunload", () => flushReadingTimeDelta());
 
   $("btnFontDec").onclick = () => {
     applyFontSize(prefs.fontSize - 1);
@@ -2965,6 +4882,14 @@ function initSupabaseClient() {
   if (!isSupabaseConfigured()) return;
   const cfg = window.__WEB_CONFIG__;
   sb = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
+
+  // Đồng bộ phiên đăng nhập khi đổi tài khoản ở tab khác trên cùng trình duyệt
+  window.addEventListener("storage", async (ev) => {
+    if (ev.key && ev.key.includes("-auth-token")) {
+      await refreshAuthSession();
+      if (isApprovedUser() && currentTab === "shelf") renderBookshelf();
+    }
+  });
 }
 
 async function refreshAuthSession() {
@@ -2975,6 +4900,7 @@ async function refreshAuthSession() {
   if (!sb) {
     btnAuth.textContent = "Tài khoản (Local)";
     btnAdmin.style.display = "inline-flex";
+    $("navBtnFeedback").style.display = "none";
     if (navTabs) navTabs.style.display = "inline-flex";
     updateAdminBadgeCount();
     return;
@@ -2985,9 +4911,14 @@ async function refreshAuthSession() {
 
   if (!currentUser) {
     currentProfile = null;
+    currentTab = "shelf";
+    myUserBooks = [];
+    sharedUserBooks = [];
     myFeedbacks = [];
     updateUserFeedbackBadge();
+    $("adminView").classList.remove("open");
     $("btnOpenChangePass").style.display = "none";
+    $("navBtnFeedback").style.display = "inline-flex";
     btnAuth.textContent = "Đăng nhập / Đăng ký";
     btnAdmin.style.display = "none";
     const cfg = window.__WEB_CONFIG__ || {};
@@ -3017,8 +4948,11 @@ async function refreshAuthSession() {
   }
   currentProfile = prof;
   const uName = getProfileFullName(currentProfile);
+  const adminRole = isAdminUser();
   btnAuth.textContent = uName + " · Đăng xuất";
-  btnAdmin.style.display = isAdminUser() ? "inline-flex" : "none";
+  btnAdmin.style.display = adminRole ? "inline-flex" : "none";
+  // Tài khoản Admin chỉ phản hồi góp ý trong Dashboard, không cần mục gửi góp ý ở thanh trên
+  $("navBtnFeedback").style.display = adminRole ? "none" : "inline-flex";
   $("btnOpenChangePass").style.display = "inline-flex";
 
   if (currentProfile.status === "pending") {
@@ -3042,13 +4976,31 @@ async function refreshAuthSession() {
     return;
   }
 
-  // Tài khoản đã được duyệt (approved)
+  // Tài khoản đã được duyệt (approved): chặn tuyệt đối việc lưu lại tab admin của phiên trước cho thành viên thường
+  if (!adminRole && currentTab === "admin") {
+    currentTab = "shelf";
+  }
+  if (adminRole && currentTab === "feedback") {
+    currentTab = "admin";
+    switchAdminSection("feedbacks");
+  }
   if (navTabs) navTabs.style.display = "inline-flex";
-  $("shelfSearchWrap").style.display = currentTab === "shelf" ? "block" : "none";
+  $("navBtnShelf").classList.toggle("active", currentTab === "shelf");
+  $("navBtnMyBooks").classList.toggle("active", currentTab === "mybooks");
+  $("navBtnFeedback").classList.toggle("active", currentTab === "feedback");
+  $("navBtnAdmin").classList.toggle("active", currentTab === "admin");
+
   $("authGateView").classList.remove("open");
   $("shelfView").style.display = currentTab === "shelf" ? "block" : "none";
+  $("shelfSearchWrap").style.display = currentTab === "shelf" ? "block" : "none";
+  $("myBooksView").classList.toggle("open", currentTab === "mybooks");
+  $("feedbackView").classList.toggle("open", currentTab === "feedback");
+  $("adminView").classList.toggle("open", adminRole && currentTab === "admin");
+
   await loadSupabaseBooksAndProgress();
-  await loadMyFeedbacks();
+  if (!adminRole) {
+    await loadMyFeedbacks();
+  }
 }
 
 function showAuthLoginForm(mode = "login") {
@@ -3185,6 +5137,13 @@ function saveLocalUserBooks() {
 }
 
 function switchMainTab(tab) {
+  if (tab === "admin" && sb && !isAdminUser()) {
+    tab = "shelf";
+  }
+  if (tab === "feedback" && (!sb || isAdminUser())) {
+    tab = "admin";
+    switchAdminSection("feedbacks");
+  }
   currentTab = tab;
   $("navBtnShelf").classList.toggle("active", tab === "shelf");
   $("navBtnMyBooks").classList.toggle("active", tab === "mybooks");
@@ -3566,30 +5525,38 @@ function updateAdminBadgeCount() {
 }
 
 // ================= DASHBOARD ADMIN CHUYÊN NGHIỆP CÓ SIDEBAR (/admin) =================
-let activeAdminSection = "overview"; // 'overview' | 'moderation' | 'users' | 'library'
+let activeAdminSection = "overview"; // 'overview' | 'catalog' | 'moderation' | 'users' | 'feedbacks' | 'library'
 let adminBookFilter = "all";
 let adminUserFilter = "all";
+let adminUserRoleFilter = "all";
+let adminCatalogFilter = "all";
+let adminCatalogPage = 1;
+const ADMIN_CATALOG_PER_PAGE = 10;
 
 const ADMIN_SEC_META = {
   overview: {
-    title: "Tổng quan & Phân tích dữ liệu",
-    desc: "Theo dõi dung lượng thư viện, mật độ chương, tỷ lệ duyệt sách và xu hướng đọc theo thời gian thực."
+    title: "Tổng quan & Phân tích hệ thống",
+    desc: ""
+  },
+  catalog: {
+    title: "Quản lý danh mục sách",
+    desc: ""
   },
   moderation: {
-    title: "Hàng chờ duyệt sách & Quản lý kệ chung",
-    desc: "Xem trước nội dung sách bạn bè gửi lên, phê duyệt, từ chối kèm lý do hoặc đưa lên kệ chung."
+    title: "Duyệt sách & Quản lý kệ chung",
+    desc: ""
   },
   users: {
     title: "Quản lý tài khoản thành viên",
-    desc: "Duyệt thành viên mới, khóa / mở khóa, reset mật khẩu về mặc định 123456aA@ và phân quyền Admin."
+    desc: ""
   },
   feedbacks: {
-    title: "Hộp thư góp ý của thành viên",
-    desc: "Đọc góp ý người dùng gửi lên và phản hồi trực tiếp cho từng người."
+    title: "Hộp thư góp ý thành viên",
+    desc: ""
   },
   library: {
-    title: "Kho sách gốc tĩnh (GitHub & Vercel)",
-    desc: "Danh sách sách gốc trong books.json và chapters/book-N.js được quản lý qua công cụ Python."
+    title: "Kho sách gốc tĩnh (Repo)",
+    desc: ""
   }
 };
 
@@ -3597,39 +5564,367 @@ function switchAdminSection(sec) {
   activeAdminSection = sec || "overview";
   const meta = ADMIN_SEC_META[activeAdminSection] || ADMIN_SEC_META.overview;
   $("adminPageTitle").textContent = meta.title;
-  $("adminPageDesc").textContent = meta.desc;
+  $("adminPageDesc").textContent = meta.desc || "";
+  $("adminPageDesc").style.display = meta.desc ? "block" : "none";
+  $("adminPageTitle").style.marginBottom = meta.desc ? "3px" : "0";
 
   document.querySelectorAll("[data-admin-sec]").forEach((btn) => {
     btn.classList.toggle("active", btn.getAttribute("data-admin-sec") === activeAdminSection);
   });
 
   $("adminPaneOverview").classList.toggle("active", activeAdminSection === "overview");
+  if ($("adminPaneCatalog")) $("adminPaneCatalog").classList.toggle("active", activeAdminSection === "catalog");
   $("adminPaneModeration").classList.toggle("active", activeAdminSection === "moderation");
   $("adminPaneUsers").classList.toggle("active", activeAdminSection === "users");
   $("adminPaneFeedbacks").classList.toggle("active", activeAdminSection === "feedbacks");
   $("adminPaneLibrary").classList.toggle("active", activeAdminSection === "library");
 }
 
+// Vẽ bảng Quản lý toàn bộ sách tập trung trong Dashboard (hợp nhất sách gốc + sách người dùng)
+function renderAdminCatalogTable(allBooks, allProfiles, readCounts) {
+  const wrap = $("adminCatalogTableWrap");
+  const pagBox = $("adminCatalogPagination");
+  if (!wrap) return;
+  wrap.textContent = "";
+  if (pagBox) pagBox.textContent = "";
+
+  const profileMap = {};
+  (allProfiles || []).forEach((p) => { profileMap[p.id] = p; });
+
+  // Chuẩn hóa toàn bộ sách về danh sách dòng thống nhất
+  const unified = [];
+  books.forEach((b, idx) => {
+    const pal = SPINE_PALETTES[idx % SPINE_PALETTES.length];
+    const bKey = "lib:" + b.id;
+    unified.push({
+      uid: bKey,
+      code: "#" + b.id,
+      isStatic: true,
+      title: b.title || "Chưa đặt tên",
+      author: b.author || "Không rõ",
+      cover: b.cover || "",
+      bg: pal.bg,
+      sourceLabel: "Kho gốc (Repo)",
+      contributor: b.source || "local",
+      chapters: b.chapters || 1,
+      chars: b.chars || 0,
+      sizeKb: Math.max(1, Math.round(((b.chars || 0) * 1.3) / 1024)),
+      reads: readCounts[bKey] || 0,
+      status: "static_shelf",
+      onShelf: true,
+      addedDate: b.added || "2026-11-27",
+      rawStatic: b,
+      rawUser: null
+    });
+  });
+
+  (allBooks || []).forEach((u, idx) => {
+    const pal = SPINE_PALETTES[(books.length + idx) % SPINE_PALETTES.length];
+    const bKey = "u:" + u.id;
+    const ownerProf = profileMap[u.owner_id];
+    const ownerTag = ownerProf ? ("@" + getProfileUsername(ownerProf)) : "";
+    unified.push({
+      uid: bKey,
+      code: "U-" + String(u.id).slice(0, 5).toUpperCase(),
+      isStatic: false,
+      title: u.title || "Chưa đặt tên",
+      author: u.author || "Không rõ",
+      cover: "",
+      bg: pal.bg,
+      sourceLabel: "Thành viên gửi",
+      contributor: (u.contributor || (ownerProf ? getProfileFullName(ownerProf) : "Bạn đọc")) + (ownerTag ? " (" + ownerTag + ")" : ""),
+      chapters: u.chapters || 1,
+      chars: u.chars || 0,
+      sizeKb: Math.max(1, Math.round((u.size_bytes || (u.chars || 0)) / 1024)),
+      reads: readCounts[bKey] || 0,
+      status: u.shared && u.status === "approved" ? "shared" : (u.status || "pending"),
+      onShelf: Boolean(u.shared && u.status === "approved"),
+      addedDate: (u.created_at || "2026-11-28").slice(0, 10),
+      rawStatic: null,
+      rawUser: u
+    });
+  });
+
+  if ($("sideBadgeCatalog")) {
+    $("sideBadgeCatalog").textContent = String(unified.length);
+  }
+
+  const q = ($("adminCatalogSearch") ? $("adminCatalogSearch").value : "").trim().toLowerCase();
+  const sortMode = $("adminCatalogSort") ? $("adminCatalogSort").value : "newest";
+
+  const filtered = unified.filter((row) => {
+    if (adminCatalogFilter === "on_shelf" && !row.onShelf) return false;
+    if (adminCatalogFilter === "static" && !row.isStatic) return false;
+    if (adminCatalogFilter === "user" && row.isStatic) return false;
+    if (adminCatalogFilter === "pending" && row.status !== "pending") return false;
+    if (q) {
+      const hay = (row.code + " " + row.title + " " + row.author + " " + row.contributor + " " + row.sourceLabel).toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  filtered.sort((a, b) => {
+    if (sortMode === "title") return a.title.localeCompare(b.title, "vi");
+    if (sortMode === "chapters") return (b.chapters - a.chapters) || (b.chars - a.chars);
+    if (sortMode === "reads") return (b.reads - a.reads) || a.title.localeCompare(b.title, "vi");
+    return String(b.addedDate).localeCompare(String(a.addedDate));
+  });
+
+  if (!filtered.length) {
+    const empty = document.createElement("p");
+    empty.style.color = "var(--fg-muted)";
+    empty.style.padding = "16px 0";
+    empty.textContent = "Không có đầu sách nào khớp điều kiện tìm kiếm / bộ lọc.";
+    wrap.append(empty);
+    return;
+  }
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / ADMIN_CATALOG_PER_PAGE));
+  if (adminCatalogPage > totalPages) adminCatalogPage = totalPages;
+  if (adminCatalogPage < 1) adminCatalogPage = 1;
+  const start = (adminCatalogPage - 1) * ADMIN_CATALOG_PER_PAGE;
+  const pageRows = filtered.slice(start, start + ADMIN_CATALOG_PER_PAGE);
+
+  const tbl = document.createElement("table");
+  tbl.className = "table-list";
+  const thead = document.createElement("thead");
+  const hr = document.createElement("tr");
+  ["Mã", "Tác phẩm & Tác giả", "Nguồn / Người gửi", "Quy mô", "Lượt đọc", "Trạng thái kệ", "Thao tác quản lý"].forEach((h) => {
+    const th = document.createElement("th");
+    th.textContent = h;
+    hr.append(th);
+  });
+  thead.append(hr);
+  tbl.append(thead);
+
+  const tbody = document.createElement("tbody");
+  pageRows.forEach((row) => {
+    const tr = document.createElement("tr");
+
+    // 1. Mã sách
+    const tdCode = document.createElement("td");
+    const codeTag = document.createElement("strong");
+    codeTag.style.fontSize = "12.5px";
+    codeTag.style.color = "var(--fg-muted)";
+    codeTag.textContent = row.code;
+    tdCode.append(codeTag);
+
+    // 2. Bìa nhỏ + Tên sách + Tác giả
+    const tdBook = document.createElement("td");
+    const bookCell = document.createElement("div");
+    bookCell.className = "catalog-book-cell";
+
+    const thumb = document.createElement("div");
+    thumb.className = "catalog-thumb";
+    thumb.style.setProperty("--spine-bg", row.bg);
+    if (row.cover) {
+      const img = document.createElement("img");
+      img.src = row.cover;
+      img.alt = "";
+      thumb.append(img);
+    } else {
+      thumb.textContent = (row.title[0] || "S").toUpperCase();
+    }
+
+    const metaDiv = document.createElement("div");
+    const stTitle = document.createElement("strong");
+    stTitle.textContent = row.title;
+    const subAuthor = document.createElement("div");
+    subAuthor.className = "catalog-sub-meta";
+    subAuthor.textContent = row.author + " · " + row.addedDate;
+    metaDiv.append(stTitle, subAuthor);
+
+    bookCell.append(thumb, metaDiv);
+    tdBook.append(bookCell);
+
+    // 3. Nguồn / Người đóng góp
+    const tdSrc = document.createElement("td");
+    const srcMain = document.createElement("div");
+    srcMain.style.fontWeight = "600";
+    srcMain.style.fontSize = "13px";
+    srcMain.textContent = row.sourceLabel;
+    const srcSub = document.createElement("div");
+    srcSub.className = "catalog-sub-meta";
+    srcSub.textContent = row.contributor;
+    tdSrc.append(srcMain, srcSub);
+
+    // 4. Quy mô
+    const tdScale = document.createElement("td");
+    const sc1 = document.createElement("div");
+    sc1.style.fontWeight = "600";
+    sc1.textContent = row.chapters + " chương";
+    const sc2 = document.createElement("div");
+    sc2.className = "catalog-sub-meta";
+    sc2.textContent = row.chars.toLocaleString("vi-VN") + " chữ (~" + row.sizeKb + " KB)";
+    tdScale.append(sc1, sc2);
+
+    // 5. Lượt đọc
+    const tdReads = document.createElement("td");
+    tdReads.textContent = row.reads > 0 ? (row.reads + " phiên") : "0";
+
+    // 6. Trạng thái kệ
+    const tdSt = document.createElement("td");
+    const pill = document.createElement("span");
+    if (row.status === "static_shelf") {
+      pill.className = "status-pill status-shared";
+      pill.textContent = "Trên kệ chính";
+    } else if (row.status === "shared") {
+      pill.className = "status-pill status-shared";
+      pill.textContent = "Trên kệ chung";
+    } else if (row.status === "approved") {
+      pill.className = "status-pill status-approved";
+      pill.textContent = "Đã duyệt (Riêng)";
+    } else if (row.status === "pending") {
+      pill.className = "status-pill status-pending";
+      pill.textContent = "⏳ Chờ duyệt";
+    } else {
+      pill.className = "status-pill status-rejected";
+      pill.textContent = "✕ Đã từ chối";
+    }
+    tdSt.append(pill);
+
+    // 7. Thao tác quản lý
+    const tdAct = document.createElement("td");
+    const actWrap = document.createElement("div");
+    actWrap.style.display = "flex";
+    actWrap.style.gap = "6px";
+    actWrap.style.flexWrap = "wrap";
+
+    if (row.isStatic) {
+      const btnRead = document.createElement("button");
+      btnRead.type = "button";
+      btnRead.className = "icon-btn";
+      btnRead.textContent = "📖 Mở đọc 3D";
+      btnRead.onclick = () => openBook(row.rawStatic);
+      actWrap.append(btnRead);
+    } else {
+      const u = row.rawUser;
+      const btnPrev = document.createElement("button");
+      btnPrev.type = "button";
+      btnPrev.className = "icon-btn";
+      btnPrev.textContent = row.onShelf ? "📖 Đọc / Xem" : "Xem trước";
+      btnPrev.onclick = () => {
+        if (row.onShelf) {
+          const matchShared = sharedUserBooks.find((x) => String(x.rawId || x.id) === String(u.id));
+          if (matchShared) { openBook(matchShared); return; }
+        }
+        previewUserBookContent(u);
+      };
+      actWrap.append(btnPrev);
+
+      const btnShelf = document.createElement("button");
+      btnShelf.type = "button";
+      btnShelf.className = u.shared ? "icon-btn" : "btn-primary";
+      if (!u.shared) {
+        btnShelf.style.padding = "5px 10px";
+        btnShelf.style.fontSize = "12px";
+      }
+      btnShelf.textContent = u.shared
+        ? "Gỡ khỏi kệ"
+        : (u.status === "approved" ? "Đưa lên kệ" : "✓ Duyệt & Lên kệ");
+      btnShelf.onclick = () => {
+        if (u.shared) {
+          adminUpdateBook(u, { shared: false });
+        } else {
+          adminUpdateBook(u, {
+            status: "approved",
+            shared: true,
+            contributor: u.contributor || "Bạn đọc",
+            reject_reason: null
+          });
+        }
+      };
+      actWrap.append(btnShelf);
+
+      const btnEdit = document.createElement("button");
+      btnEdit.type = "button";
+      btnEdit.className = "icon-btn";
+      btnEdit.textContent = "✎ Sửa";
+      btnEdit.onclick = () => {
+        const newTitle = window.prompt("Tên sách:", u.title || "");
+        if (newTitle === null || !newTitle.trim()) return;
+        const newAuthor = window.prompt("Tác giả:", u.author || "Không rõ");
+        if (newAuthor === null) return;
+        adminUpdateBook(u, { title: newTitle.trim(), author: newAuthor.trim() || "Không rõ" });
+      };
+      actWrap.append(btnEdit);
+
+      const btnDel = document.createElement("button");
+      btnDel.type = "button";
+      btnDel.className = "icon-btn";
+      btnDel.style.color = "#c0392b";
+      btnDel.textContent = "Xóa";
+      btnDel.onclick = () => {
+        if (window.confirm("Xóa vĩnh viễn sách '" + u.title + "' khỏi hệ thống?")) {
+          deleteUserBook(u, true);
+        }
+      };
+      actWrap.append(btnDel);
+    }
+
+    tdAct.append(actWrap);
+    tr.append(tdCode, tdBook, tdSrc, tdScale, tdReads, tdSt, tdAct);
+    tbody.append(tr);
+  });
+  tbl.append(tbody);
+  wrap.append(tbl);
+
+  if (pagBox && totalPages > 1) {
+    const pNav = document.createElement("div");
+    pNav.className = "shelf-pagination";
+    pNav.style.marginTop = "14px";
+    const controls = document.createElement("div");
+    controls.className = "shelf-page-controls";
+
+    for (let p = 1; p <= totalPages; p++) {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "shelf-page-btn" + (p === adminCatalogPage ? " active" : "");
+      b.textContent = String(p);
+      b.onclick = () => {
+        adminCatalogPage = p;
+        renderAdminCatalogTable(allBooks, allProfiles, readCounts);
+      };
+      controls.append(b);
+    }
+    pNav.append(controls);
+    pagBox.append(pNav);
+  }
+}
+
 async function renderAdminDashboard() {
+  if (sb && !isAdminUser()) {
+    $("adminView").classList.remove("open");
+    return;
+  }
   let allBooks = myUserBooks;
   let allProfiles = [
     { id: "local-admin", username: "admin", display_name: "Quản trị viên (trên máy)", role: "admin", status: "approved", created_at: "2026-11-27" }
   ];
   let allProgress = [];
   let allFeedbacks = sb ? [] : loadLocalFeedbacks();
+  let cloudMetrics = null;
 
   if (sb && isAdminUser()) {
-    const [bRes, pRes, prRes, fbRes] = await Promise.all([
+    const [bRes, pRes, prRes, fbRes, mRes] = await Promise.all([
       sb.from("user_books").select("*").order("created_at", { ascending: false }),
       sb.from("profiles").select("*").order("created_at", { ascending: false }),
-      sb.from("reading_progress").select("book_key"),
-      sb.from("user_feedbacks").select("*").order("created_at", { ascending: false })
+      sb.from("reading_progress").select("book_key, user_id, updated_at"),
+      sb.from("user_feedbacks").select("*").order("created_at", { ascending: false }),
+      sb.from("site_metrics").select("*").eq("id", 1).maybeSingle()
     ]);
     if (Array.isArray(bRes.data)) allBooks = bRes.data;
     if (Array.isArray(pRes.data)) allProfiles = pRes.data;
     if (Array.isArray(prRes.data)) allProgress = prRes.data;
     if (Array.isArray(fbRes.data)) allFeedbacks = fbRes.data;
+    if (mRes && mRes.data) cloudMetrics = mRes.data;
   }
+
+  // Cập nhật tiêu đề gọn gàng (ẩn dòng mô tả phụ khi rỗng)
+  const curMeta = ADMIN_SEC_META[activeAdminSection] || ADMIN_SEC_META.overview;
+  $("adminPageDesc").style.display = curMeta.desc ? "block" : "none";
+  $("adminPageTitle").style.marginBottom = curMeta.desc ? "3px" : "0";
 
   // Cập nhật thông tin Sidebar
   const adminEmail = currentProfile ? getProfileFullName(currentProfile) : "Quản trị viên";
@@ -3643,9 +5938,6 @@ async function renderAdminDashboard() {
   const sharedCount = allBooks.filter((x) => x.shared && x.status === "approved").length;
   const totalUserBytes = allBooks.reduce((acc, x) => acc + (x.size_bytes || 0), 0);
 
-  const staticChars = books.reduce((acc, b) => acc + (b.chars || 0), 0);
-  const userChars = allBooks.reduce((acc, b) => acc + (b.chars || 0), 0);
-  const totalCharsAll = staticChars + userChars;
   const staticChapters = books.reduce((acc, b) => acc + (b.chapters || 0), 0);
   const userChapters = allBooks.reduce((acc, b) => acc + (b.chapters || 0), 0);
   const totalChaptersAll = staticChapters + userChapters;
@@ -3666,49 +5958,78 @@ async function renderAdminDashboard() {
   $("sideStorageText").textContent = usedMb.toFixed(2) + " / 1024 MB";
   $("sideStorageBar").style.width = quotaPct.toFixed(1) + "%";
 
-  // 1. Vẽ 4 thẻ KPI chuyên nghiệp (có icon, thanh tiến độ và chỉ số phụ)
+  // Đếm lượt đọc theo sách + số liệu Truy cập & Người đang đọc trực tuyến
+  const readCounts = {};
+  allProgress.forEach((r) => { readCounts[r.book_key] = (readCounts[r.book_key] || 0) + 1; });
+  Object.keys(prefs.progress || {}).forEach((k) => {
+    const key = String(k).startsWith("u:") ? k : ("lib:" + k);
+    if (!readCounts[key]) readCounts[key] = 1;
+  });
+  const totalReadSessions = Object.values(readCounts).reduce((a, b) => a + b, 0);
+
+  const localVisits = Number(localStorage.getItem(SITE_VISITS_KEY) || "1") || 1;
+  const totalVisits = cloudMetrics && cloudMetrics.total_visits
+    ? Math.max(cloudMetrics.total_visits, localVisits, allProfiles.length)
+    : Math.max(localVisits, allProfiles.length + totalReadSessions);
+
+  const localReadSec = ensureReadingStats().totalSeconds || 0;
+  const totalReadSecondsAll = cloudMetrics && cloudMetrics.total_read_seconds
+    ? Math.max(cloudMetrics.total_read_seconds, localReadSec)
+    : localReadSec;
+
+  const presence = getLivePresenceSummary();
+
+  // 1. Vẽ 5 thẻ KPI tinh gọn, chuyên nghiệp
   const statsGrid = $("adminStatsGrid");
   statsGrid.textContent = "";
   const totalShelfCount = books.length + sharedCount;
-  const approvalRate = allBooks.length ? Math.round((approvedBooks / allBooks.length) * 100) : 100;
-  const estHours = Math.max(1, Math.round(totalCharsAll / 45000)); // ~750 chữ/phút
+  const totalPendingTasks = pendingBooks + pendingFb + pendingUsers;
 
   const kpiCards = [
     {
-      lbl: "Tổng sách trên kệ chung",
-      val: totalShelfCount + " tác phẩm",
+      lbl: "Lượt truy cập & Trực tuyến",
+      val: totalVisits.toLocaleString("vi-VN") + " lượt",
+      icon: "🟢",
+      accent: "#1e8449",
+      pct: Math.min(100, Math.max(12, presence.totalOnline * 25)),
+      subL: presence.totalOnline + " đang online",
+      subR: presence.readingCount + " đang đọc sách"
+    },
+    {
+      lbl: "Sách trên kệ chung",
+      val: totalShelfCount + " cuốn",
       icon: "📚",
       accent: "#9c5628",
       pct: Math.min(100, totalShelfCount * 15),
-      subL: books.length + " sách gốc · " + sharedCount + " đóng góp",
+      subL: books.length + " gốc · " + sharedCount + " đóng góp",
       subR: totalChaptersAll + " chương"
     },
     {
-      lbl: "Tổng quy mô văn bản",
-      val: (totalCharsAll / 1000).toFixed(1) + "K ký tự",
-      icon: "✍️",
-      accent: "#2e7d32",
-      pct: Math.min(100, Math.round((totalCharsAll / 1000000) * 100)),
-      subL: "Ước tính ~" + estHours + " giờ đọc",
-      subR: totalCharsAll.toLocaleString("vi-VN") + " chữ"
+      lbl: "Thời gian & Phiên đọc",
+      val: formatDurationCompactVN(totalReadSecondsAll),
+      icon: "⏱",
+      accent: "#1f618d",
+      pct: Math.min(100, Math.max(8, totalReadSessions * 18)),
+      subL: totalReadSessions + " phiên mở sách",
+      subR: approvedUsers + " bạn đọc"
     },
     {
-      lbl: "Hàng chờ duyệt sách",
-      val: pendingBooks + " sách chờ",
+      lbl: "Hàng chờ cần xử lý",
+      val: totalPendingTasks + " mục chờ",
       icon: "📥",
-      accent: pendingBooks > 0 ? "#d68910" : "#1f618d",
-      pct: approvalRate,
-      subL: "Đã duyệt: " + approvedBooks + " · Từ chối: " + rejectedBooks,
-      subR: "Tỷ lệ duyệt " + approvalRate + "%"
+      accent: totalPendingTasks > 0 ? "#d68910" : "#2e7d32",
+      pct: totalPendingTasks > 0 ? Math.min(100, totalPendingTasks * 20) : 100,
+      subL: pendingBooks + " sách · " + pendingFb + " góp ý",
+      subR: pendingUsers + " TK mới"
     },
     {
-      lbl: "Thành viên & Dung lượng",
-      val: approvedUsers + " thành viên",
+      lbl: "Thành viên & Lưu trữ",
+      val: allProfiles.length + " tài khoản",
       icon: "👥",
       accent: "#6d3d6e",
       pct: Math.min(100, Math.max(8, approvedUsers * 20)),
-      subL: pendingUsers + " tài khoản chờ duyệt",
-      subR: usedMb.toFixed(2) + " MB Cloud"
+      subL: approvedUsers + " đang hoạt động",
+      subR: usedMb.toFixed(2) + " MB"
     }
   ];
 
@@ -3750,49 +6071,88 @@ async function renderAdminDashboard() {
     statsGrid.append(card);
   });
 
-  // 2. Biểu đồ ngang: Phân bổ khối lượng chữ & số chương theo từng cuốn sách
+  // 2. Khối Trực tuyến & Top tác phẩm nổi bật
+  if ($("adminLiveOnlineBadge")) {
+    const badge = $("adminLiveOnlineBadge");
+    badge.textContent = "";
+    const dot = document.createElement("span");
+    dot.className = "status-dot-ind";
+    const txt = document.createElement("span");
+    txt.textContent = presence.totalOnline + " online · " + presence.readingCount + " đang đọc";
+    badge.append(dot, txt);
+  }
+
+  const liveStrip = $("adminLiveReadersStrip");
+  if (liveStrip) {
+    liveStrip.textContent = "";
+    const lbl = document.createElement("strong");
+    lbl.style.color = "var(--fg-muted)";
+    lbl.textContent = "Đang trên trang:";
+    liveStrip.append(lbl);
+
+    presence.entries.slice(0, 6).forEach((p) => {
+      const chip = document.createElement("span");
+      chip.className = "live-user-chip";
+      const d = document.createElement("span");
+      d.className = "online-dot";
+      d.style.background = p.isReading ? "#d68910" : "#27ae60";
+      const t = document.createElement("span");
+      t.textContent = formatPrettyName(p.name || p.username) + (p.isReading && p.bookTitle ? (" · 📖 " + p.bookTitle) : " · Đang xem kệ");
+      chip.append(d, t);
+      liveStrip.append(chip);
+    });
+  }
+
   const volChart = $("adminBookVolumeChart");
   volChart.textContent = "";
   const combinedForChart = books.map((b) => ({
+    key: "lib:" + b.id,
     title: b.title,
     author: b.author,
     chapters: b.chapters || 1,
     chars: b.chars || 0,
-    kind: "Sách gốc"
+    reads: readCounts["lib:" + b.id] || 0,
+    kind: "Kho gốc"
   })).concat(allBooks.map((u) => ({
+    key: "u:" + u.id,
     title: u.title,
     author: u.author || "Không rõ",
     chapters: u.chapters || 1,
     chars: u.chars || 0,
-    kind: u.shared ? "Kệ chung" : ("Sách gửi (" + u.status + ")")
+    reads: readCounts["u:" + u.id] || 0,
+    kind: u.shared ? "Kệ chung" : "Sách thành viên"
   })));
 
-  const maxChars = Math.max(10000, ...combinedForChart.map((x) => x.chars));
-  combinedForChart.slice(0, 6).forEach((item) => {
+  combinedForChart.sort((a, b) => (b.reads - a.reads) || (b.chars - a.chars));
+  combinedForChart.slice(0, 5).forEach((item, idx) => {
     const row = document.createElement("div");
-    row.className = "chart-bar-item";
+    row.className = "ov-book-row";
 
-    const header = document.createElement("div");
-    header.className = "chart-bar-header";
-    const left = document.createElement("span");
-    left.textContent = item.title + " (" + item.author + ") · " + item.kind;
+    const left = document.createElement("div");
+    left.className = "ov-book-left";
+    const rank = document.createElement("div");
+    rank.className = "ov-rank-badge";
+    rank.textContent = "#" + (idx + 1);
+    const meta = document.createElement("div");
+    meta.style.minWidth = "0";
+    const tEl = document.createElement("div");
+    tEl.style.fontWeight = "700";
+    tEl.style.fontSize = "13.5px";
+    tEl.textContent = item.title;
+    const sEl = document.createElement("div");
+    sEl.className = "catalog-sub-meta";
+    sEl.textContent = item.author + " · " + item.kind + " · " + item.chapters + " chương";
+    meta.append(tEl, sEl);
+    left.append(rank, meta);
+
     const right = document.createElement("span");
-    right.style.color = "var(--accent)";
-    right.textContent = item.chapters + " chương · " + item.chars.toLocaleString("vi-VN") + " ký tự";
-    header.append(left, right);
-
-    const track = document.createElement("div");
-    track.className = "chart-bar-track";
-    const fill = document.createElement("div");
-    fill.className = "chart-bar-fill";
-    fill.style.width = Math.max(4, Math.round((item.chars / maxChars) * 100)) + "%";
-    track.append(fill);
-
-    row.append(header, track);
+    right.className = "status-pill " + (item.reads > 0 ? "status-approved" : "status-blocked");
+    right.textContent = item.reads + " lượt mở đọc";
+    row.append(left, right);
     volChart.append(row);
   });
 
-  // 3. Biểu đồ thanh chồng: Cơ cấu nguồn sách & Trạng thái duyệt
+  // 3. Biểu đồ thanh chồng: Cơ cấu nguồn sách gọn đẹp, không còn nhãn code thô
   const stackBar = $("adminSourceStackBar");
   const legendBox = $("adminSourceLegend");
   stackBar.textContent = "";
@@ -3800,11 +6160,11 @@ async function renderAdminDashboard() {
 
   const totalCatalog = Math.max(1, books.length + allBooks.length);
   const segments = [
-    { label: "Sách gốc thư viện (books.json)", count: books.length, color: "#9c5628" },
-    { label: "Đã đưa lên kệ chung (shared)", count: sharedCount, color: "#1f618d" },
-    { label: "Đã duyệt cá nhân (approved)", count: Math.max(0, approvedBooks - sharedCount), color: "#27ae60" },
-    { label: "Đang chờ duyệt (pending)", count: pendingBooks, color: "#d68910" },
-    { label: "Đã từ chối (rejected)", count: rejectedBooks, color: "#c0392b" }
+    { label: "Kho sách gốc trên kệ", count: books.length, color: "#9c5628" },
+    { label: "Sách đóng góp trên kệ chung", count: sharedCount, color: "#1f618d" },
+    { label: "Sách cá nhân đã duyệt", count: Math.max(0, approvedBooks - sharedCount), color: "#27ae60" },
+    { label: "Đang chờ phê duyệt", count: pendingBooks, color: "#d68910" },
+    { label: "Đã từ chối", count: rejectedBooks, color: "#c0392b" }
   ];
 
   segments.forEach((seg) => {
@@ -3829,25 +6189,21 @@ async function renderAdminDashboard() {
     legLeft.append(dot, txt);
 
     const legRight = document.createElement("strong");
-    legRight.textContent = seg.count + " sách (" + pct + "%)";
+    legRight.textContent = seg.count + " cuốn (" + pct + "%)";
     legRow.append(legLeft, legRight);
     legendBox.append(legRow);
   });
 
-  // Đếm sách đọc nhiều + tiến độ đọc trên máy
-  const readCounts = {};
-  allProgress.forEach((r) => { readCounts[r.book_key] = (readCounts[r.book_key] || 0) + 1; });
-  Object.keys(prefs.progress || {}).forEach((k) => {
-    const key = String(k).startsWith("u:") ? k : ("lib:" + k);
-    readCounts[key] = (readCounts[key] || 0) + 1;
-  });
   const topKeys = Object.entries(readCounts).sort((a, b) => b[1] - a[1]).slice(0, 3);
   $("adminTopReadBox").textContent = topKeys.length
-    ? ("🔥 Sách đang được đọc nhiều nhất: " + topKeys.map(([k, c]) => {
+    ? ("🔥 Đọc nhiều nhất: " + topKeys.map(([k, c]) => {
         const bMatch = books.find((x) => "lib:" + x.id === k);
-        return (bMatch ? bMatch.title : k) + " (" + c + " phiên đọc)";
+        return (bMatch ? bMatch.title : k) + " (" + c + " phiên)";
       }).join(" · "))
-    : "Chưa có lượt đọc nào được ghi nhận.";
+    : "Chưa có phiên đọc nào được ghi nhận.";
+
+  // Vẽ bảng Quản lý toàn bộ sách tập trung
+  renderAdminCatalogTable(allBooks, allProfiles, readCounts);
 
   // 4. Bảng hoạt động gần đây trong tab Tổng quan
   const recentWrap = $("adminRecentActivityWrap");
@@ -4084,155 +6440,8 @@ async function renderAdminDashboard() {
     bWrap.append(tbl);
   }
 
-  // 6. Bảng quản lý tài khoản (Duyệt, Lock / Unlock tài khoản, Phân quyền Admin)
-  const uWrap = $("adminUsersTableWrap");
-  uWrap.textContent = "";
-  const userQuery = ($("adminUserSearch") ? $("adminUserSearch").value : "").trim().toLowerCase();
-  const filteredUsers = allProfiles.filter((u) => {
-    if (adminUserFilter !== "all" && u.status !== adminUserFilter) return false;
-    if (userQuery) {
-      const hay = ((u.username || "") + " " + (u.email || "") + " " + (u.display_name || "") + " " + (u.role || "")).toLowerCase();
-      if (!hay.includes(userQuery)) return false;
-    }
-    return true;
-  });
-  const adminCount = allProfiles.filter((u) => u.role === "admin" && u.status === "approved").length;
-
-  // Đếm số sách mỗi user đã đóng góp
-  const userBookCounts = {};
-  allBooks.forEach((b) => {
-    userBookCounts[b.owner_id] = (userBookCounts[b.owner_id] || 0) + 1;
-  });
-
-  const uTbl = document.createElement("table");
-  uTbl.className = "table-list";
-  const uHead = document.createElement("thead");
-  const uHr = document.createElement("tr");
-  ["Tên tài khoản / Họ tên", "Vai trò", "Trạng thái", "Sách đã gửi", "Ngày tham gia", "Thao tác Quản trị"].forEach((h) => {
-    const th = document.createElement("th");
-    th.textContent = h;
-    uHr.append(th);
-  });
-  uHead.append(uHr);
-  uTbl.append(uHead);
-
-  const uBody = document.createElement("tbody");
-  filteredUsers.forEach((u) => {
-    const tr = document.createElement("tr");
-    const tdEm = document.createElement("td");
-    const stEm = document.createElement("strong");
-    stEm.textContent = getProfileUsername(u);
-    tdEm.append(stEm);
-    if (u.display_name && u.display_name !== getProfileUsername(u)) {
-      const subName = document.createElement("div");
-      subName.style.fontSize = "12px";
-      subName.style.color = "var(--fg-muted)";
-      subName.textContent = u.display_name;
-      tdEm.append(subName);
-    }
-
-    const tdRole = document.createElement("td");
-    const roleBadge = document.createElement("span");
-    roleBadge.className = "status-pill " + (u.role === "admin" ? "status-shared" : "status-approved");
-    roleBadge.textContent = u.role === "admin" ? "👑 ADMIN" : "READER";
-    tdRole.append(roleBadge);
-
-    const tdSt = document.createElement("td");
-    const sp = document.createElement("span");
-    sp.className = "status-pill status-" + u.status;
-    if (u.status === "pending") sp.textContent = "⏳ Chờ duyệt";
-    else if (u.status === "approved") sp.textContent = "✓ Đang hoạt động";
-    else sp.textContent = "🔒 Đã khóa (Locked)";
-    tdSt.append(sp);
-
-    const tdBooks = document.createElement("td");
-    tdBooks.textContent = (userBookCounts[u.id] || 0) + " cuốn";
-
-    const tdDate = document.createElement("td");
-    tdDate.textContent = (u.created_at || "2026-11-27").slice(0, 10);
-
-    const tdAct = document.createElement("td");
-    const wrap = document.createElement("div");
-    wrap.style.display = "flex";
-    wrap.style.gap = "6px";
-    wrap.style.flexWrap = "wrap";
-
-    if (sb && u.id !== "local-admin") {
-      if (u.status === "pending") {
-        const bApprove = document.createElement("button");
-        bApprove.type = "button";
-        bApprove.className = "btn-primary";
-        bApprove.style.padding = "5px 12px";
-        bApprove.style.fontSize = "12px";
-        bApprove.textContent = "✓ Duyệt cho vào";
-        bApprove.onclick = () => adminUpdateProfile(u.id, { status: "approved" });
-
-        const bLock = document.createElement("button");
-        bLock.type = "button";
-        bLock.className = "icon-btn";
-        bLock.textContent = "🔒 Từ chối / Khóa";
-        bLock.onclick = () => adminUpdateProfile(u.id, { status: "blocked" });
-        wrap.append(bApprove, bLock);
-      } else if (u.status === "approved") {
-        const bLock = document.createElement("button");
-        bLock.type = "button";
-        bLock.className = "icon-btn";
-        bLock.style.color = "#c0392b";
-        bLock.textContent = "🔒 Khóa TK (Lock)";
-        bLock.onclick = () => {
-          if (u.role === "admin" && adminCount <= 1) {
-            showSpineToast("Không thể khóa tài khoản Admin duy nhất của hệ thống!");
-            return;
-          }
-          if (window.confirm("Khóa tài khoản '" + getProfileUsername(u) + "'? Người dùng này sẽ bị chặn truy cập kệ sách ngay lập tức.")) {
-            adminUpdateProfile(u.id, { status: "blocked" });
-          }
-        };
-        wrap.append(bLock);
-      } else if (u.status === "blocked") {
-        const bUnlock = document.createElement("button");
-        bUnlock.type = "button";
-        bUnlock.className = "btn-primary";
-        bUnlock.style.padding = "5px 12px";
-        bUnlock.style.fontSize = "12px";
-        bUnlock.textContent = "🔓 Mở khóa (Unlock)";
-        bUnlock.onclick = () => adminUpdateProfile(u.id, { status: "approved" });
-        wrap.append(bUnlock);
-      }
-
-      const bRole = document.createElement("button");
-      bRole.type = "button";
-      bRole.className = "icon-btn";
-      bRole.textContent = u.role === "admin" ? "Hạ xuống Reader" : "👑 Cấp quyền Admin";
-      bRole.onclick = () => {
-        if (u.role === "admin" && adminCount <= 1) {
-          if (!window.confirm("Cảnh báo: Đây là tài khoản Admin cuối cùng! Bạn có chắc chắn muốn hạ quyền không?")) return;
-        }
-        adminUpdateProfile(u.id, { role: u.role === "admin" ? "reader" : "admin" });
-      };
-      wrap.append(bRole);
-
-      const bReset = document.createElement("button");
-      bReset.type = "button";
-      bReset.className = "icon-btn";
-      bReset.textContent = "🔑 Reset MK";
-      bReset.title = "Đặt lại mật khẩu về mặc định " + DEFAULT_RESET_PASSWORD;
-      bReset.onclick = () => adminResetPassword(u);
-      wrap.append(bReset);
-    } else {
-      const note = document.createElement("span");
-      note.style.fontSize = "12px";
-      note.style.color = "var(--fg-muted)";
-      note.textContent = "Tài khoản quản trị mặc định";
-      wrap.append(note);
-    }
-
-    tdAct.append(wrap);
-    tr.append(tdEm, tdRole, tdSt, tdBooks, tdDate, tdAct);
-    uBody.append(tr);
-  });
-  uTbl.append(uBody);
-  uWrap.append(uTbl);
+  // 6. Giao diện Quản lý tài khoản thành viên chuyên nghiệp
+  renderAdminUsersSection(allProfiles, allBooks, allFeedbacks);
 
   // 7. Danh sách sách gốc tĩnh (books.json)
   const sWrap = $("adminStaticBooksWrap");
@@ -4278,6 +6487,399 @@ async function renderAdminDashboard() {
   sWrap.append(sTbl);
 }
 
+// Chuẩn hóa chữ hoa đầu mỗi từ cho họ tên tiếng Việt nhìn chỉn chu trên bảng thành viên
+function formatPrettyName(raw) {
+  const s = (raw || "").trim();
+  if (!s) return "Thành viên";
+  if (s !== s.toLowerCase()) return s;
+  return s.split(/\s+/).map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+}
+
+// Định dạng ngày YYYY-MM-DD sang DD/MM/YYYY ngắn gọn
+function formatShortDateVN(iso) {
+  const raw = String(iso || "").slice(0, 10);
+  const m = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  return m ? (m[3] + "/" + m[2] + "/" + m[1]) : (raw || "—");
+}
+
+// Vẽ toàn bộ giao diện Quản lý tài khoản thành viên chuyên nghiệp (4 thẻ tóm tắt + bộ lọc + bảng chuẩn SaaS)
+function renderAdminUsersSection(allProfiles, allBooks, allFeedbacks) {
+  const uWrap = $("adminUsersTableWrap");
+  const kpiBox = $("adminUsersKpiStrip");
+  if (!uWrap) return;
+  uWrap.textContent = "";
+  if (kpiBox) kpiBox.textContent = "";
+
+  const totalCount = allProfiles.length;
+  const pendingCount = allProfiles.filter((u) => u.status === "pending").length;
+  const approvedCount = allProfiles.filter((u) => u.status === "approved").length;
+  const blockedCount = allProfiles.filter((u) => u.status === "blocked").length;
+  const adminCount = allProfiles.filter((u) => u.role === "admin" && u.status === "approved").length;
+
+  if ($("uCntAll")) $("uCntAll").textContent = "(" + totalCount + ")";
+  if ($("uCntPending")) $("uCntPending").textContent = "(" + pendingCount + ")";
+  if ($("uCntApproved")) $("uCntApproved").textContent = "(" + approvedCount + ")";
+  if ($("uCntBlocked")) $("uCntBlocked").textContent = "(" + blockedCount + ")";
+
+  // 4 Thẻ KPI tóm tắt phía trên (bấm vào lọc nhanh theo trạng thái)
+  if (kpiBox) {
+    const kpis = [
+      { key: "all", num: totalCount, lbl: "Tổng tài khoản (" + adminCount + " Admin)", icon: "👥" },
+      { key: "approved", num: approvedCount, lbl: "Đang hoạt động", icon: "✅" },
+      { key: "pending", num: pendingCount, lbl: "Chờ phê duyệt", icon: "⏳" },
+      { key: "blocked", num: blockedCount, lbl: "Đang tạm khóa", icon: "🔒" }
+    ];
+    kpis.forEach((k) => {
+      const card = document.createElement("div");
+      card.className = "user-kpi-card" + (adminUserFilter === k.key ? " active" : "");
+      const left = document.createElement("div");
+      const nEl = document.createElement("div");
+      nEl.className = "user-kpi-num";
+      nEl.textContent = String(k.num);
+      const lEl = document.createElement("div");
+      lEl.className = "user-kpi-label";
+      lEl.textContent = k.lbl;
+      left.append(nEl, lEl);
+
+      const badge = document.createElement("div");
+      badge.className = "user-kpi-badge";
+      badge.textContent = k.icon;
+      card.append(left, badge);
+
+      card.onclick = () => {
+        adminUserFilter = k.key;
+        document.querySelectorAll("[data-user-filter]").forEach((b) => {
+          b.classList.toggle("active", b.getAttribute("data-user-filter") === k.key);
+        });
+        renderAdminUsersSection(allProfiles, allBooks, allFeedbacks);
+      };
+      kpiBox.append(card);
+    });
+  }
+
+  const userQuery = ($("adminUserSearch") ? $("adminUserSearch").value : "").trim().toLowerCase();
+  const roleFilter = $("adminUserRoleFilter") ? $("adminUserRoleFilter").value : adminUserRoleFilter;
+
+  const filteredUsers = allProfiles.filter((u) => {
+    if (adminUserFilter !== "all" && u.status !== adminUserFilter) return false;
+    if (roleFilter !== "all" && u.role !== roleFilter) return false;
+    if (userQuery) {
+      const hay = ((u.username || "") + " " + (u.email || "") + " " + (u.display_name || "") + " " + (u.role || "")).toLowerCase();
+      if (!hay.includes(userQuery)) return false;
+    }
+    return true;
+  });
+
+  // Sắp xếp ưu tiên: Chờ duyệt lên đầu -> Admin -> Mới tham gia
+  filteredUsers.sort((a, b) => {
+    if (a.status === "pending" && b.status !== "pending") return -1;
+    if (b.status === "pending" && a.status !== "pending") return 1;
+    if (a.role === "admin" && b.role !== "admin") return -1;
+    if (b.role === "admin" && a.role !== "admin") return 1;
+    return String(b.created_at || "").localeCompare(String(a.created_at || ""));
+  });
+
+  if (!filteredUsers.length) {
+    const empty = document.createElement("p");
+    empty.style.color = "var(--fg-muted)";
+    empty.style.padding = "20px 0";
+    empty.style.textAlign = "center";
+    empty.textContent = "Không tìm thấy tài khoản nào khớp với bộ lọc hiện tại.";
+    uWrap.append(empty);
+    return;
+  }
+
+  const userBookCounts = {};
+  (allBooks || []).forEach((b) => { userBookCounts[b.owner_id] = (userBookCounts[b.owner_id] || 0) + 1; });
+  const userFbCounts = {};
+  (allFeedbacks || []).forEach((f) => { userFbCounts[f.user_id] = (userFbCounts[f.user_id] || 0) + 1; });
+
+  const AVATAR_COLORS = ["#8C583A", "#355C7D", "#2E6B56", "#6D3D6E", "#9C4A3B", "#4E5D42"];
+
+  const uTbl = document.createElement("table");
+  uTbl.className = "table-list";
+  const uHead = document.createElement("thead");
+  const uHr = document.createElement("tr");
+  ["Thành viên", "Vai trò", "Trạng thái", "Đóng góp", "Ngày tham gia", "Thao tác"].forEach((h, idx) => {
+    const th = document.createElement("th");
+    th.textContent = h;
+    if (idx === 5) th.style.textAlign = "right";
+    uHr.append(th);
+  });
+  uHead.append(uHr);
+  uTbl.append(uHead);
+
+  const uBody = document.createElement("tbody");
+  filteredUsers.forEach((u, idx) => {
+    const tr = document.createElement("tr");
+    const uname = getProfileUsername(u);
+    const fullName = formatPrettyName(u.display_name || uname);
+    const isSelf = Boolean(currentUser && String(u.id) === String(currentUser.id));
+
+    // 1. Cột Thành viên (Avatar tròn + Họ tên + @username)
+    const tdMember = document.createElement("td");
+    const cell = document.createElement("div");
+    cell.className = "user-cell";
+
+    const av = document.createElement("div");
+    av.className = "user-avatar-badge" + (u.role === "admin" ? " is-admin" : "");
+    av.style.setProperty("--av-bg", AVATAR_COLORS[(uname.charCodeAt(0) + idx) % AVATAR_COLORS.length]);
+    av.textContent = (fullName.charAt(0) || "U").toUpperCase();
+
+    const nameWrap = document.createElement("div");
+    nameWrap.className = "user-name-wrap";
+    const nameLine = document.createElement("div");
+    nameLine.className = "user-name-line";
+    const nameSpan = document.createElement("span");
+    nameSpan.textContent = fullName;
+    nameLine.append(nameSpan);
+    if (isSelf) {
+      const selfPill = document.createElement("span");
+      selfPill.className = "self-tag-pill";
+      selfPill.textContent = "Bạn";
+      nameLine.append(selfPill);
+    }
+    const handleLine = document.createElement("div");
+    handleLine.className = "user-handle-tag";
+    handleLine.textContent = "@" + uname;
+    nameWrap.append(nameLine, handleLine);
+
+    cell.append(av, nameWrap);
+    tdMember.append(cell);
+
+    // 2. Cột Vai trò
+    const tdRole = document.createElement("td");
+    const rolePill = document.createElement("span");
+    rolePill.className = "role-pill " + (u.role === "admin" ? "admin" : "reader");
+    rolePill.textContent = u.role === "admin" ? "👑 Quản trị viên" : "Thành viên";
+    tdRole.append(rolePill);
+
+    // 3. Cột Trạng thái (1 dòng gọn gàng có chấm trạng thái)
+    const tdSt = document.createElement("td");
+    const stPill = document.createElement("span");
+    stPill.className = "status-pill status-" + (u.status || "pending");
+    const dot = document.createElement("span");
+    dot.className = "status-dot-ind";
+    const stText = document.createElement("span");
+    if (u.status === "pending") stText.textContent = "Chờ duyệt";
+    else if (u.status === "approved") stText.textContent = "Hoạt động";
+    else stText.textContent = "Tạm khóa";
+    stPill.append(dot, stText);
+    tdSt.append(stPill);
+
+    // 4. Cột Đóng góp (Sách + Góp ý)
+    const tdContrib = document.createElement("td");
+    const bCount = userBookCounts[u.id] || 0;
+    const fCount = userFbCounts[u.id] || 0;
+    const cMain = document.createElement("div");
+    cMain.style.fontWeight = "600";
+    cMain.style.fontSize = "13px";
+    cMain.textContent = bCount + " sách gửi";
+    const cSub = document.createElement("div");
+    cSub.className = "catalog-sub-meta";
+    cSub.textContent = fCount + " góp ý";
+    tdContrib.append(cMain, cSub);
+
+    // 5. Cột Ngày tham gia
+    const tdDate = document.createElement("td");
+    tdDate.style.whiteSpace = "nowrap";
+    tdDate.style.fontSize = "13px";
+    tdDate.style.color = "var(--fg-muted)";
+    tdDate.textContent = formatShortDateVN(u.created_at || "2026-11-27");
+
+    // 6. Cột Thao tác (căn phải, nằm gọn trên 1 hàng)
+    const tdAct = document.createElement("td");
+    const actRow = document.createElement("div");
+    actRow.className = "tbl-actions-row";
+
+    if (!sb || u.id === "local-admin") {
+      const note = document.createElement("span");
+      note.style.fontSize = "12px";
+      note.style.color = "var(--fg-muted)";
+      note.textContent = "Quản trị cục bộ";
+      actRow.append(note);
+    } else if (isSelf) {
+      const bEditSelf = document.createElement("button");
+      bEditSelf.type = "button";
+      bEditSelf.className = "tbl-btn";
+      bEditSelf.textContent = "✎ Đổi tên";
+      bEditSelf.onclick = () => {
+        const nextName = window.prompt("Nhập Họ tên hiển thị cho tài khoản của bạn:", u.display_name || fullName);
+        if (nextName !== null && nextName.trim()) {
+          adminUpdateProfile(u.id, { display_name: nextName.trim() });
+        }
+      };
+      const bPassSelf = document.createElement("button");
+      bPassSelf.type = "button";
+      bPassSelf.className = "tbl-btn";
+      bPassSelf.textContent = "🔑 Đổi mật khẩu";
+      bPassSelf.onclick = openChangePassModal;
+      actRow.append(bEditSelf, bPassSelf);
+    } else {
+      if (u.status === "pending") {
+        const bApprove = document.createElement("button");
+        bApprove.type = "button";
+        bApprove.className = "tbl-btn success";
+        bApprove.textContent = "✓ Phê duyệt";
+        bApprove.onclick = () => adminUpdateProfile(u.id, { status: "approved" });
+
+        const bReject = document.createElement("button");
+        bReject.type = "button";
+        bReject.className = "tbl-btn danger";
+        bReject.textContent = "Từ chối";
+        bReject.onclick = () => adminUpdateProfile(u.id, { status: "blocked" });
+        actRow.append(bApprove, bReject);
+      } else {
+        const bEditName = document.createElement("button");
+        bEditName.type = "button";
+        bEditName.className = "tbl-btn";
+        bEditName.textContent = "✎ Sửa tên";
+        bEditName.title = "Cập nhật họ tên hiển thị";
+        bEditName.onclick = () => {
+          const nextName = window.prompt("Cập nhật họ tên hiển thị cho @" + uname + ":", u.display_name || fullName);
+          if (nextName !== null && nextName.trim()) {
+            adminUpdateProfile(u.id, { display_name: nextName.trim() });
+          }
+        };
+
+        const bReset = document.createElement("button");
+        bReset.type = "button";
+        bReset.className = "tbl-btn";
+        bReset.textContent = "🔑 Đặt lại MK";
+        bReset.title = "Chỉ đặt lại mật khẩu về mặc định " + DEFAULT_RESET_PASSWORD + " (giữ nguyên vai trò)";
+        bReset.onclick = () => adminResetPassword(u);
+
+        const bRole = document.createElement("button");
+        bRole.type = "button";
+        bRole.className = "tbl-btn";
+        bRole.textContent = u.role === "admin" ? "Hạ xuống Thành viên" : "👑 Cấp Admin";
+        bRole.onclick = () => {
+          if (u.role === "admin" && adminCount <= 1) {
+            showSpineToast("Không thể hạ quyền tài khoản Admin duy nhất!");
+            return;
+          }
+          const confirmMsg = u.role === "admin"
+            ? ("Chuyển @" + uname + " từ Quản trị viên về Thành viên?")
+            : ("Phân quyền Quản trị viên (Admin) cho @" + uname + "?");
+          if (window.confirm(confirmMsg)) {
+            adminUpdateProfile(u.id, { role: u.role === "admin" ? "reader" : "admin" });
+          }
+        };
+
+        actRow.append(bEditName, bReset, bRole);
+
+        if (u.status === "approved") {
+          const bLock = document.createElement("button");
+          bLock.type = "button";
+          bLock.className = "tbl-btn danger";
+          bLock.textContent = "Khóa";
+          bLock.title = "Tạm khóa quyền truy cập kệ sách";
+          bLock.onclick = () => {
+            if (u.role === "admin" && adminCount <= 1) {
+              showSpineToast("Không thể khóa tài khoản Admin duy nhất!");
+              return;
+            }
+            if (window.confirm("Tạm khóa tài khoản @" + uname + "?")) {
+              adminUpdateProfile(u.id, { status: "blocked" });
+            }
+          };
+          actRow.append(bLock);
+        } else if (u.status === "blocked") {
+          const bUnlock = document.createElement("button");
+          bUnlock.type = "button";
+          bUnlock.className = "tbl-btn primary";
+          bUnlock.textContent = "🔓 Mở khóa";
+          bUnlock.onclick = () => adminUpdateProfile(u.id, { status: "approved" });
+          actRow.append(bUnlock);
+        }
+      }
+    }
+
+    tdAct.append(actRow);
+    tr.append(tdMember, tdRole, tdSt, tdContrib, tdDate, tdAct);
+    uBody.append(tr);
+  });
+
+  uTbl.append(uBody);
+  uWrap.append(uTbl);
+}
+
+function setCreateUserAlert(type, msg) {
+  const box = $("createUserAlertBox");
+  if (!box) return;
+  if (!msg) {
+    box.className = "auth-alert-box";
+    box.textContent = "";
+    return;
+  }
+  box.className = "auth-alert-box " + (type === "success" ? "success" : "error");
+  box.textContent = msg;
+}
+
+function openCreateUserModal() {
+  $("admNewUsername").value = "";
+  $("admNewDisplayName").value = "";
+  $("admNewPassword").value = DEFAULT_RESET_PASSWORD;
+  if ($("admNewRole")) $("admNewRole").value = "reader";
+  setCreateUserAlert("", "");
+  $("createUserModalBackdrop").classList.add("open");
+}
+
+function closeCreateUserModal() {
+  $("createUserModalBackdrop").classList.remove("open");
+}
+
+async function submitAdminCreateUser(e) {
+  e.preventDefault();
+  if (!sb || !isAdminUser()) {
+    setCreateUserAlert("error", "Cần kết nối Supabase với quyền Admin để tạo tài khoản.");
+    return;
+  }
+  const uname = ($("admNewUsername").value || "").trim().toLowerCase();
+  const dname = ($("admNewDisplayName").value || "").trim() || uname;
+  const rawPass = $("admNewPassword").value || "";
+  const role = ($("admNewRole") && $("admNewRole").value === "admin") ? "admin" : "reader";
+
+  if (!/^[a-z0-9._-]{3,32}$/.test(uname)) {
+    setCreateUserAlert("error", "Tên đăng nhập dài 3–32 ký tự, chỉ gồm chữ không dấu, số và dấu . _ -");
+    return;
+  }
+  if (!rawPass) {
+    setCreateUserAlert("error", "Vui lòng nhập mật khẩu khởi tạo.");
+    return;
+  }
+
+  const btn = $("btnSubmitCreateUser");
+  btn.disabled = true;
+  btn.textContent = "Đang tạo…";
+  try {
+    const { data: newUid, error } = await sb.rpc("register_account", {
+      p_username: uname,
+      p_password: normalizeInternalPassword(rawPass),
+      p_display_name: dname
+    });
+    if (error) {
+      const missingRpc = /register_account|could not find the function|schema cache/i.test(error.message || "");
+      setCreateUserAlert(
+        "error",
+        missingRpc
+          ? "Chưa có hàm register_account trên Supabase. Hãy dán file supabase/schema.sql vào Supabase SQL Editor và bấm Run trước nhé."
+          : formatFriendlyAuthError(error.message)
+      );
+      return;
+    }
+    if (newUid) {
+      await sb.from("profiles").update({ status: "approved", role, display_name: dname }).eq("id", newUid);
+    }
+    closeCreateUserModal();
+    showSpineToast("Đã tạo và kích hoạt tài khoản @" + uname + "!");
+    await renderAdminDashboard();
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Tạo & Kích hoạt ngay →";
+  }
+}
+
 async function adminUpdateBook(b, patch) {
   if (sb && b.owner_id !== "local") {
     const { error } = await sb.from("user_books").update(patch).eq("id", b.id);
@@ -4311,16 +6913,21 @@ const DEFAULT_RESET_PASSWORD = "123456aA@";
 async function adminResetPassword(u) {
   if (!sb) return;
   const name = getProfileUsername(u);
-  if (!window.confirm("Reset mật khẩu của tài khoản '" + name + "' về mặc định " + DEFAULT_RESET_PASSWORD + "?")) return;
+  const keepRole = u.role === "admin" ? "admin" : "reader";
+  const roleLabel = keepRole === "admin" ? "Quản trị viên" : "Thành viên";
+  if (!window.confirm("Đặt lại mật khẩu của @" + name + " về mặc định " + DEFAULT_RESET_PASSWORD + "?\n(Vai trò '" + roleLabel + "' được giữ nguyên, không thay đổi quyền)")) return;
   const { error } = await sb.rpc("admin_reset_user_password", {
     target_user_id: u.id,
     new_pass: DEFAULT_RESET_PASSWORD
   });
   if (error) {
-    showSpineToast("Lỗi reset mật khẩu: " + error.message);
+    showSpineToast("Lỗi đặt lại mật khẩu: " + error.message);
     return;
   }
-  showSpineToast("Đã reset mật khẩu '" + name + "' về " + DEFAULT_RESET_PASSWORD + ". Hãy báo người dùng đăng nhập rồi đổi mật khẩu mới.");
+  // Khóa chặt vai trò ban đầu của tài khoản để đặt lại mật khẩu không bao giờ làm đổi quyền
+  await sb.from("profiles").update({ role: keepRole }).eq("id", u.id);
+  showSpineToast("Đã đặt lại mật khẩu @" + name + " về " + DEFAULT_RESET_PASSWORD + " (giữ nguyên vai trò " + roleLabel + ").");
+  await renderAdminDashboard();
 }
 
 function setChangePassAlert(type, msg) {
@@ -4408,9 +7015,14 @@ function getSeenReplyIds() {
 }
 
 function updateUserFeedbackBadge() {
+  const badge = $("userFeedbackBadge");
+  if (!badge) return;
+  if (isAdminUser()) {
+    badge.style.display = "none";
+    return;
+  }
   const seen = getSeenReplyIds();
   const unseen = myFeedbacks.filter((f) => f.status === "replied" && !seen.includes(f.id)).length;
-  const badge = $("userFeedbackBadge");
   badge.textContent = String(unseen);
   badge.style.display = unseen > 0 ? "inline-block" : "none";
 }
@@ -4494,42 +7106,146 @@ function formatDateTime(iso) {
   return d.toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit", year: "numeric" });
 }
 
-function buildFeedbackCard(f, opts) {
-  const card = document.createElement("div");
-  card.className = "fb-card" + (f.status === "replied" ? " replied" : "");
+let adminFeedbackFilter = "all";
+let editingFeedbackId = null; // chỉ mở ô sửa phản hồi khi Admin bấm "✎ Sửa trả lời"
 
-  const head = document.createElement("div");
-  head.className = "fb-card-head";
-  const title = document.createElement("strong");
+function buildFeedbackCard(f, opts) {
+  const isReplied = f.status === "replied" || Boolean(f.admin_reply);
+  const card = document.createElement("div");
+  card.className = "fb-card " + (isReplied ? "replied" : "pending-ticket");
+
+  const top = document.createElement("div");
+  top.className = "fb-ticket-top";
+
+  const senderRow = document.createElement("div");
+  senderRow.className = "fb-sender-row";
+
+  const senderName = formatPrettyName(f.display_name || f.username || "Thành viên");
+  const av = document.createElement("div");
+  av.className = "fb-avatar-sm";
+  const avColors = ["#8C583A", "#355C7D", "#2E6B56", "#6D3D6E", "#9C4A3B"];
+  av.style.setProperty("--av-bg", avColors[(senderName.charCodeAt(0) || 0) % avColors.length]);
+  av.textContent = (senderName.charAt(0) || "U").toUpperCase();
+
+  const headText = document.createElement("div");
+  headText.style.minWidth = "0";
+  const subjLine = document.createElement("div");
+  subjLine.className = "fb-subject-line";
+  const title = document.createElement("span");
   title.textContent = f.subject;
-  const pill = document.createElement("span");
-  pill.className = "status-pill " + (f.status === "replied" ? "status-approved" : "status-pending");
-  pill.textContent = f.status === "replied" ? "✓ Đã phản hồi" : "⏳ Chờ phản hồi";
-  head.append(title, pill);
+  subjLine.append(title);
 
   const meta = document.createElement("div");
   meta.className = "fb-card-meta";
-  meta.textContent = (opts.showSender
-    ? ("Từ: " + (f.display_name || f.username) + " (@" + f.username + ") · ")
-    : "Đã gửi lúc ") + formatDateTime(f.created_at);
+  meta.textContent = opts.showSender
+    ? (senderName + " (@" + (f.username || "user") + ") · " + formatDateTime(f.created_at))
+    : ("Đã gửi lúc " + formatDateTime(f.created_at));
+  headText.append(subjLine, meta);
+  senderRow.append(av, headText);
+
+  const rightBox = document.createElement("div");
+  rightBox.className = "fb-top-right";
+
+  const pill = document.createElement("span");
+  pill.className = "status-pill " + (isReplied ? "status-approved" : "status-pending");
+  const dot = document.createElement("span");
+  dot.className = "status-dot-ind";
+  const pTxt = document.createElement("span");
+  pTxt.textContent = isReplied ? "Đã phản hồi" : "Chờ phản hồi";
+  pill.append(dot, pTxt);
+  rightBox.append(pill);
+
+  if (opts.adminActions) {
+    if (isReplied && editingFeedbackId !== f.id) {
+      const btnEdit = document.createElement("button");
+      btnEdit.type = "button";
+      btnEdit.className = "tbl-btn";
+      btnEdit.textContent = "✎ Sửa trả lời";
+      btnEdit.onclick = () => {
+        editingFeedbackId = f.id;
+        opts.onRerender();
+      };
+      rightBox.append(btnEdit);
+    }
+    const btnDel = document.createElement("button");
+    btnDel.type = "button";
+    btnDel.className = "tbl-btn danger";
+    btnDel.textContent = "Xóa";
+    btnDel.onclick = () => adminDeleteFeedback(f);
+    rightBox.append(btnDel);
+  }
+
+  top.append(senderRow, rightBox);
+  card.append(top);
+
+  const thread = document.createElement("div");
+  thread.className = "fb-thread-indent";
 
   const body = document.createElement("div");
   body.className = "fb-card-body";
   body.textContent = f.message;
-
-  card.append(head, meta, body);
+  thread.append(body);
 
   if (f.admin_reply) {
     const reply = document.createElement("div");
     reply.className = "fb-reply-box";
     const rl = document.createElement("div");
     rl.className = "fb-reply-label";
-    rl.textContent = "💬 Phản hồi từ Admin" + (f.replied_at ? " · " + formatDateTime(f.replied_at) : "");
+    rl.textContent = "🛡 Phản hồi từ Quản trị viên" + (f.replied_at ? " · " + formatDateTime(f.replied_at) : "");
     const rt = document.createElement("div");
     rt.textContent = f.admin_reply;
     reply.append(rl, rt);
-    card.append(reply);
+    thread.append(reply);
   }
+
+  // Ô nhập phản hồi gọn trên 1 dòng: tự hiện khi chưa phản hồi, hoặc khi bấm "✎ Sửa trả lời"
+  if (opts.adminActions && (!isReplied || editingFeedbackId === f.id)) {
+    const composer = document.createElement("div");
+    composer.className = "fb-inline-composer";
+
+    const replyArea = document.createElement("textarea");
+    replyArea.className = "text-input";
+    replyArea.rows = 1;
+    replyArea.style.fontFamily = "inherit";
+    replyArea.placeholder = isReplied
+      ? "Nhập nội dung phản hồi mới…"
+      : ("Nhập phản hồi nhanh cho " + senderName + "…");
+    replyArea.value = isReplied && editingFeedbackId === f.id ? (f.admin_reply || "") : "";
+
+    const btnSend = document.createElement("button");
+    btnSend.type = "button";
+    btnSend.className = "btn-primary";
+    btnSend.style.padding = "8px 16px";
+    btnSend.style.fontSize = "13px";
+    btnSend.style.whiteSpace = "nowrap";
+    btnSend.textContent = isReplied ? "Lưu cập nhật →" : "Gửi phản hồi →";
+    btnSend.onclick = async () => {
+      const ok = await adminReplyFeedback(f, replyArea.value);
+      if (ok) {
+        replyArea.value = "";
+        editingFeedbackId = null;
+      }
+    };
+
+    composer.append(replyArea, btnSend);
+
+    if (isReplied && editingFeedbackId === f.id) {
+      const btnCancel = document.createElement("button");
+      btnCancel.type = "button";
+      btnCancel.className = "tbl-btn";
+      btnCancel.style.height = "36px";
+      btnCancel.textContent = "Hủy";
+      btnCancel.onclick = () => {
+        editingFeedbackId = null;
+        opts.onRerender();
+      };
+      composer.append(btnCancel);
+    }
+
+    thread.append(composer);
+  }
+
+  card.append(thread);
   return card;
 }
 
@@ -4543,15 +7259,56 @@ function renderMyFeedbacks() {
     box.append(p);
     return;
   }
-  myFeedbacks.forEach((f) => box.append(buildFeedbackCard(f, { showSender: false })));
+  myFeedbacks.forEach((f) => box.append(buildFeedbackCard(f, { showSender: false, adminActions: false })));
 }
-
-let adminFeedbackFilter = "all";
 
 function renderAdminFeedbacks(list) {
   const wrap = $("adminFeedbacksTableWrap");
+  const kpiBox = $("adminFeedbackKpiStrip");
   if (!wrap) return;
   wrap.textContent = "";
+  if (kpiBox) kpiBox.textContent = "";
+
+  const totalCnt = list.length;
+  const pendingCnt = list.filter((f) => f.status !== "replied").length;
+  const repliedCnt = list.filter((f) => f.status === "replied").length;
+
+  if ($("fbCntAll")) $("fbCntAll").textContent = "(" + totalCnt + ")";
+  if ($("fbCntPending")) $("fbCntPending").textContent = "(" + pendingCnt + ")";
+  if ($("fbCntReplied")) $("fbCntReplied").textContent = "(" + repliedCnt + ")";
+
+  if (kpiBox) {
+    const kpis = [
+      { key: "all", num: totalCnt, lbl: "Tổng thư góp ý", icon: "💬" },
+      { key: "pending", num: pendingCnt, lbl: "Chờ phản hồi", icon: "⏳" },
+      { key: "replied", num: repliedCnt, lbl: "Đã giải quyết", icon: "✅" }
+    ];
+    kpis.forEach((k) => {
+      const card = document.createElement("div");
+      card.className = "user-kpi-card" + (adminFeedbackFilter === k.key ? " active" : "");
+      const left = document.createElement("div");
+      const nEl = document.createElement("div");
+      nEl.className = "user-kpi-num";
+      nEl.textContent = String(k.num);
+      const lEl = document.createElement("div");
+      lEl.className = "user-kpi-label";
+      lEl.textContent = k.lbl;
+      left.append(nEl, lEl);
+      const badge = document.createElement("div");
+      badge.className = "user-kpi-badge";
+      badge.textContent = k.icon;
+      card.append(left, badge);
+      card.onclick = () => {
+        adminFeedbackFilter = k.key;
+        document.querySelectorAll("[data-fb-filter]").forEach((b) => {
+          b.classList.toggle("active", b.getAttribute("data-fb-filter") === k.key);
+        });
+        renderAdminFeedbacks(list);
+      };
+      kpiBox.append(card);
+    });
+  }
+
   const q = ($("adminFeedbackSearch").value || "").trim().toLowerCase();
   const filtered = list.filter((f) => {
     if (adminFeedbackFilter === "pending" && f.status === "replied") return false;
@@ -4563,49 +7320,29 @@ function renderAdminFeedbacks(list) {
     return true;
   });
 
+  // Ưu tiên thư Chưa phản hồi lên trước
+  filtered.sort((a, b) => {
+    if (a.status !== "replied" && b.status === "replied") return -1;
+    if (a.status === "replied" && b.status !== "replied") return 1;
+    return String(b.created_at || "").localeCompare(String(a.created_at || ""));
+  });
+
   if (!filtered.length) {
     const p = document.createElement("p");
     p.style.color = "var(--fg-muted)";
-    p.style.padding = "12px 0";
-    p.textContent = list.length ? "Không có góp ý nào khớp bộ lọc." : "Chưa có góp ý nào từ thành viên.";
+    p.style.padding = "18px 0";
+    p.style.textAlign = "center";
+    p.textContent = list.length ? "Không có góp ý nào khớp bộ lọc." : "Hộp thư trống — chưa có góp ý nào từ thành viên.";
     wrap.append(p);
     return;
   }
 
   filtered.forEach((f) => {
-    const card = buildFeedbackCard(f, { showSender: true });
-
-    const replyArea = document.createElement("textarea");
-    replyArea.className = "text-input";
-    replyArea.rows = 3;
-    replyArea.style.marginTop = "10px";
-    replyArea.style.fontFamily = "inherit";
-    replyArea.placeholder = "Nhập nội dung phản hồi cho " + (f.display_name || f.username) + "…";
-    replyArea.value = f.admin_reply || "";
-
-    const actions = document.createElement("div");
-    actions.style.display = "flex";
-    actions.style.justifyContent = "flex-end";
-    actions.style.gap = "8px";
-    actions.style.marginTop = "8px";
-
-    const btnDel = document.createElement("button");
-    btnDel.type = "button";
-    btnDel.className = "icon-btn";
-    btnDel.textContent = "Xóa";
-    btnDel.onclick = () => adminDeleteFeedback(f);
-
-    const btnReply = document.createElement("button");
-    btnReply.type = "button";
-    btnReply.className = "btn-primary";
-    btnReply.style.padding = "6px 14px";
-    btnReply.style.fontSize = "12.5px";
-    btnReply.textContent = f.status === "replied" ? "Cập nhật phản hồi" : "Gửi phản hồi →";
-    btnReply.onclick = () => adminReplyFeedback(f, replyArea.value);
-
-    actions.append(btnDel, btnReply);
-    card.append(replyArea, actions);
-    wrap.append(card);
+    wrap.append(buildFeedbackCard(f, {
+      showSender: true,
+      adminActions: true,
+      onRerender: () => renderAdminFeedbacks(list)
+    }));
   });
 }
 
@@ -4613,21 +7350,22 @@ async function adminReplyFeedback(f, text) {
   const reply = (text || "").trim();
   if (!reply) {
     showSpineToast("Vui lòng nhập nội dung phản hồi.");
-    return;
+    return false;
   }
   const patch = { admin_reply: reply, status: "replied", replied_at: new Date().toISOString() };
   if (sb) {
     const { error } = await sb.from("user_feedbacks").update(patch).eq("id", f.id);
     if (error) {
       showSpineToast("Lỗi gửi phản hồi: " + error.message);
-      return;
+      return false;
     }
   } else {
     const list = loadLocalFeedbacks().map((x) => (x.id === f.id ? Object.assign(x, patch) : x));
     saveLocalFeedbacks(list);
   }
   showSpineToast("Đã gửi phản hồi cho " + (f.display_name || f.username) + "!");
-  renderAdminDashboard();
+  await renderAdminDashboard();
+  return true;
 }
 
 async function adminDeleteFeedback(f) {
@@ -4703,14 +7441,37 @@ function bindStep4Events() {
 
   if ($("btnSideQuickUpload")) $("btnSideQuickUpload").onclick = () => switchMainTab("mybooks");
   if ($("btnSideBackShelf")) $("btnSideBackShelf").onclick = () => switchMainTab("shelf");
-  if ($("btnAdminAddBook")) $("btnAdminAddBook").onclick = () => switchMainTab("mybooks");
-  if ($("btnGoToModeration")) $("btnGoToModeration").onclick = () => switchAdminSection("moderation");
+  if ($("btnGoToModeration")) $("btnGoToModeration").onclick = () => switchAdminSection("catalog");
   if ($("btnAdminRefresh")) {
     $("btnAdminRefresh").onclick = async () => {
       await refreshAuthSession();
       renderAdminDashboard();
       showSpineToast("Đã làm mới dữ liệu thống kê Dashboard!");
     };
+  }
+
+  // Bộ lọc, sắp xếp và tìm kiếm trong mục Quản lý sách dạng bảng (Catalog)
+  document.querySelectorAll("[data-catalog-filter]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      adminCatalogFilter = btn.getAttribute("data-catalog-filter") || "all";
+      adminCatalogPage = 1;
+      document.querySelectorAll("[data-catalog-filter]").forEach((b) => {
+        b.classList.toggle("active", b === btn);
+      });
+      renderAdminDashboard();
+    });
+  });
+  if ($("adminCatalogSearch")) {
+    $("adminCatalogSearch").addEventListener("input", () => {
+      adminCatalogPage = 1;
+      renderAdminDashboard();
+    });
+  }
+  if ($("adminCatalogSort")) {
+    $("adminCatalogSort").addEventListener("change", () => {
+      adminCatalogPage = 1;
+      renderAdminDashboard();
+    });
   }
 
   // Bộ lọc trạng thái sách và tìm kiếm trong tab Duyệt sách
@@ -4727,7 +7488,7 @@ function bindStep4Events() {
     $("adminBookSearch").addEventListener("input", () => renderAdminDashboard());
   }
 
-  // Bộ lọc trạng thái tài khoản (Chờ duyệt / Đang hoạt động / Đã khóa) & tìm kiếm
+  // Bộ lọc trạng thái, vai trò, tìm kiếm & tạo mới trong Quản lý tài khoản
   document.querySelectorAll("[data-user-filter]").forEach((btn) => {
     btn.addEventListener("click", () => {
       adminUserFilter = btn.getAttribute("data-user-filter") || "all";
@@ -4737,9 +7498,19 @@ function bindStep4Events() {
       renderAdminDashboard();
     });
   });
+  if ($("adminUserRoleFilter")) {
+    $("adminUserRoleFilter").addEventListener("change", () => {
+      adminUserRoleFilter = $("adminUserRoleFilter").value || "all";
+      renderAdminDashboard();
+    });
+  }
   if ($("adminUserSearch")) {
     $("adminUserSearch").addEventListener("input", () => renderAdminDashboard());
   }
+  if ($("btnOpenCreateUserModal")) $("btnOpenCreateUserModal").onclick = openCreateUserModal;
+  if ($("btnCloseCreateUserModal")) $("btnCloseCreateUserModal").onclick = closeCreateUserModal;
+  if ($("btnCancelCreateUser")) $("btnCancelCreateUser").onclick = closeCreateUserModal;
+  if ($("createUserForm")) $("createUserForm").onsubmit = submitAdminCreateUser;
 
   // Tải file PDF / TXT
   const dropzone = $("pdfDropzone");
@@ -4778,6 +7549,9 @@ function bindStep4Events() {
       await sb.auth.signOut();
       currentUser = null;
       currentProfile = null;
+      currentTab = "shelf";
+      activeAdminSection = "overview";
+      if (window.location.hash === "#admin") history.replaceState(null, "", window.location.pathname);
       await refreshAuthSession();
       showSpineToast("Đã đăng xuất khỏi hệ thống.");
       return;
@@ -4838,7 +7612,8 @@ function bindStep4Events() {
       }
     }
 
-    const email = usernameToInternalEmail(username);
+    const email = usernameToInternalEmail(username, INTERNAL_AUTH_DOMAIN);
+    const legacyEmail = usernameToInternalEmail(username, LEGACY_AUTH_DOMAIN);
     const password = normalizeInternalPassword(rawPassword);
 
     btn.disabled = true;
@@ -4846,27 +7621,57 @@ function bindStep4Events() {
 
     try {
       if (authMode === "login") {
-        const { error } = await sb.auth.signInWithPassword({ email, password });
-        if (error) {
-          setAuthAlert("error", "Tên tài khoản hoặc mật khẩu chưa chính xác.");
+        let authRes = await sb.auth.signInWithPassword({ email, password });
+        // Tương thích ngược cho các tài khoản cũ (như admin@tusach.local)
+        if (authRes.error && !username.includes("@") && legacyEmail !== email) {
+          const legacyRes = await sb.auth.signInWithPassword({ email: legacyEmail, password });
+          if (!legacyRes.error) authRes = legacyRes;
+        }
+        if (authRes.error) {
+          setAuthAlert("error", formatFriendlyAuthError(authRes.error.message));
           return;
         }
+        currentTab = "shelf";
         await refreshAuthSession();
         if (isApprovedUser()) {
-          renderBookshelf();
+          switchMainTab("shelf");
           showSpineToast("Đăng nhập thành công! Chào " + getProfileFullName(currentProfile) + ".");
         }
       } else {
+        // Ưu tiên đăng ký trực tiếp bằng Tên tài khoản qua hàm RPC (không qua kiểm tra/gửi mail của Supabase)
+        const rpcRes = await sb.rpc("register_account", {
+          p_username: username.toLowerCase(),
+          p_password: password,
+          p_display_name: displayName
+        });
+
+        if (!rpcRes.error) {
+          const loginRes = await sb.auth.signInWithPassword({ email, password });
+          if (!loginRes.error) {
+            await refreshAuthSession();
+            return;
+          }
+          setAuthAlert(
+            "success",
+            "Đăng ký tài khoản \"" + username.toLowerCase() + "\" thành công! Chờ Admin duyệt tài khoản để vào kệ sách."
+          );
+          return;
+        }
+
+        // Nếu chủ dự án chưa chạy bản cập nhật schema.sql có hàm register_account thì tự lùi về signUp chuẩn
+        const rpcMissing = /register_account|could not find the function|schema cache/i.test(rpcRes.error.message || "");
+        if (!rpcMissing) {
+          setAuthAlert("error", "Không thể đăng ký: " + formatFriendlyAuthError(rpcRes.error.message));
+          return;
+        }
+
         const { data, error } = await sb.auth.signUp({
           email,
           password,
           options: { data: { username: username.toLowerCase(), display_name: displayName } }
         });
         if (error) {
-          const msg = /registered|already/i.test(error.message)
-            ? "Tên tài khoản này đã có người dùng, hãy chọn tên khác."
-            : ("Không thể đăng ký: " + error.message);
-          setAuthAlert("error", msg);
+          setAuthAlert("error", "Không thể đăng ký: " + formatFriendlyAuthError(error.message));
           return;
         }
         if (data && data.session) {
@@ -4874,7 +7679,7 @@ function bindStep4Events() {
         } else {
           setAuthAlert(
             "success",
-            "Đăng ký thành công! Hãy chuyển sang tab Đăng nhập và chờ Admin duyệt tài khoản."
+            "Đăng ký tài khoản \"" + username.toLowerCase() + "\" thành công! Hãy chờ Admin duyệt tài khoản rồi đăng nhập."
           );
         }
       }
